@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/stuttering.html?back-link=advanced.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) 
+              [Netscape]">
+<!--
+%&b&<b>#</b>&
+%&c&&thinsp;<b>#</b>&thinsp;&
+-->
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+
+<script src="tlaweb.js"> </script>
+
+<!-- The following causes the name of this page in the left-hand column 
+     not to have a link.  It's not used here because this isn't for
+     a top-level page
+-->
+
+<!-- SCRIPT>
+   noLinkName = "Industrial Use" ;
+   </SCRIPT -->
+
+<title>Stuttering Steps</title> 
+
+</HEAD>
+
+<BODY onload="initialize()">
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol" > </div> 
+
+<H1>Stuttering Steps</H1>
+
+
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 19 November 2018</I></font>
+</td>
+<!-- td style="vertical-alight:top;width:auto" -->
+<!-- img src="tla-logo.png" style="width:170px;margin-top:14px"> </img -->
+<!-- /td -->
+</tr>
+
+</table>
+<hr style="margin-bottom:-5px;margin-top:-11px"> 
+
+<P style="margin-top:0px"> </P>
+
+When people think of representing the execution of a system by a
+behavior (a sequence of states), they think of some kind of global
+clock that tells the system to change state each time it ticks.&nbsp;  But
+that's not a good way to represent real systems.&nbsp;  There is no single
+global clock that controls all systems.&nbsp;  Every system would need its
+own clock.&nbsp;  It's difficult to speak of relations between
+specifications, such as that one implements the other, if the two
+systems have different global clocks.&nbsp;  It would be like trying to
+relate two interacting physical systems described in terms of two
+different physical clocks that ran at different, varying rates.
+
+<p>
+
+A system is a physical device that operates in real time.&nbsp;  Although
+all physical devices operate continuously, we can pretend that a
+digital system changes state instantaneously at discrete times.&nbsp;  We
+can view the behavior that describe the execution as the frames of a
+video.&nbsp;  (Readers born in the last millenium can think of it as a
+film.)&nbsp;  The requirement for the video to be a valid representation is
+that every state the system reaches appears in at least one frame.&nbsp;  A
+specification describes the set of all valid videos of correct system
+behaviors.&nbsp;  If we speed up the camera's frame rate so that the same
+state appears on more frames, it's still a valid video of the same
+system, so it should still satisfy the specification.&nbsp;
+
+<p>
+
+For any two system specifications <i>A</i> and <i>B</i>, specification
+<i>A</i> implements (or refines) specification <i>B</i> means that
+every valid video of both systems that satisfies <i>A</i> also
+satisfies <i>B</i>.&nbsp;  Note that we can turn any valid video of <i>A</i>
+that shows the states of both systems into a valid video of both
+<i>A</i> and <i>B</i> by adding extra frames (stuttering steps of
+<i>A</i>) if necessary.&nbsp;  
+
+<p> 
+
+Why should a video of one system show the state of another?&nbsp;  Why
+should a video of an hour/minute clock show the seconds display?&nbsp;  To
+answer this, we need to consider what a state is.&nbsp;  When we say that a
+system execution is represented by a behavior, it's natural
+to assume that each of those states is an assignment of values to the
+variables that describe the system, and perhaps also to variables that
+describe how the system's environment interacts with it.&nbsp;  But a TLA+
+specification is a mathematical formula.&nbsp;  Moreover, a semantics for
+any specification language translates any spec in that language to 
+a mathematical formula.&nbsp;  So let's look at what 
+mathematical formulas mean.&nbsp;
+
+<p>
+
+The formula &thinsp;x + y = 1&thinsp; is an assertion about the values
+of the variables &thinsp;x&thinsp; and &thinsp;y&thinsp;.&nbsp;  But it's
+not an assertion about a universe containing only the variables
+&thinsp;x&thinsp; and &thinsp;y&thinsp;.&nbsp;  You write another formula
+&thinsp;x - y = z&thinsp; without having to say, hey I've now added
+the variable &thinsp;z&thinsp; to my universe of discourse.&nbsp;  The
+formula &thinsp;x + y = 1&thinsp; is implicitly an assertion about a
+universe described by the values of all possible variables.&nbsp;  It just
+makes an assertion about the variables &thinsp;x&thinsp; and
+&thinsp;y&thinsp;.&nbsp;  It doesn't imply that there are no other variables.
+
+<p>
+
+It's now easy to see that a state should be an assignment of values to
+all possible variables.&nbsp;  In TLA+, the names of all possible variables
+are all the identifiers allowed by the language.&nbsp;  (If a module defines
+<i>Init</i> to equal some expression, then the universe still contains
+a variable named <i>Init</i>; we just can't use it in that module.)&nbsp;
+So our videos show the values of the (theoretically) infinite number of
+possible variables.&nbsp;  The spec
+<pre>
+   Spec == (v=0)  /\  [][v' = v+1]_v  
+</pre>
+(where &thinsp;v&thinsp; is declared to be a variable) allows 
+infinitely many behaviors, because it allows behaviors
+in which every variable other than &thinsp;v&thinsp; can assume
+any value in any of its states.
+
+<p> 
+
+I hope it is now even more obvious why we shouldn't be able to
+write a spec that doesn't allow stuttering steps.&nbsp;  A spec of an
+hour/minute clock asserting that the minute display changes with every
+step would say that the universe can contain no clock that displays
+seconds.&nbsp;  That would be a really weird spec.  
+
+<p>
+
+This may sound terribly complicated, saying that the simple
+specification&thinsp; Spec&thinsp; above should allow so many
+behaviors.&nbsp;  It shouldn't.&nbsp;  When you were a child, it didn't seem
+complicated that the formula &thinsp;x + y = 1&thinsp; allowed
+&thinsp;z&thinsp;, &thinsp;w&thinsp;, &thinsp;v&thinsp;,
+&thinsp;u&thinsp; etc.&nbsp;  to have any values.&nbsp;  It would have been
+complicated if the formula implied that those other variables didn't
+exist.&nbsp;
+
+
+
+
+
+
+
+
+<!-- **************** ENDING BOILERPLATE *************** -->
+
+</td>
+</tr>
+<!-- Bottom Back button may need to adjust margin-top parameter -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-100px"><b>Back</b>
+</p>
+</a>
+
+<!-- For a long page, add more back buttons higher on the page
+   by add one or more items like this, adjusting the margin-top 
+   parameter as desired.
+
+-->
+
+   <a class="back-link" style="display:none" href="#">
+   <p style="margin-top:-500px"><b>Back</b> </p> </a>
+
+
+</td>
+</tr>
+
+</table>
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/stuttering.html?back-link=advanced.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+</HTML>
+

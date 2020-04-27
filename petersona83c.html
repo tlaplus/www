@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/peterson.html?back-link=high-level-view.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:33:35 GMT -->
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) [Netscape]">
+
+   <TITLE>A Simple Example</TITLE>
+
+  <!-- STYLE type="text/css">
+   H2 {line-height:45px; margin-bottom:0px; text-align: left; font-size:26px;
+       color:#000000}
+   H3 {line-height:10px; margin-bottom:8px; text-align: left}
+   body {background-color:#ffffe4; max-width:750px;
+         font-family:Calibri,Trebuchet MS,Verdana;
+         font-size:18px;
+         line-height:22px;
+        }
+   pre {font-size:15px}
+   code {font-size:16px}
+  </STYLE -->
+
+
+
+
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+<script src="tlaweb.js"> </script>
+</HEAD>
+
+<BODY onload="initialize()">
+
+<!-- font style="font-family:Calibri,Trebuchet MS,Verdana" -->
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol"> </div> 
+
+<H1>A Simple Example</H1> 
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 6 July 2018</I></font>
+</td>
+<td style="vertical-alight:top;width:auto">
+</td>
+</tr>
+</table>
+<HR style="margin-bottom:-5px;margin-top:-11px"> 
+<P style="margin-top:0px"> </P>
+
+
+TLA+ is not hard to learn.&nbsp; <A
+href="https://dl.acm.org/citation.cfm?id=2699417">Amazon engineers
+report</A>  that:  
+
+<blockquote>"Engineers from entry level to principal have been
+able to learn TLA+ from scratch and get useful results in two to three
+weeks, in some cases in their personal time on weekends and evenings,
+without further help or training."</blockquote>
+
+However, programmers and software engineers find TLA+ specs
+intimidating at first sight.&nbsp;
+<!--
+ because it doesn't look like a programs
+and it uses very basic math (sets and functions).  They quickly get
+used to the language, and writing specs teaches them how simple and
+powerful that basic math is.  
+ -->
+I'm not going to risk scaring you now with a TLA+ spec.&nbsp;  Instead,
+I'll present an example in PlusCal.
+
+<p>
+
+PlusCal looks like a simple toy programming language, except that an
+expression can be any TLA+ expression&mdash;meaning any mathematical
+formula&mdash;making it infinitely more expressive than any programming
+language.&nbsp;  The algorithm is translated into a TLA+ specification
+that can be checked with the TLA+ tools.&nbsp;  PlusCal is not as
+expressive as TLA+, but it is often more convenient to use than raw
+TLA+, especially for simple algorithms.&nbsp;
+
+<p>
+The example is <a href="https://en.wikipedia.org/wiki/Peterson%27s_algorithm">
+Peterson's mutual exclusion algorithm</a>.&nbsp;  Here is the PlusCal code:
+
+<pre style="font-size:14px">
+   --algorithm Peterson {
+      variables flag = [i \in {0, 1} |-> FALSE],  turn = 0;
+         <font color="green">\* Declares the global variables flag and turn and their initial values;
+         \* flag is a 2-element array with initially flag[0] = flag[1] = FALSE.</font>
+      fair process (proc \in {0,1}) {
+        <font color="green">\* Declares two processes with identifier self equal to 0 and 1.
+        \* The keyword fair means that no process can stop forever if it can
+        \* always take a step.</font>
+        a1: while (TRUE) {
+             skip ;  <font color="green">\* the noncritical section</font>
+        a2:  flag[self] := TRUE ;
+        a3:  turn := 1 - self ;   
+        a4:  await (flag[1-self] = FALSE) \/ (turn = self); <font color="green">\* \/ is written || in C.</font>
+        cs:  skip ;  <font color="green">\* the critical section</font>
+        a5:  flag[self] := FALSE               }     }     }
+</pre>
+
+
+To specify a concurrent algorithm, you must say what the 
+atomic operations are.&nbsp;  In PlusCal, the code from one label to the
+next is executed atomically.&nbsp;
+
+<p>
+
+The TLC model checker can verify that the algorithm satisfies two
+important properties: mutual exclusion, meaning that two processes are
+never executing their critical section at the same time; and
+starvation freedom, meaning that each process keeps executing its
+critical section.&nbsp; The TLA+ translation introduces an array
+variable &nbsp;<code>pc</code>&nbsp; whose value indicates where each process is in its
+algorithm.&nbsp; In particular,
+  &nbsp;<code>pc[i] = "cs"</code>&nbsp;
+means that process &nbsp;<code>i</code>&nbsp; is in its critical
+section, so mutual exclusion means that
+&nbsp;<code>pc[0]</code>&nbsp; and &nbsp;<code>pc[1]</code>&nbsp; are
+never both equal to &nbsp;<code>"cs"</code>&nbsp;.&nbsp; 
+This condition can be written as
+<pre>
+   (pc[0] /= "cs") \/ (pc[1] /= "cs")
+</pre>
+or more compactly as 
+&nbsp;<code>{pc[0],pc[1]} /=
+{"cs"}</code>&nbsp;.&nbsp; TLC can check that it is always true in any
+execution of the algorithm.&nbsp; Starvation freedom here means that
+each process executes its critical section infinitely often.&nbsp;
+This is expressed in temporal logic by the formula <pre>
+  &forall; i &isin; {0,1} : &#9744;&#9826;(pc[i] = "cs") <i><font color="green">typed as</font></i> \A i \in {0,1} : []&lt;&gt;(pc[i] = "cs")
+</pre>
+TLC can check that this property is satisfied by every execution of the
+algorithm.&nbsp;
+
+<p>
+
+In Peterson's algorithm, each read or write of a global variable should
+be in a separate atomic action.&nbsp;  This is not true in the PlusCal code
+above because statement &nbsp;<code>a4</code>&nbsp; reads both
+&nbsp;<code>flag[1-self]</code>&nbsp; and &nbsp;<code>turn</code>&nbsp;.&nbsp;  This can be fixed by
+replacing statement &nbsp;<code>a4</code>&nbsp; with 
+<pre>
+        a4: while (TRUE) {
+              a4a: if (flag[1-self] = FALSE) {goto cs};
+              a4b: if (turn = self) {goto cs}           } ;
+</pre>
+TLC can verify that the resulting algorithm also satisfies mutual exclusion
+and starvation freedom.&nbsp;
+
+</td>
+</tr>
+</table>
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/peterson.html?back-link=high-level-view.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:33:35 GMT -->
+</HTML>

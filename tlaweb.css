@@ -1,0 +1,30 @@
+   H2 {line-height:45px; margin-bottom:0px; text-align: left; font-size:26px;
+       color:#000000}
+   H3 {line-height:10px; margin-bottom:8px; text-align: left}
+   body {background-color:#ffffe4; 
+         font-family:Calibri,Trebuchet MS,Verdana;
+         font-size:18px;
+         line-height:22px;
+        }
+   pre {font-size:15px}
+   code {font-size:16px}
+
+   div.popup{ text-decoration:underline;
+           font-size:18px;
+           font-weight:normal;
+           color:blue;
+         }
+
+#main table {
+border-collapse: collapse;
+}
+#main_leftcolumn {
+vertical-align: top;
+width: 135px;
+background-color: #f6f6f2
+}
+#main_contentcolumn {
+vertical-align: top;
+width: Auto;
+max-width: 650px;
+background-color: #ffffe4}

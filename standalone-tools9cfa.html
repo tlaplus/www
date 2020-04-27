@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/standalone-tools.html?back-link=tools.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) [Netscape]">
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+<script src="tlaweb.js"> </script>
+
+
+   <TITLE>Standalone TLA+ Tools</TITLE>
+  <!-- STYLE type="text/css">
+   H2 {line-height:45px; margin-bottom:0px; text-align: left; font-size:26px;
+       color:#000000}
+   H3 {line-height:10px; margin-bottom:8px; text-align:left; font-size:18px}
+   body {background-color:#ffffe4; max-width:750px;
+         font-family:Calibri,Trebuchet MS,Verdana;
+         font-size:18px;
+         line-height:22px;
+        }
+  </STYLE -->
+<title>TLA+ Tools</title> 
+</HEAD>
+<BODY onload="initialize()">
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol"> </div> 
+
+<H1>Running the TLA+ Tools Standalone</H1> 
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 21 November 2018</I></font>
+</td>
+<td style="vertical-alight:top;width:auto">
+</td>
+</tr>
+</table>
+<HR style="margin-bottom:-5px;margin-top:-11px"> 
+<P style="margin-top:0px"> </P>
+
+<h2>The Tools</h2>
+
+The TLA+ tools are described on 
+  <a href="tools.html">the TLA+ Tools web page</a>.&nbsp;
+Most users run the TLA+ tools 
+from the <a href="toolbox.html">TLA+
+Toolbox</a>.&nbsp;  Instructions for running TLAPS, the TLA+ proof
+system, should be found on 
+  <a href="https://tla.msr-inria.inria.fr/tlaps/content/Home.html">its
+    web site</a>.&nbsp;
+This page describes how to run the other tools outside 
+the Toolbox.&nbsp;  Those tools, and their current versions, are: <Pre>
+   SANY:    Version 2.1  of 23 July 2017
+   TLC:     Version 2.13 of 18 July 2018
+   PlusCal: Version 1.8  of 16 May 2018
+   TLATeX:  Version 1.0  of 20 September 2017
+</Pre> 
+
+
+
+
+<A NAME="downloading"><H2>Downloading and Installing the Tools</H2></A>
+
+The distribution comes as a zip file or a jar file. They are available
+by following the link below.&nbsp;
+
+Please thank Microsoft and HP for the open-source release of the 
+code by reading the following agreement.
+
+<p>
+
+
+<b>By installing, copying, or otherwise using this software, you agree
+to be bound by the terms of its license.&nbsp;&nbsp;</b>
+
+<!-- A HREF="license.html">Read the license.</A></b -->
+<font class = "popup-blue" color="blue" id="license" onclick="popupw('license.html',450,650)"><b>
+Read the license.</b></font>
+
+<p>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<A
+HREF="https://github.com/tlaplus/tlaplus/releases/latest"><b>-- DOWNLOAD
+THE TLA+ TOOLS --</b></A><BR>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<A
+HREF="https://tla.msr-inria.inria.fr/tlatoolbox/dist/"><b>-- ALTERNATE DOWNLOAD
+ SITE --</b></A>
+
+
+
+
+<p>
+
+Separate directions for completing the installation on Windows and on
+Unix from the zip file are given below.
+
+
+<P>
+<H3 id="h2windows"  class="show-hide" 
+    onclick="showHide('hide-windows','windows')">
+Windows
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-windows" >
+      [show]</font></H3>
+
+<DIV id="windows" class = "hidden-div">
+Choose (or create) a folder into which you want to put the tools
+and unzip the downloaded file into that folder.&nbsp;&nbsp;
+
+Let's suppose that your folder is&thinsp;
+<TT>c:\user\myfolder</TT>&thinsp;.&nbsp;&nbsp;
+
+This will create a subfolder of&thinsp; <tt>myfolder</tt>&thinsp;
+named&thinsp; <tt>tla</tt>&thinsp; that has three subfolders, each
+containing one of the tools.&nbsp;&nbsp;
+
+You must then add&thinsp;
+
+    <TT>c:\user\myfolder\tla</TT>&thinsp; 
+
+to your CLASSPATH variable.&nbsp;&nbsp; 
+
+To do that, open the &thinsp;
+
+  <EM>Control Panel</EM>&thinsp; and click on&thinsp;
+
+   <EM>System</EM>.&nbsp; 
+
+Click on&thinsp;
+ <em>Advanced system settings</em>,&thinsp; select the
+<em>Advanced</em> tab, and  then click on
+ <EM>Environment Variables</EM>.&nbsp;
+
+Look for the CLASSPATH variable.&nbsp; If it exists, append&thinsp;
+
+   <TT>;c:\user\myfolder\tla</TT>&thinsp; 
+
+to the end of it.&nbsp; 
+
+If not, create a new CLASSPATH variable whose value is&thinsp;
+
+   <TT>c:\user\myfolder\tla</TT>&thinsp;.
+<P>
+</DIV>
+
+
+
+<H3 id="h2unix"  class="show-hide" 
+    onclick="showHide('hide-unix','unix')">Unix
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-unix" >
+      [show]</font></H3>
+
+<DIV id="unix" class = "hidden-div">
+Choose (or create) a directory into which you want to put the tools
+and unzip the downloaded file into that directory.&nbsp;&nbsp;
+
+Let's suppose that your directory is&thinsp;
+  <TT>/udir/user/mydir</TT>&thinsp;.&nbsp;&nbsp;
+
+This will create a subdirectory of&thinsp; <tt>mydir</tt>&thinsp;
+named&thinsp; <tt>tla</tt>&thinsp; that has three subdirectories, each
+containing one of the tools.&nbsp;&nbsp;
+
+You must now add&thinsp; <TT>/udir/user/mydir/tla</TT>&thinsp;
+to the CLASSPATH environment variable.&nbsp; 
+
+Assuming you're running the C shell or some derivative, you do this by
+typing
+
+
+<PRE>      setenv CLASSPATH /udir/user/mydir/tla</PRE>
+
+However, you'll probably want to have the CLASSPATH variable set
+automatically when you login.&nbsp;
+
+To do this, your&thinsp; 
+  <TT>.login</TT>&thinsp; 
+or&thinsp; 
+  <TT>.csh</TT>&thinsp;
+file must contain a command to set that variable.&nbsp; 
+
+If a command
+
+<PRE>      setenv CLASSPATH ...</PRE>
+
+already exists in your&thinsp; 
+  <TT>.login</TT>&thinsp; 
+or&thinsp; 
+  <TT>.csh</TT>&thinsp; 
+file, just add the command
+
+<PRE>      setenv CLASSPATH $CLASSPATH":/udir/user/mydir/tla"</PRE>
+
+after it.&nbsp;&nbsp; 
+
+Otherwise, just add the command
+
+<PRE>      setenv CLASSPATH /udir/user/mydir/tla</PRE>
+</DIV>
+
+<H2>Running the Tools</H2>
+
+To run the tools, you must have Java installed on your
+machine.&nbsp;&nbsp;
+
+If you're running Unix, it is probably already there.&nbsp;&nbsp;
+
+If you're running Windows, you can get Java 
+  <A HREF="https://www.java.com/en/download/manual.jsp">here</A>
+or
+  <A HREF="https://developer.ibm.com/javasdk/downloads/">here</A>.
+
+
+
+After installing the tools and Java, you run them in a Windows
+<i>Command Prompt</i> window or in a Unix shell by typing the
+appropriate one of these commands 
+<PRE>  java tlc2.TLC
+  java tla2sany.SANY
+  java pcal.trans
+  java tla2tex.TLA
+</PRE>
+followed by the command arguments, which consist of zero or more
+switches followed by the name of a &nbsp;<TT>.tla</TT>&nbsp; file.
+(The extension &nbsp;<TT>.tla</TT>&nbsp; can be omitted when typing
+the file name.)
+
+
+</td>
+</tr>
+
+<!-- Bottom Back button -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-50px"><b>Back</b>
+</p>
+</a>
+</td>
+</tr>
+
+</table>
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/standalone-tools.html?back-link=tools.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+</HTML>
+

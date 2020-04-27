@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/tla.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:31:07 GMT -->
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) 
+              [Netscape]">
+<!--
+%&b&<b>#</b>&
+%&c&&thinsp;<b>#</b>&thinsp;&
+-->
+
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+<style> 
+  h2 {margin-top:10px}
+  .popup{ text-decoration:underline;
+          font-size:18px;
+          font-weight:normal;
+          color:blue;
+</style>
+<!-- STYLE type="text/css">
+      H2 {line-height:45px; margin-bottom:0px; text-align: left; font-size:26px;
+          color:#000000}
+      H3 {line-height:10px; margin-bottom:8px; text-align: left}
+      body {background-color:#ffffe4; 
+            font-family:Calibri,Trebuchet MS,Verdana;
+            font-size:18px;
+            line-height:22px;
+           }
+      pre {font-size:15px}
+      code {font-size:16px}
+   
+      .popup{ text-decoration:underline;
+              font-size:18px;
+              font-weight:normal;
+              color:blue;
+            }
+   </STYLE>
+   
+   <style>
+   #main table {
+   border-collapse: collapse;
+   }
+   #main_leftcolumn {
+   vertical-align: top;
+   width: 135px;
+   background-color: #f6f6f2
+   }
+   #main_contentcolumn {
+   vertical-align: top;
+   width: Auto;
+   max-width: 650px;
+   }
+   </style
+-->
+
+
+<script src="tlaweb.js"> </script>
+<script>
+function initialize() {
+//  creatLeftHandCol(leftHandCol,noLinkName) ;
+  initializeBackButtons();
+  initializeMouseOverColoring() ;
+  initializeShowHide() ;
+ }
+</script>
+</HEAD>
+
+<BODY BGCOLOR=#ffffe4  onload="initialize()">
+
+
+<title>The TLA+ Home Page</title> 
+
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+<img src="splash_small.png" width=120px 
+     style="margin-top:24px;margin-bottom:-60px"> 
+
+</td>
+<td id="main_contentcolumn" style="padding-left:15px">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<H1>The TLA+ Home Page</H1>
+
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 6 December 2018</I></font>
+</td>
+<td style="vertical-alight:top;width:auto">
+<!-- img src="tla-logo.png" style="width:170px;margin-top:14px"> </img -->
+</td>
+</tr>
+
+</table>
+<HR style="margin-bottom:-5px;margin-top:-11px"> 
+
+<P style="margin-top:0px"> </P>
+
+<DIV class="hidden-div" style="color:red;margin-bottom:10px"><b>
+   You'll miss a lot on this web site unless you enable Javascript
+   in your browser. </b></DIV>
+
+<DIV>
+
+This is the home page of the TLA+ web site.&nbsp;
+TLA+ is a high-level language for modeling programs and
+systems--especially concurrent and distributed ones.&nbsp;  It's based on
+the idea that the best way to describe things precisely is with simple
+mathematics.&nbsp;  TLA+ and its tools are useful for eliminating
+fundamental design errors, which are hard to find and expensive to correct
+in code.&nbsp;  The following are the top-level pages of the web site.
+<br>
+<font class = "popup-blue" color="blue" id="name-popup" onclick="popup('name-popup.html',160)">
+<b>Is it &thinsp;TLA<font style="vertical-align:25%">+</font>&thinsp; or &thinsp;TLA+&thinsp;?</b></font>
+
+
+</DIV>
+
+<H2><a href="high-level-view.html">High-Level View</a></H2>
+<DIV>
+An explanation of what TLA+ is all about.
+</DIV>
+
+<H2><a href="news.html">News</a></H2>
+<DIV>
+Items of current interest.&nbsp;  Last modified on 3 January 2019.
+</DIV>
+
+<H2><a href="industrial-use.html">Industrial Use</a></H2>
+<DIV>
+Some examples of how TLA+ has been used in industry.
+</DIV>
+
+<H2><a href="learning.html">Learning TLA+</a></H2>
+<DIV>
+Resources for learning how to use TLA+, including an introductory video course.
+</DIV>
+
+<H2><a href="toolbox.html">The Toolbox</a></H2>
+<DIV>
+An integrated development environment (IDE) for TLA+ and its tools.
+</DIV>
+
+<H2><a href="tools.html">The Tools</a></H2>
+<DIV>
+Tools for checking TLA+ models.  The primary ones are
+the TLC model checker and the TLAPS proof system.
+</DIV>
+
+
+<H2><a href="advanced.html">Advanced Topics</a></H2>
+
+<DIV>
+For those who know enough about TLA+ to be able to read simple
+specifications.
+</DIV>
+
+<H2><a href="more-stuff.html">More Stuff</a></H2>
+
+<DIV>
+A melange of miscellaneous material mostly about TLA+ .
+</DIV>
+
+
+</td>
+</tr>
+</table>
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/tla.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:31:19 GMT -->
+</HTML>
+
+<!-- 
+<p>
+
+Since the work of Floyd and Hoare in the late 1960s, it has been
+generally agreed that the behavior of a sequential programs is best
+thought of as a sequence of states, and we should think of a step of a
+program as a state-changing event.&nbsp;  I have found this to be true of
+concurrent and distributed systems as well.&nbsp;  States are important
+because what a system does in the future is controlled by its current
+state, not by what happened in the past.
+
+<p>
+
+
+
+<hr>
+
+
+Some methods, including TLA+, have a way of hiding part of the state.
+They can describe a system as behaving <em>as if</em> that hidden
+state exists, but it needn't actually exist.&nbsp;  There is little
+practical benefit in doing this.&nbsp;  Understanding the system requires
+understanding the complete state, including its hidden part.&nbsp;  In
+practice, it suffices to simply say in a comment that a certain part
+of the state need not actually be implemented.
+-->
+
+
+  <!-- 
+   Some other methods model a behavior as a sequence of actions.&nbsp;
+   The ones that are comparable to TLA+ in terms of their utility employ
+   a sequence of states to control the order in which actions can occur,
+   the current state determining which actions are possible and the
+   action determining the next state.&nbsp; Adding named actions to the
+   state changes would add nothing to the usefulness of TLA+.  <p>
+  -->
+
+ <!--
+   Rarely can we say that one model is better than
+   another.&nbsp; We can at most say that one is more useful than another
+   for a certain purpose.&nbsp;
+ -->
+
+ <!--
+   I've found that for most engineering uses, the behavior of a system
+   can be modeled as a sequence of events.&nbsp;  If two events represent
+   concurrent operations in different processes, the model will allow
+   behaviors in which the events occur in either order.&nbsp;  
+ -->

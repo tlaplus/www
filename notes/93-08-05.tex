@@ -1,0 +1,907 @@
+% The following are Peter Ladkin's comments on the question of using
+% first-order logic rather than TLA.  It's rather long--almost 900 lines.
+% what I enjoyed most is his responding to de Bruijn's
+% 
+%    What one really needs is not a new logic but a new kind of algebra
+%    adapted to the problem in hand.
+% 
+% with
+% 
+%    But, pace de Bruijn, I fail to see a clear argument why a new algebra
+%    may solve a problem while a logical language with new operators and
+%    appropriate rules should not.
+% 
+% Indeed, it seems to me that a logic is just an algebra for
+% manipulating formulas rather than terms.
+% 
+% Leslie
+% 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentstyle[11pt,spec92]{article}
+\begin{document}
+\coloncommand{LAMBDA}{\lambda}
+\coloncommand{compose}{\circ}
+\begin{spec}
+
+Using Tense Logic in Specification and Verification.
+
+Peter Ladkin.
+
+In Leslie's latest TLA notes of 22/6/93 [Lam93], Section 3 discusses
+a comment of Bob Boyer, asking whether temporal logic is strictly
+necessary for specification and verification of algorithms. Bob had
+asked the following question (quoted with permission) [Boy93]:
+
+[begin quote]
+
+  [Bob] asked [Leslie] why [Leslie] felt it was necessary to work
+  with temporal logic, why not simply stick with traditional logic?
+  [Leslie's] response was something to the effect that with
+  computers we have to deal with changing variables, and this
+  necessitates a fundamentally new outlook.
+
+  [Bob also quoted] the following two paragraphs by de Bruijn in a
+  recent essay of his, `Mathematics and Computers', Nieuw Archief
+  voor Wiskunde, Uitgegeven Door hiet Wiskundig Genootschap te
+  Amsterdam, Verzordg Door de Stichting Mathematisch Centrum, (4) 7
+  1989, pp.  169-195.
+
+[begin de Bruijn quote]
+
+  One of the signs of computer science still being young is the
+  strong zeal to introduce new formalisms all the time and to expect
+  miracles from them.  And significant is the tendency to try to
+  create new kinds of logic in order to cope with special
+  situations.  What one really needs is not a new logic but a new
+  kind of algebra adapted to the problem in hand.  It is confusing
+  to try to push it into logic.  It reminds of physicists claiming
+  that quantum mechanics requires a new kind of logic.
+
+  ...
+
+  Some years ago a computer scientist said to me that computer
+  science is not just different from mathematics, but also more
+  difficult and more profound, since computer science has to deal
+  with time, and mathematics is statical.  I was so baffled that I
+  could only mumble that I thought that Newton once had used the
+  time as a variable in his work about the solar system, and that he
+  had even taken derivatives with respect to time, but only later I
+  grasped the background of the the remark of the computer man.  He
+  was a follower of a methodology in which it was forbidden to speak
+  about time.  Nevertheless, he had to keep thinking about time at
+  the back of his mind, and prohibiting to speak about what we have
+  in our intuition is definitely frustrating.
+
+[end de Bruijn quote]
+
+[end Boyer quote]
+
+The main issue raised by Bob's query and these quotes is whether one
+needs a new logical setup, or merely an old setup (i.e. first-order
+logic) together with appropriate non-logical methods.  This general
+point has been discussed before in philosophical logical circles,
+not specifically with regard to computing science.  For example,
+Susan Haack [Haa78] eloquently argues that the use of different
+logics is best settled in individual cases by considering purposes
+and clarifying evaluation criteria for the particular logical
+problem domain. This argument runs counter to the apparent opinion
+of de Bruijn.  I shall consider the points discussed by Leslie and
+Bob in detail in this note.
+
+The Issues.
+
+Firstly, there is the issue (i) whether dealing with changing
+variables entails a `new' outlook, that is, a method of proceeding
+not based upon first-order logic.  Or should we try to do everything
+in first-order logic, and follow de Bruijn's suggestion to develop
+simply a new algebra for new circumstances?  Supposing a new outlook
+is required, then (ii) one can enquire whether temporal logic is the
+appropriate device for describing the changes occurring in computing
+systems.  A third issue is (iii) whether the syntactical details of
+temporal logic are sufficiently well-understood that devising
+theorem-provers for temporal logic is somehow on a par with devising
+them for first-order logical reasoning, or whether temporal logic is
+`new' in this respect also.  A final issue is (iv) whether temporal
+logic is `new' in the historical sense of recently developed.
+These four issues are interrelated.
+
+I shall agree with Leslie that (a) change is an essential
+characteristic of computing systems, and that (b) temporal logic is
+an appropriate approach, in contrast with first order logic plus
+something else.  I shall also argue that (c) the historical record
+shows that using a temporal logic for describing change is by no
+means a new approach, although the technical details of TLA
+certainly are new.
+
+Leslie makes three arguments against the use solely of first-order
+logic for reasoning about computing systems.  Firstly, quoted by
+Bob, he argues (I) that one needs to handle change, and implicitly
+suggests that first-order logic cannot do this job in the right way.
+Secondly, in [Lam93] he argues that (II) if one were somehow to
+translate TLA into first-order logic, it would be a drag to work
+with.  Thirdly, he claims (broadly speaking) (III) that one cannot
+use a first-order theorem prover to do calculations. I argue here
+that Leslie's first argument (I) is correct, flesh out his argument
+(II), also to argue its correctness, and lastly I cast doubt on his
+argument (III).
+
+De Bruijn asks whether we should invent new logics if old ones
+suffice. Bob's question suggests that temporal logic may be one of
+these `new' logics.  These queries correspond to issues (i), whether
+the `old' logics indeed suffice; and (iv) whether temporal logic is
+`new'.  An argument concerning the `newness' of temporal logic may
+be one of two potential arguments.  The first would be the claim
+that temporal logic is (iv) somehow `new and shiny' but maybe a
+lemon, whereas first-order logic is `old and dependable'.  I shall
+compare this with the historical record below.  The second argument
+is the more sustantial claim that in order to do things in temporal
+logic, it's necessary to add temporalities to first-order logic, and
+since one needs first-order logic anyway, isn't it easier to do
+without the extra temporalities if possible (i)?  This is an
+Occam's-razor argument applied to the use of logic.  I shall argue
+that one can shave nothing from TLA by disposing of the
+temporalities (this is related to Leslie's point (II), that
+reasoning in purely first-order terms in this situation would be `a
+drag').  Thus applying the razor achieves nothing and the
+Occam's-razor argument fails.  First-order logic + something is
+unsatisfactory for handling the details which TLA handles.
+
+Leslie's third argument (III) is a technical argument purporting to
+show that first-order logic by itself cannot work (issue (i)).
+Leslie claims that a first-order theorem prover cannot be used as a
+`desk calculator' to perform calculations in as well as reasoning
+about the underlying mathematics. This is a specific argument
+supporting a general claim that something more than first-order
+logic is required for reasoning about computing systems, and
+therefore bypasses de Bruijn's plea to try to make first-order logic
+suffice.  Presumably the argument is completed by asserting that
+tense logic (in its TLA guise) is the minimal satisfactory
+enhancement that one can make.  Unfortunately, (III) doesn't appear
+to be a strong argument, as I shall show in the final section of
+this note.
+
+Temporal Logic versus Tense Logic.
+
+What computer scientists call `Temporal Logic' was called `Tense
+Logic' by Arthur Prior (its proposer), for good reason. The syntax
+of a logic such as TLA is tensed, in the sense that tenses are
+applied to state predicates.  State predicates are asserted to hold
+in the future, now, in the past, always in the future, sometime in
+the past, and so on. `Tense logic' is an elegant and accurate
+phrase, so I shall use it.
+
+Firstly, a point about logic (singular), and logics (plural).  Logic
+(singular) is the study of valid inference, going back at least to
+Aristotle.  Temporal logic is the study of valid inference where
+time is involved, again going back to Aristotle.  Given the claim
+(I), that handling computing systems requires handling change, and
+given that change and time are intimately connected (as has been
+recognised from Aristotle onwards [New80]), we are by definition
+employing temporal logic (singular) when reasoning about systems
+which change.  Therefore, accepting Leslie's claim (I) commits us to
+using temporal logic when reasoning about computing systems. However,
+it does not yet commit us to using a tense logic, which is what TLA
+is. Thus Bob's query can be rephrased: if we accept claim (I), can
+our temporal logic be a form of first-order logic, or must it be a
+tense logic.  Thus claim (I) is an insufficient answer to Bob's
+question by itself. However, I shall argue below that claim (II),
+when suitably fleshed out, in conjunction with (I), is a sufficient
+answer.
+
+Whether we should use tense logics (plural) rather than other logics
+(plural) when reasoning about computing systems is a technical
+question. Tense logics as technical devices must also be compared
+with other technical devices such as process algebra. When I discuss
+issues (ii), (iii) and (iv), I shall interpret them strongly, as
+referring to tense logics.  The historical argument advocated by de
+Bruijn and implicitly by Bob would claim that tense logics are less
+well established, less well researched, technical devices, whereas
+first-order logic plus some devices for arguing about time (B-series
+representations, see below) is more established.  A potted history
+of logic, below, suffices to dispose of any claim for the
+foundational weakness of tense logics.
+
+Is Tense Logic Appropriate?
+
+Issue (ii): is tense logic (not necessarily best, but merely)
+appropriate for the task of describing and verifying computing
+systems?  I shall answer, yes. Leslie's first argument (I) claims
+that change is fundamental in interacting computing systems, for
+example, change in the values of program variables.  Leslie wants to
+treat these changing variables as real mathematical variables, in
+which the equality relation does not participate in the change, i.e.
+it may not change its truth value throughout the reasoning.  Once
+two things are determined equal, then they're equal, and that's it
+until the end of the proof, whether one is ferreting out a path
+through lots of state changes or not.
+
+I believe this argument is fundamentally correct.  Further, it's
+related to issue (i), whether a `new' outlook is required to deal
+with this form of change.  The modern treatment of how time, logic
+and change are technically related probably starts with McTaggart,
+who considered the A series and B series versions of time [Mac08].
+The tensed A series considers present, future, and past as
+attributes of facts, which therefore continually change attributes -
+future facts become present facts become past facts, somehow, while
+still being the `same' fact. (MacTaggart wanted to derive a formal
+contradiction corresponding to this intuitive description, but this
+need not detain us.)  The untensed B series is a linear sequence of
+times with three binary relations of earlier-than, later-than and
+simultaneous-with.  A temporal fact is unchangeably in one of these
+relations to a given other fact (or, rather, in some relation
+definable from these, since facts are generally true not on a single
+time point, but on some collection of points such as intervals
+[vBen]).  One could argue that the power of tense logic lies in
+giving a B series semantics to an A series syntax.  Thus the
+changing present and future state of a changing system, expressed
+in the syntax of a specification, may be understood by considering
+the unchanging facts concerning what happens at earlier and later
+states, expressed in the semantics.
+
+This fleshes out Leslie's implicit argument from (I), that the
+necessity to handle change mandates the use, not just of temporal
+logic (the explicit claim), but of tense logic.  Tensed talk is very
+convenient when specifying concurrent algorithms, however, to do
+mathematics one needs the unchanging earlier-later related facts.
+Tense logic is simply the most convenient way to accomplish this,
+not just for computing systems. 
+
+What Does History Show?
+
+Let's consider now the historical issues (iii) and (iv).  I shall
+note that modal and tense logics are historically as well-founded 
+as first-order logic. The syntax of tense logic has been
+well-researched for 80 years or so, even though tense logic
+so-called arose in the mid-50's.
+
+Aristotle was the first to define a fragment of what we now know as
+first-order logic, according to Jonathan Lear's delightful thesis
+[Lea80].  The schoolmen in the 10th-14th centuries got their
+knickers in a twist trying to handle more than one `general term' (a
+complex referring expression, such as `every donkey' or `some man'),
+per proposition. Let's call these, propositions with compound
+reference.  Inference amongst propositions containing just one
+general term was quite well understood [Gea62].  Let's call these,
+propositions with simple reference.  [Gea58] argues that William of
+Sherwood almost had the solution, Frege's solution, within his
+grasp.  In 1879, Frege made the decisive step of reducing compound
+reference to iterated simple reference. This defines an order of
+construction (Geach's phrase [Gea58]) of the proposition whereby the
+general terms are considered to be introduced in a particular order.
+In Frege's solution, reference is accomplished by proper names
+(constants) or simple indexical devices (variables, bound by
+quantifiers). A quantifier binds precisely one variable. In a
+proposition with compound reference, there are multiple variables.
+But these variables are bound iteratively by the quantifiers - first
+one, then another.  Using this reduction, Frege defined logic as a
+formal system [Fre79].  Frege's solution, though, has certain
+technical features which may be disadvantageous in some contexts.
+For example, one cannot have a referring expression w which binds
+just one other referring expression x, and a third referring
+expression y which binds just one fourth referring expression z, in
+the same proposition.  One of w and y must bind both x and z.
+(Expressed in other words, if the sentence is Skolemised, one of the
+Skolem functions has one free variable and the other must have two).
+Recently, Barwise considered branching quantifiers, which allow this
+feature, in order to explicate some features of reasoning in natural
+language which appeared to require this device [Bar79].  (Whether
+branching quantifiers are a good idea or not is another issue.
+Quine is against [Qui70]. See [Pat89], [Pat91] and [Han93].)
+Another inconvenient feature concerns the handling of implication,
+so-called material implication, of which more in a moment.
+
+Russell and Whitehead followed Frege's program to try to define all
+of mathematics in logic, so that mathematical reasoning could be
+reduced to logical reasoning as explained by Frege's theory. They
+required a higher-order logic to complete their program. The results
+were published in 1910-1913 [WhiRus10] [WhiRus12] [WhiRus13]. This
+work, along with Frege's set theory [Fre84] started a era of
+investigation in logic into the foundations of set theory and
+higher-order logic, as well as first-order logic, modal logic, and
+intuitionist logic.
+
+Clarence Lewis, dissatisfied with what he considered anomalies in
+the use of material implication, devised a formal system in the
+Boolean style for handling what he called strict implication.  He
+called his formal systems, modal systems.  They appeared in print
+first in 1918 [Lew18], with a mistake which was corrected in 1920,
+and the definitive version appeared in Lewis's textbook with
+Langford in 1932 [LewLan32].
+
+Arthur Prior studied time and change using Lewis's modal systems,
+the first definitive version appearing in his John Locke lectures at
+Oxford in 1956-57 [Pri58]. Prior coined the term `tense logic'.
+
+Computational theorem-provers are based on syntax, so the syntactic
+study of logics is the relevant touchstone if one is arguing a case
+for priority.  The modern syntax of first order logic applied to
+mathematics dates to 1910, the first modal logic to 1918, and the
+application to tense logic to 1956. So, technically, modal logic
+dates from the same era as the first fully worked-out account of
+logic applied to mathematics, 80 years ago [WhiRus10]. Though the
+reduction of tense logic to modal logic occurred later (1957), it
+could tap the understanding of the syntactic power of modal logic
+from 40 years earlier, which included such seminal work as that of
+Tarski and McKinsey [McKTar44]. The bibliography of the introductory
+textbook [HugCre68] lists 255 entries up to 1967 alone. Since then,
+seminal work has been published by van Benthem, Gabbay, Fine, Blok,
+and Montague, amongst others.
+
+It's noteworthy also, that Tarski and McKinsey studied modal logic
+(notably the system S4 of Lewis) from the point of view of algebra,
+using what are nowadays called modal algebras. When de Bruijn
+exhorts us to use a new algebra instead of a new logic, he seems to
+forget that Stone's theorem, and, in the case of modal logics,
+Jonsson-Tarski's theorem, allow us to use propositional logics and
+algebras interchangeably. But unfortunately not first-order logic
+and cylindric algebra, nor set theory and relation algebra, since
+the representation theorems are not quite so clean. But, pace de
+Bruijn, I fail to see a clear argument why a new algebra may solve a
+problem while a logical language with new operators and appropriate
+rules should not.
+
+In terms of understanding and formalising inference, it makes no
+sense historically to call the syntactic study of tense logics
+`new'.  It's from the same era as the use of first-order and
+higher-order logic in mathematics. Henkin's `syntactic' proof of the
+completeness theorem [Hen49] was accompanied in his thesis by a
+theorem on completeness in the theory of types [Hen50]. So
+first-order, higher-order and modal logics share roughly the same
+origins, and to a large extent attracted the same intensity of
+theoretical development.  One can speculate as to why
+theorem-provers to date have concentrated on first-order logic, but
+to discuss it would divert us more. It may have something to do with
+the success of Zermelo-Fraenkel set theory (which rendered Henkin's
+higher-order completeness theorem less applicable by ignoring
+classes in favor of sets), and with the interest in first-order
+arithmetic generated by Goedel and Tarski.
+
+What about semantics? Indeed, there is a time lag. The locus
+classicus for the model-theoretic semantics of first-order logic is
+Tarski's `Wahrheitsbegriff' article [Tar36], whereas modal logic had
+to wait until Jonsson and Tarski [JonTar51], although most people
+attribute this semantics to Kripke [Kri59] [Kri63] (see below). Is
+there that big a difference between 42 and 57 years ago?
+
+This might also be the place to comment on de Bruijn's remark about
+a `new kind of logic adapted to special situations'. The history of
+logic is bound up with theories of computing, namely Goedel's
+definition of the recursive functions, Turing's machines, and
+Curry's Lambda Calculus.  The semantics of logic, including
+higher-order logic, and modal logic, developed hand-in-hand with
+computational investigations.  Intuitionist logic devolved to
+constructive theories of machine proof [Con86], following for the
+most part Martin-Loef's theory of types, which is a higher-order
+logic [Mar84]. Dummett and Lemmon exhibited the explicit syntactic
+connection between intuitionistic logic and modal logic [DumLem59].
+The semantics of intuitionistic logic was shown by Kripke to be
+similar to that devised for modal logic [Kri65a].
+
+[Historically, it turns out that Kripke's semantics follows directly
+from the work of Jonsson and Tarski on Boolean algebras with
+additional additive operators in 1951 [JonTar51].  This doesn't
+appear to be well-known.  Modal algebras are to modal propositional
+logic what Boolean algebras are to propositional logic. That is,
+they are Boolean algebras with an additional unary operator (for
+<>), which distributes over Boolean + (propositional \/), and has
+Boolean 0 (`False') as a fixed point. Thus it is what Jonsson and
+Tarski call a normal operator, and known to McKinsey and Tarski in
+1944.  Jonsson and Tarski extended Stone's representation theorem to
+Boolean algebras with additional additive operators, where the extra
+k-ary operators could be defined in terms of (k+1)-ary relations
+over the base set. It follows that every modal algebra may be
+embedded in a complete Boolean algebra of sets in the Stone manner,
+in which the additional unary operator is represented as a binary
+relation on the atoms of the complete algebra. A complete Boolean
+algebra is isomorphic (by Stone) to the set of all subsets of some
+base set, with the atoms being the singleton subsets, plus being set
+union, times being set intersection, etc.  In other words, let us
+call the individuals of the base set `worlds'.  Modal propositions
+are thus sets of worlds.  A world may be identified with the
+intersection of the propositions it belongs to (these propositions
+may be said to be `true in' that world). And the binary relation on
+atoms is a binary relation on singletons, and may thus be identified
+with a binary relation on the individual worlds. Voila the
+accessibility relation, with the `Kripke' semantical clause for the
+interpretation of <> given precisely by the Jonsson-Tarski
+definition of the <> operator from the binary relation on the base
+set. Tarski knew about modal algebras, and had written extensively
+on them, for example [McKTar44].  If Tarski's customary criteria of
+attribution were to be applied, it seems clear that Jonsson and
+Tarski should be credited with the `Kripke' semantics for modal
+logic. Explicit use of the Jonsson-Tarski theorem to derive
+semantics for modal logics in an algebraic manner occurs in
+[Lem66a], [Lem66b].]
+
+In conclusion, the historical record does not support the claim that
+the inference techniques of formal Priorean tense logic are `new'
+(iv) (that is, less well-developed), in comparison with the
+inference techniques of first-order logic in mathematics. De
+Bruijn's point may have been directed towards the plethora of new
+and weird symbolisms and logics which proliferate as freely as
+vaporware programming languages, but tense logic is certainly not
+one of those.  If the historical argument were to dispose of
+anything, it would be that `youthful' newcomer, process algebra
+[Mil80]. One may infer that neither de Bruijn nor process
+algebraists are likely to support such an argument, historical or
+not!
+
+Occam's Blunt Razor: Doing Things in Non-Tensed Temporal Logic.
+
+Turning now to the Occam's-razor argument, I shall argue that the
+same technical devices are needed to formalise the inferences
+required for arguing about computational systems, whether one codes
+them in tense logic or leaves them in first-order logic. Therefore,
+the Occam's-razor argument fails.  Given this failure, economy of
+expression becomes a paramount criterion, and Leslie has already
+argued, and I argue below, that TLA+ passes this test, whereas a
+purely first-order formulation will not (issues (i) and (ii)).
+
+Recall the discussion about tensed versus untensed representations
+of change.  To relinquish tense logic, we must choose to give up
+the convenience of expressing changing systems directly in a tensed
+manner.  Then we must consider just histories with earlier and
+later.  Following the implicit suggestion behind Bob's query and de
+Bruijn's first quote (but not his second) thus commits us to this
+position.  We must refer to the state sequences directly in the
+syntax, rather than `hiding' them in the modal semantics.
+
+[De Bruijn's second quote puzzles me, since it seems to conflict
+with the first. The first quote suggests `no new logics', in
+particular, we may infer, no tense logic, i.e. no direct means of
+expressing tensed facts.  Yet the second quote expresses puzzlement
+at someone who has taken precisely this course, who had to deal with
+tensed facts in terms of the B series only, who has had `to keep
+thinking about time at the back of his mind', while quoting approval
+of Newton, who used B-series explicit time but not tensed facts.]
+
+Thus each variable x, which ranged over values in set Set in the
+tensed version, ranges instead over the set [Nats -> Set]. The prime
+operator is interpreted as Successor composed with x, i.e.  x' is
+Succ :compose: x (read left-to-right), + is now the pointwise
+operator :LAMBDA: m,n: m+n (is this called a `lifting' in Abstract
+Nonsense Theory? I've forgotten) , and so forth. Then one has
+eliminated the tenses of tense logic syntax, and can just use
+ordinary mathematics for proving things.  [] becomes :A: over the
+Nats domain, and <> becomes :E: over the Nats domain, possibly with
+bounds.
+
+Can this interpretation preserve the technical features of TLA?
+Modalities have been replaced with more `usual' mathematical
+entities (quantifiers over Nats), and time (represented by the
+earlier and later succession of states) is now represented in very
+much the style of calculus, except we'd presumably call the
+independent variable s (for `state') rather than t.  Let's call this
+style of interpretation Untense Logic.
+
+The argument fleshes out Leslie's point that the terminology would
+become unwieldy, and introduces a new claim. This new claim is that
+you end up doing exactly the same mathematics whether you work in
+TLA+ or Untense Logic. This claim is not justified by proof, but
+by example. Given this claim, Leslie's argument that TLA+ has much
+handier notation becomes decisive.
+
+Let's first see how one would reinvent TLA+ as shorthand for all the
+operators required. Instead of Succ(:LAMBDA: n: x(n)) it's much
+nicer to write x' ; instead of (:LAMBDA: n,m: n+m), better `+';
+instead of :A: and :E: you can write [] and <> and hide some pesky
+unnecessary bound variables over the Nats domain in the process, and
+so on.
+
+The argument thus far would hold also for Manna-Pnueli logic
+[ManPnu92], and is not a sufficient reason by itself to stick with
+TLA.  Further, it might be argued against both that `ordinary math'
+plus quantifiers is not so ordinary, and you can do a lot more
+without special interpretation than you can in TLA, outweighing any
+reservations about complex vs. convenient syntax.  Ordinary math
+includes Peano arithmetic, quite a lot of analysis, function theory,
+and presumably as much algebraic number theory as you want to handle
+to prove Fermat's theorem.  It also has the advantage that since the
+Nats are embedded in the Reals, all that physics you need to do
+hybrid systems comes for free.....
+
+But in fact it doesn't come for free.  Everything in the discrete
+part of a hybrid system specification must be invariant under
+stuttering, to allow the appropriate implementation relation,
+whereas the physical equations used in description of the
+non-discrete part must have rigid time - things happen at certain
+fixed rates.  Hence you can't just use the identity embedding of the
+Nats in the Reals when you write a hybrid system, with Nats
+representing the domain of state functions and Reals representing
+the domain of the gas burner function.  State changes do not
+necessarily occur at the units of the real-time clock.  And, through
+stuttering, neither can they be taken to occur at fixed reals.
+Hence, you must use a symbolic embedding F of the Nats (discrete
+`state') into the Reals (`real-time') throughout a verification, and
+prove all you need to prove using F as a free (function) variable in
+the proof. In order to reason with this symbolic embedding in a
+proof, while retaining the real-valued character of time, you're
+going to need some technical device such as Leslie and Martin's
+`old-fashioned recipe' [AbaLam92].
+
+Similar arguments might also apply for other applications of TLA,
+leading to the tentative conclusion that Untense Logic would require
+exactly the same technical apparatus as TLA to effect a
+verification.  Thus the argument that TLA+ is a neater encoding of
+the same required features acquires decisive significance. This
+fleshes out Leslie's claim (II), and along with (I), establishes the
+rationale for tense logic as a means of describing change in
+computing systems. And the technical argument depends on more
+technical apparatus than is included by Manna-Pnueli logic.
+
+Theorem-Provers as Calculators.
+
+Finally, I turn to Leslie's third argument (III) against using
+simply first-order logic, which considers mimicking the operation of
+a desk calculator with a theorem prover.  I contend that this
+argument is pretty weak.
+
+Leslie has stated the argument succinctly as
+
+" ...that you cannot (a) describe an algorithm for adding integers,
+(b) prove the correctness of the algorithm, and (c) use the
+algorithm for proving theorems about integers---all within the logic
+of a first-order mechanical verification system."
+
+I'm not sure I fully understand the argument as stated. Firstly, it
+could be claimed that a desk calculator *is* a theorem prover
+(providing it's correct), admittedly one that works without
+variables.  Secondly, as I shall note below, the important results
+of calculations one wishes to perform using the operators +,*,exp,1
+(1 is a 0-ary operator) form a recursive set (due to Macintyre
+[Mac81], and for another approach see [Gur85]), and any reasonable
+arithmetic theorem prover can be asked to determine membership
+of a recursive set R, and even answer the question `for which value
+of x is the formula Goedel-number-of(a+b=x) :in: R?'.
+
+Consider a theorem-prover that can deal with recursive functions
+(such as the Boyer-Moore prover). Such a prover is able to describe
+the recursive set of true equations (point (a)); prove meta-theorems
+about calculations (phrased as equations), since this is proving
+things about a specific recursive set (point (b)).  And I see no
+problem in principle to incorporate a generator for this function in
+the code of the theorem-prover, if one wishes, and thereby to
+incorporate a calculator (point (c)).  Presumably, (again point (b))
+one can also prove that the function is the correct recursive
+function, by mimicking the proof of Macintyre or Gurevich (see
+below, although apparently the proofs involve some fairly hairy use
+of analysis).
+
+Thus, it seems to me that Leslie's claim is prima facie mistaken.
+However, he also made a technical clarification, (@1) below, which
+requires a more detailed discussion.
+
+Notation: let n be the Goedel number of formula (or, sequence of
+formulas) N.  We assume that the functions n -> N and N -> n are
+effective (e.g. some scheme such as Goedel's). Also, after Goedel,
+let bew(f,m) be an effective PA-proof-predicate, i.e. a recursive
+predicate such that if M is a proof of F, then PA |- bew(f,m), and
+if M is not a proof of F, then PA |- ~bew(f,m).
+
+Leslie claims that 
+
+(@1) If PA is consistent, there is no formula MT
+     such that PA |- MT and, for any PA-formula F, 
+     MT, :E: m : bew(f,m) |- F
+
+Note that this claim is made for a larger class of formulas than the
+claim above in (a), which refers only to equations in +.
+Calculators can be regarded as devices which exhibit true equations
+of the form t = s, where t and s are terms without variables, and s
+is in canonical form of some sort (for example, a decimal or
+scientific representation of a number).  If one is concerned to try
+to turn a theorem-prover into a calculator (so to speak), which I
+understand from Leslie's comments and his TLA note is the main focus
+of this particular argument, then it's natural to consider just the
+formulae which are equations between terms constructed from
+variables using the operators of arithmetic, that is to say
+variables plus 1, +, *, exp. (I shall write all the binary operators
+including exp as infix).
+
+[Equational reasoning (substitution of terms for variables,
+replacing equals by equals, asserting equality of identical terms)
+is complete for reasoning with equations, i.e.  equations which are
+first-order consequences of a set of equations are also equational
+consequences.]
+
+The following summarises what is known about such equations, and is
+gleaned from Stan Burris and Simon Lee's survey article [BurLee93],
+and from conversations with Alex Wilkie, to whom I am most grateful.
+
+Tarski asked in the sixties whether a certain set of 11 identities
+axiomatised the equational theory of the positive natural numbers
+(i.e. the set of true equations over this structure), with the
+operators 1,+,*,exp.  [Zero is generally forgotten in these
+problems].  These identities became known as the High School
+Identities since they are just what everyone learns in high school
+to manipulate these functions.  The problem was solved negatively by
+Alex Wilkie in 1980 [Wil80], who exhibited a fairly simple identity
+which holds in <N,+,*,exp,1> which doesn't follow from the High
+School axioms.  Furthermore,
+
+(@2) Thm (Gurevich late 80's, [Gur90]): 
+         The set of true equations in <N,+,*,exp,1> cannot be 
+         finitely axiomatised.
+
+However,
+
+(@3) Thm (Macintyre [Mac81], also Gurevich [Gur85]): 
+         The set of true equations in <N,+,*,exp,1> is recursive.
+
+Suppose one omits exp from consideration, then things become
+somewhat handier.
+
+(@4) Thm (Folk): 
+         The set of true equations in <N,+,*,1> is recursive, 
+         and finitely axiomatised by the subset of the High School
+         Identities that don't refer to exp.
+
+[This subset is commutativity and associativity for + and *,
+distributivity of + over *, and (x*1 = x).  The proof is easy - one
+rewrites each term in normal form, i.e. as a polynomial, using the
+identities, and then the equation is true just in case the
+polynomials on each side are identical.  
+
+The other High School Identities are: 
+
+         (1 exp x = 1),
+         (x exp 1 = x); (x exp (y+z) = x exp y * x exp z),
+         ((x*y) exp z = x exp z * y exp z),
+         ((x exp y) exp z = x exp (y*z)),
+
+in all of which exp binds strongest.]
+
+[A sidenote on models. Gurevich [Gur85] showed that an equation is
+not a consequence of the High School Identities just in case it
+fails on some finite algebra that models the identities. It's known
+more or less what these look like. The smallest algebra known for
+which the Wilkie identity fails is of size 15, due to Lee
+[BurLee92].]
+
+Finally, what about a complete set of equational axioms for
+<N,+,*,exp,1>?  Consider the language of <N,+,*,exp,F_p,....,1>,
+where there is a function symbol F_p added for every multivariate
+polynomial p with integer coefficients that takes positive values on
+positive integers, i.e. is a total function on the positive natural
+numbers.  For example, where p = x^2 - y + 1, we have a function
+symbol F_p. (We could also omit the F_p where p has all positive
+coefficients.) Then all the true equations in <N,+,*,exp,1> follow
+from the High School Identities plus all true equations involving
+these new symbols.  [These equations are: F_q(x) = q, for those
+polynomials with positive coefficients if one includes them, since
+they are already terms in the language; 
+F_p(F_{q1},...,F_{qn}) = F_{q1...qn :compose: p}(x1.....xk), where F_p
+has n variables, and k is the total number of distinct variables of
+q1,...,qn. We omit the details keeping track of the variable lists.
+These equations don't necessarily exhaust the list of true,
+previously underivable, equations in the new symbols.] 
+Details may be found in [Wil80].
+
+
+>From (@4) it follows that
+
+(@5) Cor: 
+         There is a formula MT such that PA |- MT and, 
+         for any true equation F in <N,+,*,1>, 
+         MT |- F
+
+providing a counter to a weaker version of Leslie's claim (@) for
+one class of formulas for which it matters, and including the
+formulas in (a), i.e.  identities in +,1.  However, rephrasing
+Gurevich's theorem (@3) and using completeness of equational
+reasoning shows that the following version of Leslie's claim is
+true:
+
+(@6) Cor: 
+         If PA is consistent, there is no formula MT such that 
+         MT is a conjunction of equations in +,*,exp,1, PA |- MT,
+         and for any true equation F in +,*,exp,1,
+         MT |- F
+
+So the core of Leslie's argument must have something to do with (i)
+MT being a single formula (as opposed to the infinitely many
+formulas needed to axiomatise PA), and/or (ii) that all formulas
+being involved, rather than just equations, and/or (iii) that even
+for false equations F, from true axioms plus the axiom 
+:E: m: bew(f,m) which is false in <N,+,*,exp,1>, one can prove the 
+false equation. However, I cannot see how any of these
+considerations (i) - (iii) could matter for the business of
+calculating in a theorem-prover for arithmetic.  Thus, Leslie's
+claim (@1) seems to need further argument to show its relevance.
+
+Another Argument from Efficacy.
+
+There is another technical argument that might be relevant to the
+discussion.  One might claim that a reason to use first-order logic
+is that there exist very good theorem-provers for first-order logic,
+especially those used for reasoning about computation used in
+verification systems, whereas those for tense logic are relatively
+undeveloped. If this is an argument simply about the current state
+of the technology, then it is either a historical accident, thus
+with little force as a philosophical point, or there is some
+fundamental technical reason why this must be so. If it is believed
+that there is a fundamental technical reason why first-order theorem
+provers are more tractable than tense logic theorem provers, then
+this argument has yet to be made.  Further, any such argument would
+fall foul of the counter to the Occam's razor argument above. If the
+same technical devices are required both in first-order provers as
+well as tense logic provers, in order to handle verification of
+computing systems, then any prover is bound to implement these
+devices. Thus whether first-order or tense logic is used becomes
+philosophically a matter of white or brown syntactic sugar, and
+aesthetic and comprehensibility considerations must decide the
+issue.
+
+Furthermore, I don't think anyone is arguing that a verification
+that has been successfully accomplished in a first-order logic
+framework, for example the SRI clock-synchronization verification
+[RusvHe93], should be rephrased in tense logic. On the contrary,
+Leslie has been careful to reduce the amount of tense logic
+required when using TLA [Lam93, Section 1]. The underlying ethos is
+that proving-style is only of the essence, when it really *is* of
+the essence.
+
+--------------------------------------------------------------------------
+
+Bibliography
+
+[AbaLam92]: M. Abadi and L. Lamport, An Old-Fashioned Recipe for
+Real-Time, in Real-Time: Theory and Practice. ed. J. W. de Bakker,
+C.  Huizing, W.-P.  de Roever and G. Rozenburg, Lecture Notes in
+Computer Science 600, Springer Verlag, 1992, 1-27.
+
+[Bar79]: J. Barwise, On Branching Quantifiers in English
+Journal of Philosophical Logic 8, 1979, 47-80.
+
+[Boy93]: R. Boyer, private correspondence with L. Lamport, May 1
+1993.
+
+[BurLee92]: Stanley Burris and Simon Lee, Small Models of the High
+School Identities, Internat, J. Alg. and Comp., 2 (1992), 139-178.
+
+[BurLee93]: Stanley Burris and Simon Lee, Tarski's High School
+Identities, American Mathematical Monthly 100 (3), March 1993,
+231-236.
+
+[Chu40]: A. Church, A Formulation of the Simple Theory of Types.
+Journal of Symbolic Logic 15, 1950, 56-68.
+
+[Con86]: R. L. Constable, S. F. Allen, et al, Implementing
+Mathematics with the Nuprl Proof Development System, Prentice-Hall,
+1986.
+
+[DumLem59]: M. A. E. Dummett and E. J. Lemmon, Modal Logics between
+S4 and S5, Zeitschrift fuer Mathematiscke Logik und Grundlagen der
+Mathematik 5, 1959, 250-264.
+
+[Fre79]: G. Frege, Begriffschrift, eine der arithmetischen
+nachgebildete Formelsprache des reinen Denkens, Halle, L. Nebert
+1879, trans. T. W.  Bynum, in Conceptual Notation and Other
+Articles, Oxford U. P. 1972.
+
+[Fre84]: G. Frege, Die Grundlagen der Arithmetik, Breslau, Koebner
+1884, trans. J. L. Austin, 2nd revised edn., Blackwell 1953.
+
+[Gea58]: P. T. Geach, History of a Fallacy, in the Journal of the
+Philosophical Assn. (Bombay) 5, (19-20), 1958. Reprinted in
+P.T. Geach, Logic Matters, Blackwell, 1972.
+
+[Gea62]: P. T. Geach, Reference and generality: an examination of
+some medieval and modern theories, Cornell U. P., 1962.
+
+[Gur85]: R. Gurevich, Equational Theory of Positive Numbers with
+Exponentiation, Proc. Amer. Math. Soc. 94 (1985), 135-141.
+
+[Gur90]: R. Gurevich, Equational Theories of Positive Numbers with
+Exponentiation is not Finitely Axiomatisable [sic], Ann.  Pure and
+Applied Logic 49 (1990), 1-30.
+
+[Haa78]: S. Haack, Philosophy of Logics, Cambridge U.P., 1978.
+
+[Han93]: M. Hand, A Defense of Branching Quantification, Synthese
+95 (3), June 1993, 419-432.
+
+[Hen49]: L. Henkin, The Completeness of the First-Order Functional
+Calculus, Journal of Symbolic Logic 14, 1949, 159-166. This also
+appears as a chapter of Henkin's 1947 Princeton thesis, and was
+presented to an ASL meeting in 1948.
+
+[Hen50]: L. Henkin, Completeness in the Theory of Types, Journal of
+Symbolic Logic 15, 1950, 81-91. The theory of types used is from
+[Chu40]. This paper is a chapter of Henkin's 1947 Princeton thesis,
+and was presented to an ASL meeting in 1948.
+
+[JonTar51]: B. Jonsson and A. Tarski, Boolean Algebras with
+Operators, Part I, American Journal of Mathematics 73, 1951,
+891-939.
+
+[Kri59]: S. A. Kripke, A Completeness Theorem in Modal Logic,
+Journal of Symbolic Logic 24, 1959, 1-15.
+
+[Kri63]: S. A. Kripke, Semantical Analysis of Modal Logic I: Normal
+Modal Propositional Calculi, Zeitschrift fuer mathematische Logik
+und Grundlagen der Mathematik 9, 1963, 67-96.
+
+[Kri65a]: S. A. Kripke, Semantical Analysis of Intuitionistic Logic
+I, in Formal Systems and Recursive Functions, ed.  J. Crossley and
+M. A. E.  Dummett, North-Holland 1965, 92-129.
+
+[Kri65b]: S. A. Kripke, Semantical Analysis of Modal Logic II:
+Non-Normal Modal Propositional Calculi, in Theory of Models, ed.  J.
+W.  Addison, L. Henkin and A. Tarski, North-Holland 1965, 206-220.
+
+[Lam93]: L. Lamport, TLA Message of 21 June 1993, TLA emailing list.
+
+[Lea80]: J. Lear, Aristotle and Logical Theory, Cambridge U.P.,
+1980.
+
+[Lem66a]: E. J. Lemmon, Algebraic Semantics for Modal Logic I,
+Journal of Symbolic Logic 31, 1966, 46-65.
+
+[Lem66b]: E. J. Lemmon, Algebraic Semantics for Modal Logic II,
+Journal of Symbolic Logic 31, 1966, 191-218.
+
+[Lew18]: C. I. Lewis, A Survey of Symbolic Logic, U. California P.,
+1918, Chapter V. (Reprinted Dover 1960, without Ch. V.)
+
+[LewLan32]: C. I. Lewis and C. H. Langford, Symbolic Logic, 1st
+edn., Century P., 1932 (2nd edn., Dover 1959).
+
+[Mac81]: Alisdair Macintyre, The Laws of Exponentiation, Springer
+Lecture Notes in Math. 890 (1981), 185-197.
+
+[Mac27]: J. M. McTaggart, The Unreality of Time, Mind 17, 1908,
+457-474.
+
+[ManPnu92]: A. Manna and A. Pnueli, The Temporal Logic of Reactive
+and Concurrent Systems: Specification, Springer 1992.
+
+[Mar84]: P. Martin-Loef, Intuitionistic Type Theory, Naples,
+Bibliopolis 1984.
+
+[McKTar44]: J. C. C. McKinsey and A. Tarski, The Algebra of Topology,
+Annals of Mathematics 45, 1944, 141-191.
+
+[Mil80]: A. J. R. G. Milner, A Calculus of Communicating Systems,
+Lecture Notes in Computer Science, vol. 92, Springer Verlag, 1980.
+
+[New80]: W. H. Newton-Smith, The Structure of Time, Routledge Kegan
+Paul, 1980.
+
+[Pat89]: T. E. Patton, On Humberstone's Semantics for Branching
+Quantifiers, Mind XCVIII, 229-234, 1989.
+
+[Pat91]: T. E. Patton, On the Ontology of Branching Quantifiers,
+Jour. of Philosophical Logic 20, 205-223, 1991.
+
+[Pri57]: A. N. Prior, Time and Modality, Oxford U.P. 1957
+(transcript of the John Locke lectures at Oxford University,
+1955-56).
+
+[Qui70]: W. V. O. Quine, Philosophy of Logic, Prentice-Hall 1970.
+
+[RusvHe93]: J. M. Rushby and F. von Henke, Formal Verification of
+Algorithms for Critical Systems, IEEE Transactions on Software
+Engineering 19, (1), Jan 1993, 13-23.
+
+[Tar36]: A. Tarski, Der Wahrheitsbegriff in den formalisierten
+Sprachen, Studia Philosophica 1, 1936, 261-405.
+
+[WhiRus10]: A. N. Whitehead and B. Russell, Principia Mathematica,
+vol. 1, Cambridge U.P., 1910. Reprinted 1925.
+
+[WhiRus12]: A. N. Whitehead and B. Russell, Principia Mathematica,
+vol. 2, Cambridge U.P., 1912. Reprinted 1926.
+
+[WhiRus13]: A. N. Whitehead and B. Russell, Principia Mathematica,
+vol. 3, Cambridge U.P., 1913. Reprinted 1927.
+
+[Wil80]: Alex Wilkie, On Exponentiation - a Solution to Tarski's
+High School Algebra Problem, preprint, Oxford University, 1980.
+
+[vBen91]: J. F. A. K. van Benthem, The Logic of Time, 2nd edn.,
+Reidel, 1991.
+
+\end{spec}
+\end{document}

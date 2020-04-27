@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/tlc-options.html?back-link=tools.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) [Netscape]">
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+
+<script src="tlaweb.js"> </script>
+
+<STYLE>
+  li { margin-top:-7px }
+</STYLE>
+<!--
+  <STYLE type="text/css">
+   H2 {line-height:45px; margin-bottom:0px; text-align: left; font-size:26px;
+       color:#000000}
+   H3 {line-height:10px; margin-bottom:8px; text-align: left}
+  </STYLE>
+-->
+
+<title>TLC Options</title> 
+
+</HEAD>
+
+
+
+<!-- font style="font-family:Calibri,Trebuchet MS,Verdana"-->
+
+
+<BODY onload="initialize()">
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol" > </div> 
+
+<h1>TLC's Command-Line Options</h1>
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 21 December 2018</I></font>
+</td>
+<!-- td style="vertical-alight:top;width:auto" -->
+<!-- img src="tla-logo.png" style="width:170px;margin-top:14px"> </img -->
+<!-- /td -->
+</tr>
+
+</table>
+<hr style="margin-bottom:-5px;margin-top:-11px"> 
+
+<P style="margin-top:0px"> </P>
+
+<DIV class="hidden-div" 
+  style="color:red;margin-bottom:-22px"><b>
+   You'll miss a lot on this web site unless you enable Javascript
+   in your browser. </b></DIV>
+<p>
+
+<UL style="list-style-type:none">
+<LI style="margin-top:20px"> <b>-config file</b>&nbsp; Provide the config 
+file.&nbsp;
+   Defaults to spec.cfg if not provided
+</LI><BR>
+<LI> <b>-deadlock</b>&nbsp; Do not check for deadlock.&nbsp;
+   Defaults to checking deadlock if not specified.&nbsp;</LI><BR>
+<LI> <b>-depth num</b>&nbsp; Specify the depth of random simulation.&nbsp;
+   Defaults to 100 if not specified.</LI><BR>
+<LI> <b>-seed num</b>&nbsp; Provide the seed for random simulation.&nbsp;
+   Defaults to a random seed if not specified.</LI><BR>
+<LI> <b>-aril num</b>&nbsp; Adjust the seed for random simulation.&nbsp;
+   Defaults to 0 if not specified.</LI><BR>
+<LI> <b>-recover path</b>&nbsp; Recover from the checkpoint at <i>path</i>.&nbsp;
+   Defaults to starting a new run 
+   if not specified.</LI><BR>
+
+<LI> <b>-bound</b>&nbsp; The upper limit for sets, 
+  effectively limiting the number of init states
+   (see <a 
+  href="http://bugzilla.tlaplus.net/show_bug.cgi?id=264">
+  http://bugzilla.tlaplus.net/show_bug.cgi?id=264</a>).&nbsp;
+   Defaults to 1000000 if not specified.</LI><BR>
+
+<LI> <b>-metadir path</b>&nbsp; Store metadata in the directory at
+<i>path</i>.&nbsp; Defaults to specdir/states if not
+specified.</LI><BR> 
+
+<LI> <b>-userFile file</b>&nbsp; A full qualified/absolute path to a
+file in which to log user output (for example, produced by
+<code>Print</code>).</LI><BR>
+
+<LI> <b>-workers num</b>&nbsp; The number of TLC worker threads.&nbsp;
+   Defaults to 1.</LI><BR>
+
+<LI> <b>-dfid num</b>&nbsp; Use depth-first iterative deepening with
+initial depth <i>num</i>.</LI><BR>
+
+<LI> <b>-cleanup</b>&nbsp; Clean up the states directory.</LI><BR>
+
+<LI> <b>-dump file</b>&nbsp; Dump all the states into <i>file</i>.</LI><BR>
+
+<LI> <b>-difftrace</b>&nbsp; When printing an error trace, show only
+the differences between successive states.&nbsp;
+Full state descriptions are printed if not specified.&nbsp;
+(Added by Rajeev Joshi.)</LI><BR>
+
+<LI> <b>-terse</b>&nbsp; Do not expand values in Print statement.&nbsp;
+   Defaults to expand values if not specified.</LI><BR>
+
+<LI> <b>-coverage min</b>&nbsp; Collect coverage information on the spec,
+                      print out the information every 
+<i>min</i> minutes.&nbsp;
+   Defaults to no coverage if not specified.</LI><BR>
+<LI> <b>-continue</b>&nbsp; Continue running even when invariant is
+violated.&nbsp;
+   Defaults to stop at the first violation if not specified.</LI><BR>
+<LI> <b>-nowarning</b>&nbsp; Disable all warnings.&nbsp;
+   Defaults to report warnings if not specified.</LI><BR>
+<LI> <b>-fp num</b>&nbsp; Use the irreducible polynomial 
+number <i>num</i> from the list
+   stored in the class FP64.</LI><BR>
+<LI> <b>-view</b>&nbsp; Apply VIEW (if provided) when printing out states.</LI><BR>
+
+<LI> <b>-gzip</b>&nbsp; Control if gzip is applied to value
+input/output stream.&nbsp; Defaults to use gzip.</LI><BR>
+
+<LI> <b>-debug</b>&nbsp; Debbuging information (non-production
+use).</LI><BR> 
+
+<LI> <b>-tool</b>&nbsp; Tool mode (put output codes on
+console).</LI><BR> 
+
+<LI> <b>-checkpoint num</b>&nbsp; The length of time between checkpoints (in
+minutes).&nbsp; Defaults to 30.</LI><BR>
+
+<LI> <b>-fpmem num</b>&nbsp; The number of megabytes of memory used to store
+               the fingerprints of found states.&nbsp;
+ Defaults to 1/4 physical memory.  (Added 6 Apr 2010 by Yuan Yu.)</LI><BR>
+<LI> <b>-fpbits num</b>&nbsp; The number of msb used by MultiFPSet to create nested FPSets.&nbsp;
+ Defaults to 1.</LI><BR>
+
+<LI> <b>-maxSetSize num</b>&nbsp; The size of the largest set TLC will
+enumerate.&nbsp; The default value is 1000000.</LI>
+</UL>
+
+<!-- **************** BEGINNING OF ENDING BOILERPLATE *************** -->
+
+</td>
+</tr>
+<!-- Bottom Back button may need to adjust margin-top parameter -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-27px"><b>Back</b>
+</p>
+</a>
+
+<!-- For a long page, add more back buttons higher on the page
+   by add one or more items like this, adjusting the margin-top 
+   parameter as desired. -->
+
+   <a class="back-link" style="display:none" href="#">
+   <p style="margin-top:-500px"><b>Back</b> </p> </a>
+
+
+</td>
+</tr>
+
+</table>
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/tlc-options.html?back-link=tools.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+</HTML>
+

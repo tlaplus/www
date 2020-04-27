@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/industrial-use.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:31:24 GMT -->
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) 
+              [Netscape]">
+<!--
+%&b&<b>#</b>&
+%&c&&thinsp;<b>#</b>&thinsp;&
+-->
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+
+<script src="tlaweb.js"> </script>
+
+<!-- The following causes the name of this page in the left-hand column 
+     not to have a link -->
+<SCRIPT>
+noLinkName = "Industrial Use" ;
+</SCRIPT>
+
+<title>Industrial Use of TLA+</title> 
+
+</HEAD>
+
+<BODY onload="initialize()">
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol" > </div> 
+
+<H1>Industrial Use of TLA+</H1>
+
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 4 December 2018</I></font>
+</td>
+<!-- td style="vertical-alight:top;width:auto" -->
+<!-- img src="tla-logo.png" style="width:170px;margin-top:14px"> </img -->
+<!-- /td -->
+</tr>
+
+</table>
+<hr style="margin-bottom:-5px;margin-top:-11px"> 
+
+<P style="margin-top:0px"> </P>
+
+<DIV class="hidden-div" style="color:red;margin-bottom:-22px"><b>
+   You'll miss a lot on this web site unless you enable Javascript
+   in your browser. </b></DIV>
+
+
+
+<H2 id ="h2intro" 
+ class="show-hide" onclick="showHide('hide-intro','intro')">Introduction 
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-intro" >
+      [show]</font>
+</H2>
+
+<DIV id="intro" class="hidden-div">
+
+It's hard to find out about the use of TLA+ in industry.&nbsp;
+Companies usually don't talk about their engineering process, and any
+specifications they write are almost always proprietary.&nbsp; I
+happened to have contacts at Intel and Amazon who were willing to
+describe how they used TLA+, and Amazon even published a couple of
+papers about it.&nbsp; And of course, I know about much of the TLA+ use
+at Microsoft.&nbsp; I learned about its use in building OpenComRTOS
+after its developers published a book about it.&nbsp; The 
+  <i>Other Use</i>
+section below describes a few smaller examples of TLA+ use that I've learned
+about.
+
+
+
+
+
+</DIV>
+
+<H2 id="h2intel"  class="show-hide" 
+    onclick="showHide('hide-intel','intel')">Intel
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-intel" >
+      [show]</font>
+</H2>
+
+<DIV id="intel" class="hidden-div">
+
+TLA+ was first used in industry to model hardware.&nbsp;  Hardware engineers
+are highly motivated to eliminate bugs, and they understand that this
+requires thinking hard about what they're building before they begin
+implementing it in silicon.
+
+<p>
+
+The early use of TLA+ at Intel is described
+in   
+ <a href=
+  "intel-excerpt0b02.html?back-link=industrial-use.html?unhideBut@EQhide-intel@AMPunhideDiv@EQintel">this section</a> 
+of a paper, written in 2002.&nbsp;  It provides an excellent account of
+how TLA+ fit into their design process.
+
+<p>
+
+A picture of TLA+ use in 2008 is provided by the paper: 
+ <blockquote>
+<b>Pre-RTL formal Verification: 
+    An Intel Experience</b><br>
+Robert Beers <br>
+
+<em>DAC '08: Proceedings of the 45th annual Design Automation Conference,</em><br> 
+Pages 806-822<br>
+<a href="http://dl.acm.org/citation.cfm?id=1391675">available on-line</a>
+ </blockquote>
+
+
+It explains how a formal verification (FV) team used TLA+ in a project
+to design and implement a new cache-coherence protocol for a processor
+chip.&nbsp;  The team validated the protocol and parts of the register
+transfer language (RTL) implementation.&nbsp;  Here is an excerpt from that
+paper that describes the results of the pre-RTL FV effort.
+
+
+<blockquote>
+The FV team filed 45 <q>issues</q> that the project used before RTL to
+track engineering problems requiring special attention to solve.&nbsp;
+A design lead for one of the verified microarchitectures, when asked
+for about the FV work, said, <q>They found hundreds of bugs before RTL
+and played an important role in creating a stable
+microarchitecture.</q>&nbsp; This microarchitecture had the lowest
+ratio of bugs per line of RTL even though the unit was new.&nbsp; On
+RTL and silicon there have been no coherence protocol or architecture
+feature bugs.&nbsp; In the areas covered by pre-RTL FV, only one
+microarchitecture bug has been found on silicon, attributed to
+accepting an unfounded claim that the affected logic would never
+interact with particular microarchitecture protocols.
+</blockquote>
+
+
+
+TLA+ was still being used at Intel in 2014, but I have no
+information about what has happened there since then.
+
+
+</DIV>
+
+
+<H2 id="h2amazon"  class="show-hide" onclick="showHide('hide-amazon','amazon')">Amazon
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-amazon" >
+      [show]</font>
+</H2>
+
+<DIV id="amazon" class="hidden-div">
+
+Amazon Web Services (AWS) has been using TLA+ since 2011.&nbsp;  In April,
+2015, six engineers published an article describing how it was introduced
+to AWS and how it was being used there.&nbsp;  Here are the <q>key insights</q>
+listed in the article.
+<ul>
+<li> Formal methods find bugs in system
+designs that cannot be found through
+any other technique we know of. </li>
+
+<li style="margin-top:7px"> Formal methods are surprisingly feasible
+for mainstream software development
+and give good return on investment.</li>
+
+<li style="margin-top:7px"> At Amazon, formal methods are routinely
+applied to the design of complex real-world software, including public
+cloud services.</li> </ul> 
+
+This article provides an excellent picture of TLA+ use in an
+industrial environment, describing its benefits and what it can't do.&nbsp;
+A highly abridged version of the article, a pointer to the complete
+article, and a pointer to another article about TLA+ use at Amazon can
+be found 
+
+ <a href=
+  "amazon-excerpt4033.html?back-link=industrial-use.html?unhideBut@EQhide-amazon@AMPunhideDiv@EQamazon">here</a>.
+  <!-- a href="amazon-excerpt.html" target="_blank">here</a -->
+
+&nbsp;James Hamilton has a
+  <a href="https://perspectives.mvdirona.com/2014/07/challenges-in-designing-at-scale-formal-methods-in-building-robust-distributed-systems/">blog
+post</a> and Tim Rath gave a 
+ <a href="https://www.infoq.com/presentations/aws-testing-tla">lecture</a>
+about the use of TLA+ at AWS.
+
+<p> 
+
+Here is what Chris Newcombe, the lead author of the articles, has
+written 
+<a href="https://groups.google.com/forum/#!searchin/tlaplus/professional$20career/tlaplus/ZJCi-UF31fc/Mawvwi6U1CYJ">elsewhere</a>:
+<blockquote>
+TLA+ is the most valuable thing that I've learned in my professional
+career.&nbsp;  It has changed how I work, by giving me an immensely powerful
+tool to find subtle flaws in system designs.&nbsp;  It has changed how I
+think, by giving me a framework for constructing new kinds of
+mental-models, by revealing the precise relationship between
+correctness properties and system designs, and by allowing me to move
+from `plausible prose' to precise statements much earlier in the
+software development process.
+</blockquote>
+
+
+</DIV>
+
+<h2 id="h2microsoft" class="show-hide" onclick="showHide('hide-microsoft','microsoft')">
+    Microsoft
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-microsoft" >
+      [show]</font>
+</H2>
+
+<DIV id="microsoft" class="hidden-div">
+
+TLA+ was used sporadically at Microsoft beginning around 2004.&nbsp;
+Here is one of those uses as reported by the late
+
+ <a href="https://en.wikipedia.org/wiki/Charles_P._Thacker" target="_blank">Chuck 
+   Thacker</a>.
+
+<blockquote> 
+
+During the development of the Xbox 360, I was working
+with the engineering group on the memory coherence protocol.&nbsp;
+Working with an intern, we were developing a TLA+ model for the
+protocol.&nbsp; In the course of this, we discovered a very subtle
+bug.&nbsp; We reported it to IBM, and they told us it couldn't
+happen.&nbsp; A couple of weeks later, they relented and told us that
+not only was the bug real, but that their regression tests wouldn't
+have found it.&nbsp; Had they not fixed it, they would have shipped us
+chips that would have deadlocked after about four hours of use.&nbsp;  Had
+this [occurred], the schedule for a Christmas launch would almost
+certainly have been missed.
+
+</blockquote>
+
+
+
+Starting around 2015, use at Microsoft increased&mdash;especially in
+Azure, Microsoft's cloud service.
+
+Here are some abridged and lightly edited descriptions of TLA+ use
+written by members of the Azure team.&nbsp;  Some of the 
+TLA+ specifications mentioned were actually written in PlusCal.&nbsp;
+
+<p>
+
+Albert Greenberg, Corporate
+Vice President of Azure Networking, writes:
+
+ <blockquote> 
+<!-- In Azure Networking, our mission is to
+build the world's most reliable cloud.&nbsp;  Our components are at the
+bottom of the cloud software stack, the infrastructure of the
+infrastructure.&nbsp;  In everything we build, we think about the
+fundamentals (security, availability, supportability, and performance)
+to scale the network, it's features and services.-->  
+
+Our engineering process moves validation as early as possible in the
+engineering lifecycle &mdash; we strive to detect errors sooner to reduce
+risk, increase agility, and provide fast feedback to developers.  
+
+<!-- That is, we strive to reduce the distance to flaws.  -->
+
+Among the key tools we use is <!--are TLA and--> the TLA+
+specification language &mdash; enabling us to describe our components
+formally with simple mathematics, with as little overhead as possible
+beyond what is needed to write the mathematics precisely.
+
+<p>
+We have found TLA+ especially well-suited for writing high-level
+specifications of concurrent and distributed systems: concretely
+defining the problem, providing a specification close to the desired
+implementation, and proving that successive refinements implement the
+specification &mdash; or else finding the flaws and correcting the design.
+Among the projects in Azure Networking where we have applied TLA+ are
+Azure DNS (record propagation), RingMaster (distributed global
+replication and checkpoint coordination), Distributed Load Shedding,
+and Macsec (encryption key rollover orchestration).&nbsp;  For example, in
+RingMaster, <!-- Global Replication, --> we identified a bug that
+showed up in intermittent failures of unit tests but was
+devilishly hard to localize in the code.&nbsp;  We <!-- implemented --> wrote 
+a specific TLA+ specification of the desired behavior, quickly found
+the bug in the logical design, and fixed the code.  
+  <!-- again simply. --> 
+</blockquote>
+
+Dharma Shukla, Microsoft Technical Fellow, writes this about
+TLA+ use in Azure Cosmos DB, Microsoft's globally distributed
+database service:
+
+ <blockquote>
+<!-- Azure Cosmos DB is Microsoft's globally distributed database service.
+Cosmos DB offers elastic scalability of both writes and reads all
+around the world with guaranteed single digit millisecond latency at
+the 99th percentile and 99.999% high availability.&nbsp;  The service
+transparently replicates the data and provides a single system image
+of globally distributed Cosmos database with a choice of five
+well-defined consistency models (precisely specified using TLA+),
+while users write and read to local replicas anywhere in the world.
+As a globally distributed database service, Cosmos DB provides SLAs
+for consistency, latency, throughput and availability to its users.
+-->
+
+The Cosmos DB engineering team have been using TLA+ for specifying and
+validating the correctness of the core algorithms as well as the
+high-level specifications of the five consistency models that the
+system offers to our customers.&nbsp;  We have found TLA+ extremely useful in
+two fundamental ways:
+
+<ol>
+<li> <!-- TLA+ is an invaluable tool --> 
+  For designing distributed algorithms.
+For example, 
+   <!-- last year, -->
+while designing the algorithm for the multi-location
+write capability, we found a critical correctness bug that violated an
+important safety property of the system.&nbsp;  The bug was found while
+writing the TLA+ spec, and we were able to correct the issue 
+  <!-- - even -->
+before writing a single line of code.
+</li>
+
+<li>
+Precisely specifying the guarantees provided by an algorithm or 
+system.&nbsp;  
+ <!-- We have found TLA+ beneficial not only just for specifying
+the high-level design of the system but also for specifying the
+guarantees the system provides to our users.  
+ -->
+
+For example, Cosmos DB
+has used TLA+ <!-- as a language -->  
+
+to specify the guarantees provided by the five consistency models the service
+offers to its users.&nbsp;  These specifications are made available to our
+users. <!-- here-->
+
+</li>
+</ol>
+ </blockquote>
+
+Cheng Huang, Principle Software Engineer Manager, writes:
+ <blockquote>
+
+TLA+ uncovered a safety violation even in our most confident
+implementation.&nbsp;  We had a lock-free data structure implementation 
+which was carefully design & implemented, went through
+thorough code review, and was tested under stress for many days.&nbsp;  As a
+result, we had high confidence about the implementation.&nbsp;  We
+eventually decided to write a TLA+ spec, not to verify correctness,
+but to allow team members to learn and practice PlusCal.&nbsp;  So, when the
+model checker reported a safety violation, it really caught us by
+surprise.&nbsp;  This experience has become the aha moment for many team
+members and their de facto testimonial about TLA+.
+
+<p>
+
+Our system manages many Paxos rings and dynamically reconfigures these
+rings on the fly.&nbsp;  TLA+ helped us realize that getting this correct is
+way more subtle than it appears.&nbsp;  We were very glad to have uncovered
+a safety violation which would have caused data loss <!-- for cloud
+storage business --> (for customers) upon a specific ordered sequence
+of events during the recovery from <!-- DC-wide--> a power failure.
+We couldn't imagine that this would have been discovered through any of our
+testing efforts.
+
+<p>
+
+TLA+ is not yet a prerequisite for our hiring.&nbsp;  However, a candidate's
+knowledge of TLA+ is given significant weight in our evaluation.&nbsp;  To
+us, it is a great indicator of those who really care about quality and
+correctness. <!-- deep in their heart. -->
+ </blockquote>
+
+</DIV>
+
+<h2 id="h2rtos" class="show-hide" 
+    onclick="showHide('hide-rtos','rtos')"><a name="OpenComRTOS">
+  OpenComRTOS</a>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-rtos" >
+      [show]</font>
+</h2>
+
+<DIV id="rtos" class="hidden-div">
+
+
+The European Space Agency's <em>Rosetta</em>
+ <img src="verhulst-book.png" style="width:100px;float:right;margin-left:10px">
+spacecraft, which flew to a comet, used a real-time operating system
+called <em>Virtuoso</em> to control some of its instruments.&nbsp;
+The next version of that operating system, called 
+<em>OpenComRTOS</em>, was developed using TLA+ as described in this book:
+<blockquote>
+<b><a href="https://www.springer.com/gp/book/9781441997357">Formal 
+  Development of a Network-Centric RTOS</a></b><br>
+  Eric Verhulst, 
+  Raymond T. Boute, 
+  Jos&eacute; Miguel Sampaio Faria,<br>
+  Bernard H. C. Sputh,
+ and Vitaliy Mezhuyev<br>
+<i>Springer, 2011</i>
+</blockquote>
+Eric Verhulst, the head of the group that developed OpenComRTOS, wrote
+this 
+in an email to me:
+<blockquote>
+The [TLA+] abstraction helped a lot in
+coming to a much cleaner architecture (we witnessed first hand the
+brain washing done by years of C programming).&nbsp;  One of the results was
+that the code size is about 10x less than [in Virtuoso].
+</blockquote>
+
+</DIV>
+
+<h2  id="h2other" class="show-hide" 
+   onclick="showHide('hide-other','other')"><a name="otherUse">Other Use</a>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-other" >
+      [show]</font>
+</H2>
+
+
+<DIV id="other" class="hidden-div">
+
+I have seen a number of reports of TLA+ (and PlusCal) being used
+in real life.&nbsp;  Some have been sent to me; some I found by simply
+searching the web for <q>TLA+</q>.&nbsp;  Here are a few of them.
+
+<p>
+
+A web posting titled
+  <a href="https://rix0r.nl/essays/2015/08/25/model-checking-for-the-working-man-mf/">Model 
+  Checking for the Working Man (m/f)</a>
+by a programmer identified only as <i>Rico</i> describes how he was led
+to try TLA+ for the first time, and his experience using it.&nbsp;
+Here is a brief extract.
+
+<blockquote> 
+   What I was expecting was to wrestle with this for a good
+   couple of days, but actually this tool chain is so easy to get started
+   with, I got our algorith[m] modeled, the problem detected and the
+   solution verified, all within half a day! 
+   <p>
+   Let me say that again: 
+   <blockquote>
+   TLA+ is fantastically easy to use! 
+   </blockquote>
+    ... This tool is so easy to use and so effective, you can’t 
+    afford to not use it in your development cycle somewhere.
+</blockquote>
+
+By <q>TLA+</q> he meant PlusCal.&nbsp;  It's not as easy to solve a real
+problem with TLA+ when you start by knowing nothing about it, and he
+found TLA+ to be <q>cumbersome</q>.&nbsp;  But it's worth learning TLA+ if
+you're building a complex distributed system.
+
+<p>
+
+<a href="https://news.ycombinator.com/">Hacker News</a> has a <a
+href="https://news.ycombinator.com/item?id=9601770">web page about
+TLA+</a>.&nbsp;  Here is part of a posting on it from 8 July 2015:
+
+<blockquote>
+One of my coworkers fleshed out an important and complex component
+that absolutely <i>had</i> to be logically correct, by using TLA+ modelling.&nbsp;
+It was the first time he'd used TLA+ ... at all, and it took a
+bit of experimenting to get used to it, but he soon generated a solid
+logical model and exposed a number of fringe flaws in the original
+proposed solution.
+
+<p>
+From TLA+ model to completed Java application took very little time at
+all, the logic was all there already, it just needed [to be] fleshed out in
+the language.&nbsp;  It was also easy to split the work out amongst multiple
+programmers.&nbsp;  He's argued that the total time, including learning
+TLA+, took less time than writing the application from scratch in Java
+and discovering the bugs as they went along.
+</blockquote>
+
+In November, 2016, Bogdan Munteanu sent me email describing TLA+
+use at Dropbox.&nbsp;  Here is an extract from that email.
+
+<blockquote> 
+
+[An] engineer decided to learn/experiment with [TLA+], so I provided
+some guidance and feedback.&nbsp;  He wrote the formal spec for one of our
+two-phase commit protocols that we knew would fail in certain
+real-world situations.&nbsp;  His spec found the issue ...  and the engineer
+found the process extremely valuable.&nbsp;  He mentioned that learning TLA+
+was not at all a steep curve &mdash; it took him longer to understand the
+actual protocol.
+
+<p>
+
+About a month ago, another engineer designed a deadlock detection
+algorithm for one of the new distributed protocols at Dropbox.&nbsp;  After
+hearing about the success of the previous TLA+ project, he decided to
+write a spec for this new protocol with the help of the other
+engineer.&nbsp;  They found a bug in the protocol, fixed it, then confirmed
+the fix by re-running the model checker.&nbsp;  In both cases the spec was
+written in PlusCal.&nbsp;  Everyone was really impressed by the results, and
+for most came as a surprise because few have heard of formal
+verification before.
+</blockquote>
+
+
+In <a href="https://groups.google.com/forum/#!topic/tlaplus/unVsjY7Aefc">a
+ TLA+ Google group posting</a>, Hillel Wayne reports this story
+of 
+  <a href="https://github.com/elastic/elasticsearch/issues/31976#ISSUECOMMENT-404722753">a bug in Elastic Search (ES)</a>:
+
+<blockquote>
+<ol>
+    <li>ES has been running in production for a long time.</li>
+    <li>In March, David Turner wrote a TLA+ model and discovered 
+       a bug with ES 6.2 that nobody's yet run into.</li>
+    <li>In April, they preemptively fix the bug and update the 
+         version to 6.3.</li>
+    <li>Two days ago somebody on 6.2.4 reports a bizarre concurrency bug.</li>
+    <li>After investigation, the source of the bug exactly 
+        matches the discovered TLA+ edge case.</li>
+</ol>
+</blockquote>
+</DIV>
+
+
+</td>
+</tr>
+<!-- Bottom Back button -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-50px"><b>Back</b>
+</p>
+</a>
+</td>
+</tr>
+
+</table>
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/industrial-use.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:31:29 GMT -->
+</HTML>
+

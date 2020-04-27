@@ -1,0 +1,326 @@
+% This is a message to the TLA mailing list.  It's about the
+% existence of refinement mappings.  LaTeX it and read the
+% introduction to find out if you're interested.  
+%
+% This file requires the spec92 document style.  I will send it to
+% the new people on the list.  If you've been receiving TLA messages
+% but don't have the spec92.sty file, let me know.
+%
+% Leslie
+
+\documentstyle[11pt,spec92]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                 MODIFICATION DATE                            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                              %
+% Defines \moddate to expand to the modification date like     %
+%                                                              %
+%    Mon  5 Aug 1991  [10:34]                                  %
+%                                                              %
+% and \prdate to print it in a large box.  Assumes editor      %
+% updates modification date in standard SRC style.             %
+% (Should work for any user name).                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\ypmd{%                                                    %
+%                                                              %
+%                                                              %
+  Last modified on Thu Mar 19 18:52:18 1992 by lamport         %
+  endypmd}                                                     %
+%                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\moddate}{\expandafter\xpmd\ypmd}                  %
+\def\xpmd Last modified                                        %
+on #1 #2 #3 #4:#5:#6 #7 by #8 endypmd{#1 \ #3 #2 #7 \ [#4:#5]} %
+\newcommand{\prdate}{\noindent\fbox{\Large\moddate}}           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\mathdef}[1]{\relax\ifmmode #1\else $#1$\fi}
+
+\newcommand{\innerC}[1]{\intmbox{${\cal C}$}{\tt (#1)}}
+\speclet{\C}{\innerC}
+
+\newcommand{\innerO}[1]{\mathdef{\overline{\tt #1}}}
+\speclet{\xO}{\innerO}
+\let\O\xO
+
+\coloncommand{~}{\simeq}
+\coloncommand{#}{\natural}
+\renewcommand{\o}{\circ}
+
+\begin{document}
+\prdate
+\begin{spec}
+             THE EXISTENCE OF REFINEMENT MAPPINGS
+
+CONTENTS
+  1 INTRODUCTION
+  2 PRELIMINARIES
+     2.1 Recollections of TLA
+     2.2 Tuple Notation
+     2.3 Sequence Notation
+  3 CLOSURE
+  4 HISTORY, STUTTERING, AND PROPHECY VARIABLES
+    4.1 History Variables
+    4.2 Stuttering Variables
+    4.3 Prophecy Variables
+  5 THE EXISTENCE OF REFINEMENT MAPPINGS
+    5.1 Finite Internal Nondeterminism
+    5.2 Internal Continuity
+    5.3 The Main Theorem
+
+
+1 INTRODUCTION
+
+In TLA, proving that one program implements another means proving
+
+  (:E: z : :Phi:_1) => (:E: y : :Phi:_2)
+
+where y and z are tuples of "internal" variables of the two
+programs :Phi:_2 and :Phi:_1.  This is done by proving
+
+  :Phi:_1 => \O(:Phi:_2)
+  
+where \O(:Phi:_2) is obtained by replacing the variables y with state 
+functions \O(y), where the correspondence y <- \O(y) is called a
+refinement mapping.  In SRC Research Report 29, "The Existence of
+Refinement Mappings", Martin Abadi and I proved that, under certain
+hypotheses, such a refinement mapping can always be found--though
+it may be necessary first to add "dummy variables" to :Phi:_1.
+
+This note is a restatement of the results from SRC29 in TLA.  There
+are three changes:
+
+1. In SRC29, we used only history and prophecy variables, where
+stuttering was added by prophecy variables.  I've simplified
+prophecy variables to eliminate stuttering, and added a new class
+of stuttering variables.  This seems useful in practice, because
+adding stuttering and prophesying seem to be distinct functions.
+
+2. The definition of fin has been generalized (though not to the
+full extent of the generalization mentioned in SRC29.)
+
+3.  The machine-closure hypothesis in the theorem of SRC29 has been
+eliminated.  The TLA completeness theorem that says one can prove
+the valid formula :Phi:_1 => \O(:Phi:_2) has, as a hypothesis, that
+:Phi:_1 is machine closed.  The theorem in SRC29 is somewhat
+stronger than the one described below because it includes part of
+the conclusion of this completeness theorem.
+
+
+2 PRELIMINARIES
+
+2.1 Recollections of TLA
+
+Recall that TLA uses the following classes of nontemporal formulas.
+
+  State function: An expression involving only unprimed variables.
+
+  Predicate: A boolean-valued state function.
+
+  Transition function: An expression involving primed and unprimed
+                       variables.
+
+  Action: A boolean-valued transition function.
+
+An action A assigns a truth value s[[A]]t to any pair of states 
+s, t.  We write |= A to denote that s[[A]]t is true for all states
+s and t.
+
+A TLA formula F assigns a truth value :sigma: |= F to any behavior
+(infinite sequence of states) :sigma:.  We write |= F to denote that
+:sigma: |= F is true for all behaviors :sigma:.
+
+
+2.2 Tuple Notation
+
+If v is an n-tuple (v_1, ... , v_n) of variables, and e is an
+n-tuple (e_1, ... , e_n) of expressions, then for any formula F:
+
+   :E: v : F  ==  :E: v_1 : ... :E: v_n : F
+
+   F(e/v)  ==  the formula obtained by (simultaneously) 
+               substituting e_i for v_i, for i = 1, ... n.
+
+If F is a transition function (or action), then we say that a tuple
+x of variables does not occur unprimed in F iff there are no free
+occurrences of any of its component variables x_i in F (but x_i'
+may occur free in F).  Similarly, the tuple does not occur primed
+iff no x_i' occurs free in F.
+
+
+2.3 Sequence Notation
+
+For any sequences p and q, and any elements e_1, ... , e_n:
+
+  <<e_1, ... , e_n>>  ==  the obvious sequence of length n.
+
+  :#:p  ==  the sequence obtained by deleting all repeated elements 
+\\          of p.  For example, 
+\\             :#:<<1, 2, 2, 3, 3, 2, 4, 4, 4, ...>> = <<1, 2, 3, 2, 4>>
+
+  p :~: q  ==  :#:p = :#:q
+
+  p|_n  ==  the initial prefix of p of length n.
+
+  p :o: q  ==  the sequence formed by concatenating p and q.
+
+
+3 CLOSURE
+
+DEFINITION: The closure \C(:Pi:) of a temporal formula :Pi: is
+defined by  
+   :sigma: |= \C(:Pi:)  ==  \+
+     /:A: n : :E: :tau: : (:sigma:|_n = :tau:|_n) /\ (:tau: |= :Pi:)
+
+The closure of any TLA formula is a TLA formula--that is, it can be
+expressed with the TLA operators ', [], and :E:.  The closure operator
+defines a topology on the set of TLA formulas.  A TLA formula is a
+safety property iff it is closed (equals its closure).
+
+
+4 HISTORY, STUTTERING, AND PROPHECY VARIABLES
+
+4.1 History Variables
+
+DEFINITION: Let H and :Phi: be temporal formulas and h a variable.
+Then H defines h to be a history variable for :Phi: iff there are state
+functions F and v, and a transition function G such that
+  (a) H  =  (h = F) /\ [][h' = G]_v
+  (b) h does not occur primed in G
+  (c) h does not occur free in :Phi: or F
+
+THEOREM: If H defines h to be a history variable for
+:Phi:, then |= :Phi: => :E: h : H.
+
+COROLLARY: If H defines h to be a history variable for
+:Phi:, then |= :Phi: = (:E: h : :Phi: /\ H).
+
+The canonical history variable is one that records the complete
+history of some tuple x of variables.  It is defined by:
+
+DEFINITION:  Hist(h,x) == /\ (h = <<x>>) 
+                          /\ [][(x' # x) /\ (h' = h :o: <<x'>>)]_[(h,x)]
+
+If h is a variable that is not free in x or in :Phi:, then Hist(h,x)
+defines h to be a history variable for :Phi:.
+
+
+4.2 Stuttering Variables
+
+A stuttering variable forces stuttering steps--ones that do not
+change any relevant variables.
+
+DEFINITION: Let S and :Phi: be temporal formulas and s a variable.
+Then S defines s to be a stuttering variable for :Phi: iff there
+are state functions F and v, and a transition function G such that
+  (a) S  =  (s = F) /\ [][\/ s = 0 /\ s' = G
+                          \/ s > 0 /\ s' = s-1 /\ v' = v]_[(v,s)]
+  (b) s does not occur free in G
+  (c) s does not occur free in :Phi:, v, or F
+  (d) |= :Phi: /\ (s = F) /\ [][s' = G]_[(v,s)]  =>  [](s :in: Nat)
+
+
+THEOREM: If S defines s to be a stuttering variable for :Phi:, then
+|= :Phi: => :E: s : S.
+
+COROLLARY: If S defines s to be a stuttering variable for :Phi:, then
+|= :Phi: = (:E: s : :Phi: /\ S).
+
+
+4.3 Prophecy Variables
+
+A prophecy variable predicts the future.  It is a history variable
+with time run backwards--that is, with primed and unprimed
+variables reversed.  Because time has no end, the initial predicate
+becomes a "backwards invariant" (condition (d)(ii) of the
+definition) that is required to hold at all times.
+
+DEFINITION: Let P and :Phi: be temporal formulas and p a variable.
+Then P defines p to be a prophecy variable for :Phi: iff there is a
+predicate I, a state function v, and a transition function G such
+that
+  (a) P = []I /\ [][p = G]_v
+  (b) p does not occur unprimed in G,
+  (c) p does not occur free in :Phi:, and
+  (d) there exists an action N and a state function f such that
+       (i) p does not occur free in N or f
+      (ii) |= [N]_f /\ I' /\ (p = G)  =>  I
+     (iii) |= :Phi: => /\ [][N]_f 
+\\\\                   /\ [](:E: p : I) 
+\\\\                   /\ []<>({p : I} is finite)
+
+Note: {p : I} is finite iff there exists a state function F such
+that (i) p does not occur in F, (ii) I => (p :in: F), and (iii) F
+is a finite set.
+
+THEOREM: If P defines p to be a prophecy variable for :Phi:, then
+ |= :Phi: => :E: p : P
+
+COROLLARY: If P defines p to be a prophecy variable for :Phi:, then
+|= :Phi: = (:E: p : :Phi: /\ P).
+
+NOTE: If condition (d)(iii) of the definition is weakened by
+removing the last conjunct, then the theorem holds with the weaker
+conclusion |= :Phi: => \C(:E: p : P).
+
+
+5 THE EXISTENCE OF REFINEMENT MAPPINGS
+
+5.1 Finite Internal Nondeterminism
+
+For any sequence :rho: = :rho:_1, ...  of states and any state function
+f, let :rho:<<f>> denote the sequence 
+
+   <<:rho:_1[[f]], :rho:_2[[f]], ... >>
+
+where s[[f]] denotes the value of f in state s.
+
+DEFINITION: Let :Phi: be a temporal formula, y a tuple of
+variables, and x the tuple of variables free in :E: y : :Phi:.
+Then :Phi: is fin for y iff there is a variable h distinct from
+x and y such that
+  |= (:E: y : :Phi:) /\ Hist(h,x) => 
+         []<>({:#:(:rho:|_n<<(x,y)>>) : :rho:|_n<<x>> :~: h 
+                      /\ :rho: |= :Phi:} is finite)
+
+Think of y as the "internal" variables and x as the "external"
+variables of :Phi:.  Then :Phi: is fin iff, infinitely often, the
+sequence of values assumed so far by the internal variables is
+determined up to a finite choice by the sequence of values assumed
+by the external variables.
+
+One can show that |= (:E: y : \C(:Phi:)) => \C(:E: y : :Phi:) holds for any y 
+and :Phi:.  The converse is true iff :E: y : \C(:Phi:) is a safety property.  
+Saying that :E: y : \C(:Phi:) is not a safety property means that hiding y 
+adds a liveness condition to the safety part of :Phi:.  In other words, 
+constraints on the finite behavior of y are turned into constraints
+on infinite behaviors by hiding y.  The following theorem asserts
+that this can't happen if :Phi: is fin.
+
+THEOREM: If :Phi: is fin for y, then \C(:E: y : :Phi:) = :E: y : \C(:Phi:).
+
+
+5.2 Internal Continuity
+
+DEFINITION: :Phi: is internally continuous for a tuple of variables y
+iff |= (:E: y : :Phi:) /\ \C(:Phi:) => :Phi:.
+
+This condition is nice and simple.  We don't really understand its
+significance.
+
+
+5.3 The Main Theorem
+
+THEOREM: If 
+  1. :Phi:_2 is fin and internally continuous for y,
+  2. |= (:E: z : :Phi:_1) => (:E: y : :Phi:_2)
+then there exist variables h, p, and s, temporal formulas
+H, P, and S, and a tuple of state functions \O(y) such that
+   (i) H defines h to be a history variable for :Phi:_1
+  (ii) P defines p to be a prophecy variable for :Phi:_1 /\ H
+ (iii) S defines s to be a stuttering variable for :Phi:_1 /\ H /\ P
+  (iv) |= :Phi:_1 /\ H /\ P /\ S  =>  :Phi:_2(\O(y)/y).
+\end{spec}
+\end{document}
+

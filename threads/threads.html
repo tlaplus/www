@@ -1,0 +1,51 @@
+<title>Win32 Threads API Specification</title>
+
+<H1>The Win32 Threads API Specification</H1>
+<I>Last modified 14 May 1996</I>
+<HR>
+
+This is a work in progress: a 
+  <A HREF ="../tla.html">TLA</A> 
+specification of the kernel threads procedures from the Windows Win32
+Application Programming Interface (API).  If you want to be informed
+when there are significant changes to this specification, send e-mail
+to me at
+  <A HREF = "mailto:lamport@pa.dec.com">lamport@pa.dec.com</A>.
+
+<P> This is a complete draft, but it still has lots of minor errors,
+and possibly some major ones.  There are a number of small details
+missing from the specification, mostly concerning error conditions.
+Those details are apparently known only within Microsoft.  I hope to
+talk to engineers there to learn these details and correct any
+inaccuracies in the specification.
+
+
+<P> The current specification provides a fairly simple model of the
+API, in which kernel calls and returns are atomic actions.  The
+specification thus does not describe the details of how kernel calls
+are made.  This seems to me to be the appropriate interface for
+application programmers (and for the implementers), who already
+understand how procedure calls are coded.  I intend eventually to
+provide a lower-level specification that does model some of the
+details of kernel calls.  I will do this by using an interface
+refinement that relates the higher-level and lower-level models of
+procedure calls, and is independent of the particular kernel calls
+being specified.
+
+
+<P> The specification is written in an "object oriented" style, which
+is discussed in the introduction.
+
+<P> The specification is:
+ <DL> <DD>
+       <A HREF = "spec.ps.z">Postscript</A> -
+       <A HREF = "spec.dvi.z">DVI</A>       -
+       <A HREF = "spec.tex.z">LaTeX</A> <P>
+</DL>
+To run the document through LaTeX (version 2e required), you will need
+the following files:
+ <DL> <DD>
+       <A HREF = "tla.sty.z">tla.sty</A> -
+       <A HREF = "tlaspec92.sty.z">tlaspec92.sty</A> 
+ </DL>
+

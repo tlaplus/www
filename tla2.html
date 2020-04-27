@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/tla2.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) 
+              [Netscape]">
+<!--
+%&b&<b>#</b>&
+%&c&&thinsp;<b>#</b>&thinsp;&
+-->
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+
+<script src="tlaweb.js"> </script>
+
+</HEAD>
+<BODY BGCOLOR=#ffffe4  onload="initialize()">
+
+
+<title>TLA+ Version 2</title> 
+
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+
+
+</td>
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol"> </div> 
+
+
+<H1>TLA+ Version 2</H1> 
+
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 21 September 2018</I></font>
+</td>
+<td style="vertical-alight:top;width:auto">
+
+</td>
+</tr>
+
+</table>
+<HR style="margin-bottom:-5px;margin-top:-11px"> 
+
+<P style="margin-top:0px"> </P>
+<DIV class="hidden-div" style="color:red;margin-bottom:-22px"><b>
+   You'll miss a lot on this web site unless you enable Javascript
+   in your browser. </b></DIV>
+
+
+<DIV>
+<H2 id="h2intro"  class="show-hide" onclick="showHide('hide-intro','intro')">
+    What is TLA+ Version 2?
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-intro" > [show]</font>
+</H2>
+
+<DIV id="intro" class = "hidden-div">
+TLA+ Version 2, here called TLA+2 
+for short, is the current version of TLA+.&nbsp;
+TLA+ now means TLA+2.&nbsp; The previous version is 
+referred to here as TLA+1.&nbsp; This page contains a brief description
+of how TLA+2 differs from TLA+1, which is the language described in
+the book <em><a href = "book.html">Specifying Systems</a></em>.&nbsp;
+
+<!-- Available documentation on the language is listed <A
+    HREF="#documentation" 
+   onclick="show('hide-documentation','documentation')">below</A>.  
+-->
+
+</DIV>
+
+<H2 id="h2features"  class="show-hide" 
+   onclick="showHide('hide-features','features')">
+   Features for Writing Specifications
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-features" > [show]</font>
+</H2>
+
+<DIV id="features" class = "hidden-div">
+
+<!-- The following new features have been added to the language. -->
+
+<H4 style="margin-top:0px;margin-bottom:3px">Recursive Operator Definitions</H4>
+
+A <TT>RECURSIVE</TT> statement allows you to define operators
+recursively, including the use of mutual recursion.&nbsp; For example,
+here's a silly way to define both <TT>fact1(n)</TT> and
+<TT>fact2(n)</TT> to equal <TT>n</TT> factorial, for any natural number
+<TT>n</TT>:
+
+<PRE>   RECURSIVE fact1(_), fact2(_)
+
+   fact1(n) == IF n = 0 THEN  1 
+                        ELSE n*fact2(n-1)
+
+   fact2(n) == IF n = 0 THEN 1 
+                        ELSE n*fact1(n-1)
+</PRE>
+
+<H4 style="margin-top:15px;margin-bottom:3px">LAMBDA Expressions  &nbsp;&nbsp;</H4>  
+
+TLA+ allows you to define a higher-order operator that takes an
+operator as an argument.&nbsp; In TLA+1, you could use
+only the name of an operator that has already been defined or declared
+as such an argument.&nbsp; TLA+2 allows the use of a <TT>LAMBDA</TT>
+expression as the argument.&nbsp; For example, if <tt>F</tt> is an
+operator that takes as its argument an operator with two arguments,
+then you can write the expression 
+ <PRE  style="margin-bottom:-10px">   LET Id(a, b) == a + 2*b
+   IN  F(Id)
+ </PRE>
+In TLA+2, you can write this as
+
+<PRE>   F(LAMBDA a, b : a + 2*b)
+</PRE>
+You can also use a <TT>LAMBDA</TT> expression to substitute for an
+operator in the <TT>WITH</TT> clause of an <TT>INSTANCE</TT>
+statement.
+
+
+
+</DIV>
+
+<H2 id="h2proofs"  class="show-hide" onclick="showHide('hide-proofs','proofs')">Writing Proofs
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-proofs" > [show]</font>
+</H2>
+
+<DIV id="proofs" class = "hidden-div">
+
+The major new feature of TLA+2 is the introduction of constructs for
+writing proofs.&nbsp;  A checker for these proofs is
+being built as part of a 
+ <A HREF="https://tla.msr-inria.inria.fr/tlaps/content/Home.html">project</A> 
+at the 
+ <A HREF="https://www.inria.fr/en/institute/partnerships/industrial-partnerships2/microsoft-research">Microsoft Research&ndash;Inria Joint Centre</A>.&nbsp;  
+It does not yet handle temporal-logic reasoning, but it can
+check most other parts of a proof.
+
+<p>
+
+The language supports hierarchically structured
+proofs.&nbsp; The paper
+  <A HREF="http://lamport.azurewebsites.net/pubs/pubs.html#lamport-how-to-write"><I>How to 
+    Write a Proof</I></A>
+describes the basic hierarchical proof style and explains why it is
+much better than the way mathematicians and computer scientists now
+write proofs.&nbsp; 
+
+The TLA+2 documentation describes the language
+features for writing structured proofs.&nbsp;
+
+The TLAPS project page
+contains a <A 
+ HREF="https://tla.msr-inria.inria.fr/tlaps/content/Documentation/Tutorial/The_example.html"
+>brief tutorial</A> on writing TLA+ proofs.
+
+
+<P>
+
+<!-- One feature introduced for writing proofs is the naming of
+   subexpressions of a definition, which can be assisted by adding
+   labels.&nbsp;
+
+   You can use subexpression names in a specification, but you
+   shouldn't.&nbsp;
+
+   However, they can be useful for writing tests when model checking a
+   specification.&nbsp; 
+
+   Moreover, labels could be useful in referring to parts of a
+   specification in documentation.
+-->
+
+</DIV>
+
+<H2 id="h2other"  class="show-hide" onclick="showHide('hide-other','other')">
+<A name="other">Other Changes</A>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-other" > [show]</font>
+</H2>
+
+<DIV id="other" class = "hidden-div">
+Other than introducing a few new keywords that can no longer be used
+as identifiers, there are two changes in TLA+2 that may make a TLA+
+specification no longer legal.&nbsp; The first is the handling of
+instantiated infix operators.&nbsp;  In TLA+1, if you wrote 
+ <PRE>   Foo(x) == INSTANCE M </PRE>
+and module <TT>M</TT> defines the infix operator <TT>++</TT>, then you
+had to write a weird expression like 
+ <PRE>   a  Foo(42)!++  b</PRE>
+to use the instantiated operator.&nbsp;
+In TLA+2, this is written &nbsp;<TT>Foo(42)!++(a,b)</TT>.
+
+<P>
+The second change is that certain operators can no longer be used to
+instantiate operator parameters in a constant module.&nbsp;  You're unlikely
+to encounter it.&nbsp;  However, if you get an error message of the form
+<PRE>
+   Error in instantiating module '...':
+    A non-Leibniz operator substituted for '...'.
+</PRE> 
+
+then you should read Section 5.2 in the TLA+2 
+  <A HREF ="tla2-guide.pdf">Preliminary Guide</A> 
+for an explanation.
+
+</DIV>
+
+<H2 id="h2documentation"  class="show-hide" onclick="showHide('hide-documentation','documentation')">
+<A name="documentation">Documentation</A>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-documentation" > [show]</font>
+</H2>
+
+<DIV id="documentation" class = "hidden-div">
+
+All current documentation written since 2008 describes
+TLA+2.  That include 
+  the <a href="http://lamport.azurewebsites.net/video/videos.html">TLA+ Video Course</a>
+
+and the <a href="hyperbook235d.html?back-link=tla2.html#documentation">TLA+ Hyperbook</a>.&nbsp;  
+
+Here is some more detailed documentation:
+
+<DL>
+ <DT><B><A HREF ="tla2-guide.pdf">TLA Version 2: A Preliminary Guide</A></B>
+<DD> This is a fairly complete 30-page description of the features
+added to the language.&nbsp;  However, it is not easy reading, being written
+more as a guide for tool implementers than as a user manual.<BR>
+
+<P>
+
+ <DT><B><A HREF ="TLAPlus2Grammar.tla">A TLA+ Specification of the 
+ Grammar</A></B>
+<DD> This is a version of the <I>TLAPlusGrammar</I> module from
+Section 15.1 (page 276) of <I>Specifying Systems</I> (the TLA+ book),
+without comments, that has been updated for TLA+2.&nbsp;
+There is also a pretty-printed 
+<A HREF ="TLAPlus2Grammar.pdf">PDF version</A>.
+</DL>
+</DIV>
+
+</DIV>
+</td>
+</tr>
+
+<!-- Bottom Back button -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-30px"><b>Back</b>
+</p>
+</a>
+</td>
+</tr>
+
+
+</table>
+ 
+
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/tla2.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+</HTML>

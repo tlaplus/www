@@ -1,0 +1,1618 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/practical-tla.html?back-link=learning.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:34:26 GMT -->
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) 
+              [Netscape]">
+<!--
+%&b&<b>#</b>&
+%&c&&thinsp;<b>#</b>&thinsp;&
+-->
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+<!-- FILE SPECIFIC STYLE DECLARATIONS -->
+<style type="text/css">
+  H2 {margin-top:10px;
+      margin-bottom:5px}
+  DL {margin-top:-5px;
+      margin-bottom:-5px}
+  DT {margin-top:5px;
+      font-weight:bold}
+  DD {margin-left:15px}
+  BLOCKQUOTE {margin-top:0px;
+              margin-bottom:3px;
+              margin-left:25px;
+              font-style:italic}
+  ul {margin-top:5px}
+  li {margin-top:5px}
+  P {margin-top:5px}
+</style>
+
+<!-- 
+<DL>
+<DT>Page </DT>
+<DD>
+
+</DD>
+</DL>
+
+<DT>Page </DT>
+<DD>
+  <BLOCKQUOTE>
+
+  </BLOCKQUOTE>
+</DD>
+
+    <BR>&nbsp;&nbsp;&nbsp;&nbsp; <BR>
+    This is a comment about something else on that page.
+
+ &thinsp;<code></code>&thinsp;
+-->
+<script src="tlaweb.js"> </script>
+
+
+
+<title>Practical TLA+ by Hillel Wayne</title> 
+
+</HEAD>
+
+<BODY onload="initialize()">
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+
+
+</td>
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol"> </div> 
+
+
+<H1><i>Practical TLA+</i>&thinsp; by Hillel Wayne</H1> 
+
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p style="margin-top:15px">
+<font size=-1><I> Last modified on 23 November 2018</I></font>
+</td>
+<td style="vertical-alight:top;width:auto">
+
+</td>
+</tr>
+
+</table>
+<HR style="margin-bottom:-5px;margin-top:-11px"> 
+
+<P style="margin-top:0px"> </P>
+
+<DIV class="hidden-div" style="color:red;margin-bottom:-12px"><b>
+   You'll miss a lot on this web site unless you enable Javascript
+   in your browser. </b></DIV>
+
+
+<DIV>
+
+
+<H2 id="h2intro"  class="show-hide" onclick="showHide('hide-intro','intro')">
+    The Book
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-intro" > [show]</font>
+</H2>
+
+<DIV id="intro" class = "hidden-div">
+
+
+<i>Practial TLA+</i> is a book by Hillel Wayne, 
+<a
+href="https://www.apress.com/de/book/9781484238288">available 
+from the publisher</a>.&nbsp;
+
+<p style="margin-top:10px">
+
+It provides a good complete course on the PlusCal algorithm
+language.&nbsp;
+
+This web page describes a number of minor problems in the book,
+including hard to understand statements and small errors.&nbsp;
+
+It also explains why I disagree with a few things the book says.&nbsp;  
+
+I want to emphasize that the issues listed here
+are small problems in an excellent book.
+</DIV>
+
+
+
+<H2 id="h2general"  
+    class="show-hide" onclick="showHide('hide-general','general')">
+   General Remarks
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-general" > [show]</font>
+</H2>
+
+<DIV id="general" class = "hidden-div">
+
+<h3 style="margin-top:5px">The P Syntax</h3>
+
+PlusCal has two syntaxes: the P syntax inspired by Niklaus Wirth's Pascal
+programming language, and the C syntax inspired by the programming language
+C.&nbsp;
+
+The book uses the P syntax.&nbsp;
+
+That's the syntax I would prefer if I wrote algorithms only 
+for my own use and never wrote programs.&nbsp;
+
+Most engineers and programmers will prefer the C syntax, which will look
+more familiar to them, so I've used it for all my published algorithms.&nbsp;
+
+You should compare the PlusCal manual's <A HREF = p-manual.pdf>P-Version</A>
+and <A HREF = c-manual.pdf>C-Version</A> to see which you prefer.&nbsp;
+
+It should be easy to become bi-syntactic, translating the book's
+P syntax to C syntax.
+
+<h3>Copying the Code</h3>
+
+The source files for the specs in the book are available on line.&nbsp;
+However, those are the final versions.&nbsp;  If you want to follow the
+development of the spec in your Toolbox, you'll have to copy the
+pieces of the spec from the book.&nbsp;  Unfortunately, that removes all
+indenting, which makes the result unreadable.&nbsp;  
+You can try to find the bits of code being added at each step
+in the complete spec and copy them from there.&nbsp;  It would be nice if
+all the code snippets in the book were available in an ascii file,
+identified by page and line numbers.  
+
+<h3>Possible Typos in the Code</h3>
+
+I noticed one typo in the code in the book (on page 161, Chapter 10).&nbsp;
+It probably occurred in copying text from the PlusCal source file to
+the book's source file.&nbsp; I didn't read the code carefully, and
+there could be more such errors.&nbsp; If some code in the
+book doesn't look right, you should try it yourself to see if the
+problem is in your understanding or is a typo in the book.
+
+
+</DIV>
+
+<H2 id="h2title"  
+    class="show-hide" onclick="showHide('hide-title','title')">The Title
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-title" > [show]</font>
+</H2>
+
+<DIV id="title" class = "hidden-div">
+
+
+This book is about 
+   <A href="high-level-view.html#plucal?unhideBut=hide-pluscal&unhideDiv=pluscal&back-link=practical-tla.html#title?unhideBut@EQhide-title@AMPunhideDiv@EQtitle">PlusCal</a>, not about TLA+.&nbsp;
+
+It describes all the TLA+ operators for writing ordinary mathematical
+expressions and says a little about expressing liveness properties
+with TLA+'s temporal operators.&nbsp; However, it doesn't mention some
+of the most important features of TLA+, including the ability to state
+and check that one specification implements a higher-level
+specification.&nbsp; After reading this book, you should find it easy
+to learn TLA+.&nbsp; I recommend that you do so.&nbsp; While reading
+the book, you might want to look at the TLA+ translation of the
+PlusCal specs.
+
+
+</DIV>
+
+<H2 id="h2intro-section"  class="show-hide" 
+   onclick="showHide('hide-features','intro-sec')">
+   Introduction
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-intro-sec" > [show]</font>
+</H2>
+
+<DIV id="intro-sec" class = "hidden-div">
+
+<DL>
+<!-- 
+<DT> Page xvii</DT>
+<DD> This is where I put text describing a problem on this page.
+</DD>
+-->
+
+<DT> Page xix</DT>
+<DD> <blockquote>Without having something to program with, there's really no reason to
+    use TLA+.
+    </blockquote>
+Wrong!&nbsp; 
+Here are potential users of TLA+ who don't do any programming.
+<ul>
+  <li> People who need to express precisely what a system or program
+    should do, including customers hiring someone else to build the
+    system or software engineers describing a system for others to
+    build.  </li>
+  <li> Computer scientists who design algorithms, but don't write programs
+    to implement them.  I believe I have written only one concurrent
+    program in my life, which was used by me and a few other people
+    for a couple of years in the mid-1980s.
+  </li>
+</ul>
+</DL>
+
+</DIV>
+
+<H2 id="h2chap1"  
+    class="show-hide" onclick="showHide('hide-chap1','chap1')">Chapter 1
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap1" > [show]</font>
+</H2>
+
+<DIV id="chap1" class = "hidden-div">
+
+<DL>
+<DT>Page 7, line 16</DT>
+<DD> <blockquote>
+     which is closer to what we normally think of programming functions
+    </blockquote>
+This should be something like:
+<q>which is closer to what we normally think of in programming as
+functions</q>.
+</DD>
+
+<DT>Page 14</DT>
+<DD>
+The text should mention that a state is an assignment of values to variables,
+and there is a non-declared variable pc added by the PlusCal to TLA+
+translation.
+</DD>
+
+<DT>Page 18, line 5</DT>
+<DD>
+  <BLOCKQUOTE>
+   Every following state highlights with variables that have changed
+    from the previous state.
+  </BLOCKQUOTE>
+Better would be:
+    <q>Every following state highlights with red the variables that have 
+    changed from the previous state.</q>
+</DD>
+
+<DT>Page 22, line 1</DT>
+<DD>
+  <BLOCKQUOTE>
+Unfortunately, there are no good options.
+  </BLOCKQUOTE>
+This is not accurate.&nbsp;  In particular, the objection of bullet two is
+misleading.&nbsp;  First of all, it is impossible to write in TLA+ that the
+process can't stutter between the withdrawal and deposit.&nbsp;  
+(You can understand the book without knowing this,
+but if you're curious you can look 
+ <A name = "anchor" href =
+   "advancedee39.html?unhideBut=hide-stuttering&amp;unhideDiv=stuttering&amp;back-link=practical-tla.html#anchor?unhideBut@EQhide-chap1@AMPunhideDiv@EQchap1"
+  >here</A>
+
+to find out why not.) &nbsp;  
+The correct statement is that,
+by adding the keyword 
+  &thinsp;<code>fair</code>&thinsp; 
+in front of 
+ &thinsp;<code>process</code>&thinsp;
+in the code, we can specify that the process doesn't stop until it's
+gotten to the end.&nbsp;
+
+<p style="margin-top:10px">
+The fact that <q>there's no way to implement it</q> is
+irrelevant.&nbsp; It's impossible to implement the safety part of the
+spec because a cosmic ray could hit the computer and cause it to do
+something not allowed by the spec.&nbsp; Verifying a property shows
+that if a behavior satisfies the spec, then it satisfies the
+property.&nbsp; This may or may not be useful.&nbsp; Many specs people
+write are not implementable--for example, they may contain unbounded
+queues, or variables whose value can be an arbitrary integer.&nbsp; It
+requires engineering judgment to know whether or not the inability to
+implement those things makes it useless to know that the spec
+satisfies some property.&nbsp; It's useful to know that the spec with
+the fairness assumption satisfies 
+ &thinsp;<code>EventuallyConsistent</code>&thinsp;.&nbsp; 
+That's because there would be something seriously wrong with the spec
+if fairness didn't imply 
+ &thinsp;<code>EventuallyConsistent</code>&thinsp;.
+
+<p style="margin-top:10px">
+
+This is not the right place to discuss fairness and
+liveness, and that discussion is deferred to Chapter 6 of the book.&nbsp;
+However, it would be useful point to that discussion.&nbsp;  I think
+something like the following belongs here:
+<BLOCKQUOTE style="font-style:normal;margin-top:-10px;margin-bottom:10px">
+   For now, the PlusCal specs we write allow processes to stop
+   at any time.&nbsp;  They therefore describe what a system is allowed
+   to do, but not what it must do.&nbsp;  Chapter 6 explains how we
+   write specs that specify what must happen.
+</BLOCKQUOTE>
+</DD>
+
+</DL>
+</DIV>
+
+<H2 id="h2chap2"  
+    class="show-hide" onclick="showHide('hide-chap2','chap2')">Chapter 2
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap2" > [show]</font>
+</H2>
+
+<DIV id="chap2" class = "hidden-div">
+
+<DL>
+<DT>Page 24, line 3</DT>
+<DD>
+  <BLOCKQUOTE>
+   This is for backwards compatibility reasons.
+  </BLOCKQUOTE>
+I don't know with what this is supposed to be backwards compatible.
+</DD>
+<DT>Page 24, line 9</DT>
+<DD>
+It would be a good idea for item (4) to mention that comments can be
+nested to arbitrary depth, since, for some unfathomable reason, that's
+not true of most programming languages.
+</DD>
+<DT>Page 24, lines -5 to -1</DT>
+<DD>
+This paragraph should refer to the tip on the following page,
+which explains how to evaluate expressions
+without running the entire spec.
+</DD>
+
+<DT>Page 26, lines -10 to -1</DT>
+<DD>
+In the &thinsp;<b>= VS :=</b>&thinsp;  section, 
+I don't like the explanation of 
+ &thinsp;<code>=</code>&thinsp; 
+in the variable declaration as an
+initial assignment.&nbsp;
+It would be better
+to say that a variable's declaration includes its initial value (as an
+optional part).
+
+<p style="margin-top:10px">
+
+Also, this would be a good point to introduce the distinction between
+legal PlusCal specs and ones that TLC can handle.&nbsp; For example,
+this is perfectly legal PlusCal: 
+<pre>
+   variables z = (x=y), x = 2, y = 2;
+</pre>
+The TLAPlus proof system treats it exactly the same as
+<pre>
+   variables x = 2, y = 2, z = (x=y);
+</pre> 
+It's just TLC that can't handle the first.  
+</DD>
+
+<DT>Page 27, line 3</DT>
+<DD>
+In introducing the 
+ &thinsp;<code>..</code>&thinsp;
+operator, it should be mentioned
+that 
+ &thinsp;<code>3..1</code>&thinsp;
+equals
+ &thinsp;<code>{}</code>&thinsp; (the empty set).
+
+</DD>
+
+<DT>Page 27, line 10</DT>
+<DD>
+
+   <BLOCKQUOTE>
+   All elements in the set must have the same type
+  </BLOCKQUOTE>
+This is inaccurate.&nbsp;  First, 
+ &thinsp;<code>{"a", 1}</code>&thinsp;
+is a legal PlusCal expression; it's TLC that can't deal with it.&nbsp;
+Second, being of the same type is a sufficient but not necessary
+condition for TLC to be able to deal with an expression.&nbsp;  For example,
+it has no trouble with 
+<pre>
+  {{1}, {"a", "b"}}
+</pre>
+It's usually the case that TLC cannot handle sets containing
+elements of different types.&nbsp;  However, there's one important
+exception: sets of structures.&nbsp;  (Structures are introduced on
+page 29.)&nbsp;   TLC can handle sets of structures whose elements
+don't all have the same set of keys.
+</DD>
+
+<DT>Page 29, Note</DT> 
+<DD> 
+Mathematically, a structure is a function whose
+domain is a set of strings, and a sequence is a function whose domain
+is a set of integers.&nbsp;  I doubt if many people would say that these
+kinds of functions have the same type.&nbsp;  It would be better to say that
+structures and sequences are both instances of a more general class of
+values called functions.  
+</DD> 
+
+<DT>Page 31, line 11</DT>
+<DD>
+
+  <BLOCKQUOTE>
+For example, the following is a spec error:
+  </BLOCKQUOTE>
+This does not mean that the following is incorrect
+PlusCal code.&nbsp;  It means that an execution of the
+spec evaluates the assert statement with 
+  &thinsp;<code>x</code>&thinsp; 
+equal to 
+ &thinsp;<code>FALSE</code>&thinsp;, generating an
+assertion failure.&nbsp;  
+
+<p style="margin-top:10px">
+Formally, a spec is a definition, and a definition can be incorrect
+only if it is syntactically illegal.&nbsp;  Informally, a definition is
+called incorrect if it doesn't define what we think it should.
+</DD>
+
+<DT>Page 32ff</DT>
+<DD>
+In the example, the variable curr can be eliminated by updating
+ &thinsp;<code>items</code>&thinsp;
+at the end of the <b>while</b> loop and replacing occurrences of 
+ &thinsp;<code>curr</code>&thinsp;
+by 
+ &thinsp;<code>Head(items)</code>&thinsp;.
+
+</DD>
+
+</DL>
+</DIV>
+
+
+<H2 id="h2chap3"  
+    class="show-hide" onclick="showHide('hide-chap3','chap3')">Chapter 3
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap3" > [show]</font>
+</H2>
+
+<DIV id="chap3" class = "hidden-div">
+
+<DL>
+
+<DT>Page 44, line 3</DT>
+<DD>
+  <BLOCKQUOTE>
+The TLA+ does not use semicolons; only the PlusCal computations
+    need semicolons.
+  </BLOCKQUOTE>
+This should be:
+<BLOCKQUOTE style="font-style:normal;margin-bottom:10px">
+   TLA+ does not use semicolons; only the PlusCal code
+   that gets translated to TLA+ uses semicolons.
+</BLOCKQUOTE>
+</DD>
+
+<DT>Page 45, line 15</DT>
+<DD>
+  <BLOCKQUOTE>
+  <code>>> Apply(Add, 1, 2)</code>
+  </BLOCKQUOTE>
+You can also write this as 
+ &thinsp;<code>Apply(+, 1, 2)</code>&thinsp;; 
+there's no need to define 
+ &thinsp;<code>Add</code>&thinsp; or use a
+&thinsp;<code>LAMBDA</code>&thinsp; expression.  
+</DD>
+
+<DT>Page 46, line 7</DT>
+<DD>
+  <BLOCKQUOTE>
+    Not all models you write will check all invariants. 
+    You have to specify what you actually care about.
+  </BLOCKQUOTE>
+I believe this means that an invariant is just a formula,  
+and a spec can define lots of formulas.&nbsp;
+TLC has no way of knowing by itself which of those formulas are 
+supposed to be invariants; you have to tell it in the model.
+
+</DD>
+<DT>Page 47, line 2</DT>
+<DD>
+  <BLOCKQUOTE>
+   However, creating dedicated operators is cleaner and better signals
+    your intent to anybody else who reads your spec.
+  </BLOCKQUOTE>
+Defining an operator signals to the reader that the operator is
+supposed to be an invariant only if you write in a comment that it's
+supposed to be one.
+</DD>
+
+<DT>Page 48 and elsewhere</DT>
+<DD>
+I believe that the quantifiers &thinsp;<code>\A</code>&thinsp; and 
+&thinsp;<code>\E</code>&thinsp; are the first TLA+ operators described
+so far that declare bound identifiers&mdash;for example, the formula
+<pre>
+    \A num \in set: num &lt; max
+</pre>
+declares the bound identifier &thinsp;<code>num</code>&thinsp;
+in the scope of the subformula 
+  &thinsp;<code>num &lt; max</code>&thinsp;.&nbsp;
+
+It should be mentioned that in TLA+, it is illegal to
+give a meaning to an identifier that already has a meaning.&nbsp;
+Thus, the formula above would be illegal if &thinsp;<code>num</code>&thinsp;
+had already been defined.&nbsp;  
+
+This means that the formula
+<pre>
+    \A x \in S : (... /\ \E x \in T : ...)
+</pre>
+is illegal because the inner 
+  &thinsp;<code>\E</code>&thinsp; assigns a meaning to 
+  &thinsp;<code>x</code>&thinsp; in a context
+(the outer &thinsp;<code>\A x</code>&thinsp;) 
+in which &thinsp;<code>x</code>&thinsp; already has a meaning.&nbsp;  Note that
+<pre>
+    P == \E x \in T : ...
+    Q == \A x \in S : (... /\ P)
+</pre>
+is legal because the use of 
+  &thinsp;<code>x</code>&thinsp; inside the
+definition of 
+  &thinsp;<code>P</code>&thinsp; doesn't 
+<q>leak out of</q> that definition.&nbsp;  The rule that
+you can't assign a meaning to an identifier that already has a meaning also
+makes this illegal
+<pre>
+    VARIABLE x
+    ...
+    P(x) == ...
+</pre>
+This is also illegal:
+<pre>
+   \E x \in S : 2*x \in {x \in Nat : ... }
+</pre>
+It should be mentioned that the scope of 
+ &thinsp;<code>\A</code>&thinsp; and &thinsp;<code>\E</code>&thinsp;
+extends
+<q>as far as possible</q>.&nbsp;  For example, this is illegal
+<pre>
+    \A x \in S : x > 1
+    =>
+    \E x \in T : x &lt; 23
+</pre>
+because it's parsed as
+<pre>
+    \A x in S : (x > 1 => \E x \in T : x &lt; 23)
+</pre>
+The following is legal
+<pre>
+    (\A x \in S : x > 1) => \E x \in T : x &lt; 23
+</pre>
+as is
+<pre>
+    /\ \A x \in S : x > 1
+    /\ \E x \in T : x &lt; 23
+</pre>
+Extending <q>as far as possible</q> applies to other TLA+ constructs signaled 
+by a prefix.
+</DD>
+
+<DT>Page 49, line 11</DT>
+<DD>
+  <BLOCKQUOTE>
+  <code style="font-style:normal">\A &lt;&lt;x, y>> \in S \X S: 
+           Op(x, y) = Op(y, x)</code>
+  </BLOCKQUOTE>
+Please don't use quantifiers over tuples like this.&nbsp;  I think it was a
+mistake to allow them in TLA+ because it adds a bit of complexity
+for something that's seldom useful.&nbsp;  That construct
+isn't supported by the TLA+ prover, and probably won't be supported by
+new tools.&nbsp;  Some day, I expect it no longer to be accepted by the
+parser.
+</DD>
+
+
+<DT>Page 49, line 17</DT>
+<DD>
+People are often confused because
+  &thinsp;<code>P => Q</code>&thinsp;  
+is not really equivalent
+to the informal use of the phrase <q>if P then Q</q>.&nbsp;
+The informal phrase means that 
+ &thinsp;<code>P</code>&thinsp;
+being true causes
+ &thinsp;<code>Q</code>&thinsp; 
+to be true, while   
+  &thinsp;<code>P => Q</code>&thinsp;
+does not imply causality.
+</DD>
+
+
+<DT>Page 51, line 15</DT>
+<DD>
+  <BLOCKQUOTE>
+  make sure your statements are mutually exclusive
+  </BLOCKQUOTE>
+If you make all the cases mutually exclusive, there's little
+difference between a CASE and a sequence of nested IF/THEN/ELSEs.&nbsp;  One
+reason for having a CASE statement is to emphasize symmetry that is
+hidden by an IF/THEN/ELSE.&nbsp; For example, compare
+<pre>
+    AbsoluteValue(x) == CASE x >= 0 -> x [] x =&lt; 0 -> -x
+</pre>
+with the equivalent IF/THEN/ELSE.&nbsp;
+</DD>
+
+<DT>Page 53, line -7</DT>
+<DD>
+  <BLOCKQUOTE>
+  This has five states, three of which are distinct.
+  </BLOCKQUOTE>
+This presumably means that TLC reports finding five states, three
+of which are distinct.
+</DD>
+
+<DT>Page 53, line -7</DT>
+<DD>
+  <BLOCKQUOTE>
+  On execution, TLC will set one of the flags to true while 
+    leaving the other false.
+  </BLOCKQUOTE>
+I don't know what this means and I advise not trying to
+figure it out.&nbsp;  You shouldn't think of TLC setting variables to
+values.&nbsp;  TLC conceptually computes all possible executions of the
+spec, where an execution is a sequence of states and a state is
+defined by the values of all the spec's variables.&nbsp;  In the course of
+computing all executions, TLC computes all reachable states.
+</DD>
+
+<DT>Page 53, line -4</DT>
+<DD>
+  <BLOCKQUOTE>
+   You can make a function as an operator.&nbsp;  If the operator doesn't 
+    take any arguments, ...
+  </BLOCKQUOTE>
+
+This means that, since a function is an ordinary value, you can
+define an operator to equal a function.&nbsp;  If the operator takes no
+arguments, you can use the special syntax 
+<pre>
+    Op[x \in S] == ...
+</pre>
+for the definition.&nbsp; As is suggested by the example on the next
+page, this special syntax can be used for recursive definitions.&nbsp;
+If the ordinary syntax is used, a recursive function definition must
+be preceded by a &thinsp;<code>RECURSIVE</code>&thinsp; statement.  
+</DD>
+
+
+
+<DT>Pages 55 and 56 </DT>
+<DD>
+It should be mentioned that TLC uses the operators
+  &thinsp;<code>@@</code>&thinsp; and &thinsp;<code>:></code>&thinsp; 
+to represent functions that aren't sequences or records.
+</DD>
+
+<DT>Page 57, line -9</DT>
+<DD>
+The example has an unnecessary bit of complexity.&nbsp;  The knapsack
+problem is stated as fitting any number of each item into the
+knapsack.&nbsp;  Since two different items can have the same size and value,
+the knapsack problem remains the same if each item appears in the
+knapsack at most once.&nbsp;  A knapsack then just becomes a set of items,
+not a function from items to natural numbers.
+</DD>
+
+
+
+</DL>
+
+
+</DIV>
+
+
+<H2 id="h2chap4"  
+    class="show-hide" onclick="showHide('hide-chap4','chap4')">Chapter 4
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap4" > [show]</font>
+</H2>
+
+<DIV id="chap4" class = "hidden-div">
+
+<DL>
+<DT>Page 68, line 4</DT>
+<DD>
+  <BLOCKQUOTE>
+  In general it is safe.
+  </BLOCKQUOTE>
+<q>In general</q> here means <q>usually</q>.&nbsp; 
+The most common case in which it's not safe to use a symmetry set
+is when your spec uses the &thinsp;<code>CHOOSE</code>&thinsp;
+operator.&nbsp;  Read the Toolbox's help page titled
+<i>Model Values and Symmetry</i> to find out precisely
+when you can use a symmetry set.
+</DD>
+
+<DT>Page 68, line -9</DT>
+<DD>
+  <BLOCKQUOTE>
+  In 99% of the cases you work with, you want finite sets.
+  </BLOCKQUOTE>
+Here, <q>work with</q> probably  means <q>define to be CONSTANTS</q>.&nbsp;
+It's not that uncommon to use infinite sets like
+ &thinsp;<code>Nat</code>&thinsp;
+in a spec.
+</DD>
+
+<DT>Page 68, line -5</DT>
+<DD>
+  <BLOCKQUOTE>
+   We could also EXTEND Naturals to get the set Nat
+  </BLOCKQUOTE>
+ <code>Nat</code>&thinsp; 
+is also defined in the 
+ &thinsp;<code>Integers</code>&thinsp; module; 
+but 
+ &thinsp;<code>Int</code>&thinsp; 
+is not defined in the
+  &thinsp;<code>Naturals</code>&thinsp; 
+module.&nbsp;  Very rarely will there be any reason to 
+ &thinsp;<code>EXTEND</code>&thinsp;
+ &thinsp;<code>Naturals</code>&thinsp; 
+instead of 
+ &thinsp;<code>Integers</code>&thinsp;.
+
+</DD>
+<DT>Page 73, line -5ff</DT>
+<DD>
+As the example shows, strings in TLA+ are defined to be sequences of
+characters, though the only way to refer to the character 
+  &thinsp;<code>a</code>&thinsp;
+is with
+an expression like  
+  &thinsp;<code>"abc"[1]</code> &thinsp;.&nbsp;
+However, TLC cannot evaluate that expression.&nbsp;  
+
+The only operations on sequences that TLC can evaluate on strings are
+&thinsp;<code>\o</code>&thinsp;, &thinsp;<code>Tail</code>&thinsp;,
+and &thinsp;<code>Len</code>&thinsp;.  
+</DD>
+
+<DT>Page 75, line 4</DT>
+<DD>
+The section on &thinsp;<code>EXTENDS</code>&thinsp; should say that 
+the &thinsp;<code>EXTENDS</code>&thinsp; statement must be
+the first statement in the module.&nbsp;  (It can be preceded only by
+comments.)
+</DD>
+
+<DT>Page 75, line 5</DT>
+<DD>
+  <BLOCKQUOTE>
+  The module may not have any constants.
+  </BLOCKQUOTE>
+That's not true.&nbsp;
+Declared &thinsp;<code>CONSTANTS</code>&thinsp; can be 
+imported by 
+  &thinsp;<code>EXTENDS</code>&thinsp;
+just like defined operators.  
+</DD>
+
+
+
+</DL>
+
+
+</DIV>
+
+
+<H2 id="h2chap5"  
+    class="show-hide" onclick="showHide('hide-chap5','chap5')">Chapter 5
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap5" > [show]</font>
+</H2>
+
+<DIV id="chap5" class = "hidden-div">
+
+
+<DL>
+<DT>Page 80, line 1</DT>
+<DD>
+It should be noted that the variable &thinsp;<code>pc</code>&thinsp; is 
+not created if each process has the form
+<pre>
+   process ...
+     begin label: while TRUE do ... end while ;
+   end process
+</pre> 
+and there are no other labels and no
+ &thinsp;<code>goto</code>&thinsp; 
+statement in the code.&nbsp; This
+kind of spec is often written for distributed algorithms.
+
+</DD>
+
+</DL>
+
+</DIV>
+
+
+<H2 id="h2chap6"  
+    class="show-hide" onclick="showHide('hide-chap6','chap6')">Chapter 6
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap6" > [show]</font>
+</H2>
+
+<DIV id="chap6" class = "hidden-div">
+
+<DL>
+<DT>Page 99, line -4</DT>
+<DD>
+  <BLOCKQUOTE>
+Most temporal properties, though, are what's called liveness checks.
+  </BLOCKQUOTE>
+In my experience, the temporal properties engineers check most often
+are invariance properties.&nbsp; Perhaps they are not considered here
+to be temporal properties because they are usually not written as
+temporal formulas when entered in a TLC model to be checked.
+
+</DD>
+
+
+<DT>Page 101, line 16</DT>
+<DD>
+  <BLOCKQUOTE>
+   For label 
+  &thinsp;<code style="font-style:normal">A:</code>&thinsp; 
+in an unfair process, writing 
+  &thinsp;<code style="font-style:normal">A:+</code>&thinsp; 
+will make it weakly fair.&nbsp;
+  </BLOCKQUOTE>
+This is incorrect.&nbsp;  To make some actions weakly fair, you have to
+write 
+ &thinsp;<code>fair process</code>&thinsp;
+and write 
+  &thinsp;<code>label:-</code>&thinsp;
+for each action 
+  &thinsp;<code>label</code>&thinsp;
+that you don't want to be weakly fair.&nbsp;  Writing 
+  &thinsp;<code>label:+</code>&thinsp;
+in a 
+   &thinsp;<code>fair process</code>&thinsp;
+makes action 
+  &thinsp;<code>label</code>&thinsp;
+strongly fair.&nbsp;  Modifying labels with
+  &thinsp;<code>+</code>&thinsp;
+and 
+  &thinsp;<code>-</code>&thinsp;
+in this way allows you to declare some actions unfair,
+some weakly fair, and some strongly fair.
+
+</DD>
+
+ 
+<DT>Page 101, line -9</DT>
+<DD>
+  <BLOCKQUOTE>
+   You can also make the spec globally fair by writing 
+  &thinsp;<code style="font-style:normal">--fair algorithm</code>&thinsp; 
+    instead of 
+  &thinsp;<code style="font-style:normal">--algorithm</code>&thinsp; 
+  </BLOCKQUOTE>
+Note that this is not always equivalent to making each process fair.
+</DD>
+
+<DT>Page 101, line -2</DT>
+<DD>
+  <BLOCKQUOTE>
+TLC uses a much faster algorithm to evaluate invariants.
+  </BLOCKQUOTE>
+It should be noted that TLC uses this faster algorithm no matter which
+way you declare the invariant.
+</DD>
+
+<DT>Page 102, line 16</DT>
+<DD>
+  <BLOCKQUOTE>
+The current version of TLC cannot check set membership of a variable
+    set as part of a property with 
+  &thinsp;<code style="font-style:normal">&lt;></code>&thinsp;.&nbsp;  
+So you can't write...
+  </BLOCKQUOTE>
+This is false.&nbsp;  (I don't remember TLC ever having this limitation.)
+</DD>
+
+<DT>Page 102, line -7</DT>
+<DD>
+  <BLOCKQUOTE>
+ &thinsp;<code style="font-style:normal">P ~> Q</code>&thinsp;
+means that if there is some state where 
+ &thinsp;<code style="font-style:normal">P</code>&thinsp;
+is true, then either 
+   &thinsp;<code style="font-style:normal">Q</code>&thinsp;
+is true either now or in some future state.
+  </BLOCKQUOTE>
+This can be more clearly stated as:
+  <BLOCKQUOTE  style="font-style:normal">
+ &thinsp;<code>P ~> Q</code>&thinsp;
+means that for any state in which 
+ &thinsp;<code style="font-style:normal">P</code>&thinsp;
+is true, 
+   &thinsp;<code style="font-style:normal">Q</code>&thinsp;
+must be true in that state or in some later state.
+  </BLOCKQUOTE>
+It should also be noted that 
+ &thinsp;<code>P ~> Q</code>&thinsp; 
+is defined to equal 
+  &thinsp;<code>[](P => &lt;>Q)</code>&thinsp;.
+</DD>
+
+<DT>Page 103, line 14</DT>
+<DD>
+  <BLOCKQUOTE>
+   For a finite spec, these mean the same thing...
+  </BLOCKQUOTE>
+</DD>
+Here, <q>finite spec</q> and <q>infinite spec</q> mean
+<q>terminating spec</q> and <q>nonterminating spec</q>, respectively.
+
+<DT>Page 103, line -2</DT>
+<DD>
+  <BLOCKQUOTE>
+   As with 
+  &thinsp;<code style="font-style:normal">&lt;></code>&thinsp;, 
+   TLC cannot check set membership of a variable set 
+    as part of a property with 
+  &thinsp;<code style="font-style:normal">&lt;&gt;[]</code>&thinsp;, 
+or
+  &thinsp;<code style="font-style:normal">[]&lt;&gt;</code>&thinsp;.
+  </BLOCKQUOTE>
+As with &thinsp;<code style="font-style:normal">&lt;&gt;</code>&thinsp;, 
+this statement is false.
+</DD>
+
+<DT>Page 104, line 10</DT>
+<DD>
+  <BLOCKQUOTE>
+  TLC uses a different algorithm for this, which is slower and 
+    is not parallelizable.
+  </BLOCKQUOTE>
+This is true now, but we hope to enhance TLC to use a parallel
+liveness checking algorithm.&nbsp;  However, checking liveness will always
+be slower than checking safety.
+</DD>
+
+<DT>Page 105, libe -8</DT>
+<DD>
+  <BLOCKQUOTE>
+  Since this is best represented by a check on pc, we need to 
+    place this after the PlusCal translation.
+  </BLOCKQUOTE>
+It could instead go in the algorithm's
+&thinsp;<code>define</code>&thinsp; section.
+</DD>
+
+<DT>Page 107, line 1</DT>
+<DD>
+  <BLOCKQUOTE>
+   TLC can handle this property because the set, <code
+   style="font-style:normal">Threads</code>&thinsp;,
+    is a constant.
+  </BLOCKQUOTE>
+Formula 
+  &thinsp;<code>Liveness</code>&thinsp; 
+is the first one presented in the book that
+quantifies a temporal formula--that is, the first formula of the form
+  &thinsp;<code>\A v \in S : F</code>&thinsp; 
+or
+  &thinsp;<code>\E v \in S : F</code>&thinsp; 
+where 
+  &thinsp;<code>F</code>&thinsp; is a temporal formula
+(one containing 
+  &thinsp;<code>[]</code>&thinsp;, &thinsp;<code>&lt;&gt;</code>&thinsp;,
+  or &thinsp;<code>~></code>&thinsp;).&nbsp;
+In such a formula, 
+  &thinsp;<code>S</code>&thinsp; 
+must be a constant set.  </DD>
+
+</DL>
+</DIV>
+
+
+<H2 id="h2chap7"  
+    class="show-hide" onclick="showHide('hide-chap7','chap7')">Chapter 7
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap7" > [show]</font>
+</H2>
+
+<DIV id="chap7" class = "hidden-div">
+
+<DL>
+<DT>Page 113, line 9 </DT>
+<DD>
+ <BLOCKQUOTE>
+By <q>algorithm</q>, we're assuming that algorithms are code intended to
+    terminate and produce an output, rather than run forever or
+    continuously interact with its environment.
+  </BLOCKQUOTE>
+This is an idiosynchratic, inconsistent use of the term
+<q>algorithm</q>.&nbsp;  For example, see <q>Dekker's Algorithm</q>
+on page 104.
+</DD>
+
+<DT>Page 114, line 13</DT>
+<DD>
+  <BLOCKQUOTE>
+  TLC will create the constant 
+  <code style="font-style:normal">DefaultInitValue</code>&thinsp;
+  </BLOCKQUOTE>
+The constant is created by the PlusCal to TLA+ translation.
+The assignment of a model value
+to the constant occurs when the Toolbox initializes the model.&nbsp;  
+If you create the model before translating the algorithm, you will have
+to assign a value to that constant when it appears in the TLA+
+translation.
+
+</DD>
+
+<DT>Page 117, line 14ff </DT>
+<DD>
+The &thinsp;<code>Leftpad</code>&thinsp; algorithm defined in 
+the book takes 
+  &thinsp;<i>k</i>&thinsp;
+steps to add 
+  &thinsp;<i>k</i>&thinsp;
+characters.&nbsp;  There is a more interesting algorithm that takes 
+  &thinsp;<i>log k</i>&thinsp;
+steps.&nbsp;  The idea is to use a <q>helper</q> variable 
+  &thinsp;<i>v</i>&thinsp;
+that initially equals
+  &thinsp;<i>c</i>&thinsp;.&nbsp;
+At each step, <i>output</i> is either left unchanged or set to 
+ &thinsp;<i>v \o output</i>&thinsp;, and 
+  &thinsp;<i>v</i>&thinsp;
+is set to  &thinsp;<i>v \o v</i>&thinsp;.&nbsp; 
+This is a challenging problem that most
+programmers will be able to solve only through a rather long process
+of trial and error.&nbsp; A really good programmer will be able to get
+it right much quicker&mdash;on her first try if she's really, really
+good.&nbsp; What she would do is define a formula
+<pre>
+    I(output, v, in_c, in_n, in_str) 
+</pre>
+that should be true whenever control is at the beginning of the 
+<b>while</b>
+loop.&nbsp;  She would then put the statement
+<pre>
+    assert I(output, v, in_c, in_n, in_str)
+</pre>
+at the beginning of the loop body and debug 
+the definition of &thinsp;<code>I</code>&thinsp;
+as she's debugging the algorithm.&nbsp;  Doing this requires a
+lot of thinking before you write any code.&nbsp;  Thinking before coding is
+a good thing to do.&nbsp;  On a difficult problem, it will save you time and
+produce better code.
+
+</DD>
+
+
+<DT>Page 121, line -11</DT> <DD> 
+It may be instructive to define
+&thinsp;<code>Pow2(n)</code>&thinsp; recursively, but it's easier to write 
+<pre>
+    Pow2(n) == 2^n
+</pre> 
+using the integer exponentiation operator
+ &thinsp;<code>^</code>&thinsp;
+defined in the &thinsp;<code>Naturals</code>&thinsp; and 
+ &thinsp;<code>Integers</code>&thinsp; modules.
+
+</DD>
+
+<DT>Page 123</DT>
+<DD>
+As an exercise, try writing the &thinsp;<code>binary_search</code>&thinsp; algorithm yourself,
+without looking at the book.&nbsp;  I'll bet it doesn't work right 
+on your first
+try.&nbsp;  If it fails on your first test, instead of continuing
+by trial and error, use the same approach I recommended for the more
+efficient 
+  &thinsp;<code>Leftpad</code>&thinsp; 
+algorithm than the one on page 117.&nbsp;  Put an 
+ &thinsp;<code>assert</code>&thinsp;
+statement at the beginning of the <b>while</b> loop's body asserting
+that either
+ &thinsp;<code>target = seq[i]</code>&thinsp; for some 
+ &thinsp;<code>i</code>&thinsp; in 
+ &thinsp;<code>low..high</code>&thinsp;, or else 
+  &thinsp;<code>target</code>&thinsp; is not in 
+  &thinsp;<code>seq</code>&thinsp;.&nbsp;
+Then design your code so that this assertion is not violated.
+
+</DD>
+
+</DL>
+</DIV>
+
+
+
+<H2 id="h2chap8"  
+    class="show-hide" onclick="showHide('hide-chap8','chap8')">Chapter 8
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap8" > [show]</font>
+</H2>
+
+<DIV id="chap8" class = "hidden-div">
+
+<DL>
+<DT>Page 127, line 4</DT>
+<DD>
+  <BLOCKQUOTE>
+   That means we should write data structures as separate modules 
+    that are extended or instantiated in our spec.
+  </BLOCKQUOTE>
+This is standard, good advice.&nbsp;  It's what you should do if you were
+writing a program rather than a spec.&nbsp;  It's also what you should do if
+you or others want the identical data structure spec&mdash;for example, if
+it models a data structure that is already implemented in code.&nbsp;
+However, specs are simpler and much smaller than programs.&nbsp;  Engineers
+generally prefer to keep the spec of a data structure in the same
+module as the spec of the algorithm that uses it.&nbsp;  Copying and pasting
+a few lines of data structure spec is no big deal.&nbsp;  Moreover, it
+encourages them to modify the data structure so it's exactly what
+they want for their new spec.
+</DD>
+
+
+<DT>Page 128, line 9</DT>
+<DD>
+  <BLOCKQUOTE>
+   This means using <code style="font-style:normal">TLC</code> to get 
+   <code style="font-style:normal">Assert</code>.
+  </BLOCKQUOTE>
+This seems to mean importing the TLC module to import the definition
+of &thinsp;<code>Assert</code>&thinsp;.
+</DD>
+
+
+<DT>Page 132, line -14</DT>
+<DD>
+It is probably a mistake to make the definition of 
+ &thinsp;<code>isLinkedList</code>&thinsp;
+local, since for an algorithm that is supposed to create linked
+lists, one wants to check that it actually does create one.&nbsp;  This
+can be done by evaluating 
+   &thinsp;<code>isLinkedList</code>&thinsp;,
+without having to evaluate the complete set of all linked lists.
+
+</DD>
+
+</DL>
+<p style="margin-top:20px">
+There is one issue that should be discussed in Chapter 8 but isn't.&nbsp;
+It's good to define data structures as simply as possible, to make
+sure that the definition is correct.&nbsp;  However, for using the data
+structure in other specs, efficiency of TLC's evaluation of the operators
+can be important.&nbsp;  For example, 
+ &thinsp;<code>isLinkedList</code>&thinsp; is defined on page 132 to equal 
+<pre>
+    isLinkedList(PointerMap) == 
+       LET ... IN \E ordering \in all_seqs : ... 
+</pre> 
+If the cardinality of &thinsp;<code>nodes</code>&thinsp; is 
+  &thinsp;<code>n</code>&thinsp;,
+then &thinsp;<code>all_seqs</code>&thinsp; contains &thinsp;<code>n^n</code>&thinsp; elements,
+which makes evaluation of 
+ &thinsp;<code>isLInkedList(PointerMap)</code>&thinsp;
+inefficient unless 
+ &thinsp;<code>n</code>&thinsp;
+is very small.&nbsp;
+It's easy to recursively define an operator
+  &thinsp;<code>startsLL(node,PointerMap)</code>&thinsp; to be true iff 
+  &thinsp;<code>PointerMap</code>&thinsp; is a linked list
+  starting at
+ &thinsp;<code>node</code>&thinsp;,
+where
+ &thinsp;<code>StartsLL</code>&thinsp; 
+can be evaluated in time polynomial in 
+  &thinsp;<code>n</code>&thinsp;.&nbsp;  
+A more efficient definition of
+ &thinsp;<code>isLinkedList</code>&thinsp; is then
+<pre>
+   IsLinkedList(PointerMap) == 
+      LET nodes == ... IN \E node \in nodes : startsLL(node, PointerMap)
+</pre>
+You can test that the two definitions of 
+ &thinsp;<code>isLinkedList</code>&thinsp; are the same on
+a set of nodes small enough so it can be handled by the inefficient
+definition.&nbsp;  Having two separate definitions helps assure that both
+definitions are correct.&nbsp;  Often the more efficient definition of
+an operator is a more operational recursive one.
+</DIV>
+
+
+<H2 id="h2chap9"  
+    class="show-hide" onclick="showHide('hide-chap9','chap9')">Chapter 9
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap9" > [show]</font>
+</H2>
+
+<DIV id="chap9" class = "hidden-div">
+
+<DL>
+<DT>Page 137, line 9</DT>
+<DD>
+  <BLOCKQUOTE>
+  A state machine is a system with a finite set of internal <q>states</q>
+   along with a set of transitions between the states.
+  </BLOCKQUOTE>
+That's a <i>finite</i> state machine.  Not all the <q>state machines</q>
+specified in this chapter are finite.&nbsp;  For example, in the spec
+on page 141, nothing says that the sets <code>Data</code>
+and <code>Clients</code> are finite.
+
+<p> The whole idea of PlusCal and TLA+ is to model a system as a state
+machine&mdash;usually not a finite-state one.&nbsp;  TLC is generally run on
+a finite-state model of the state machine.
+</DD>
+
+<DT>Page 146, line 5</DT>
+<DD>
+Ghost variables are more accurately called history variables because
+they record information about past states.&nbsp;  Somewhat surprisingly,
+some refinements require a different kind of variable, which doesn't
+have to be implemented, called a prophecy variable&mdash;a  variable
+that predicts what
+will happen in the future.&nbsp;  Such a variable might be needed if a
+decision is made in the spec before it needs to be, and that decision
+happens later in the refinement.  
+</DD>
+</DL>
+</DIV>
+
+
+<H2 id="h2chap10"  
+    class="show-hide" onclick="showHide('hide-chap10','chap10')">Chapter 10
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap10" > [show]</font>
+</H2>
+
+<DIV id="chap10" class = "hidden-div">
+
+The example of this chapter nicely illustrates that reasonable
+liveness properties often can't be satisfied.&nbsp; But you should remember
+that liveness itself is just an approximation of the property we
+really want.&nbsp; It's of no use to know that a program will
+eventually produce an answer if it might take billions of years.&nbsp;
+Liveness properties can be useful because checking them can reveal
+that the system can't always do something that should be possible.
+
+<p style="margin-top:15px">
+
+The properties we really want are real-time properties, which assert
+that something must happen within some length of time.&nbsp;  These are
+safety properties and can be asserted by adding some kind of clock to
+the system.&nbsp;  It would be a nice exercise to add the requirement 
+that reservations time out after some number of days have elapsed.&nbsp;
+This can be asserted by adding a 
+ &thinsp;<code>date</code>&thinsp; 
+variable representing the number of days that have elapsed since the
+library opened, with an
+ &thinsp;<code>AdvanceDate</code>&thinsp; 
+process that repeatedly advances the value of 
+  &thinsp;<code>date</code>&thinsp; by one.&nbsp; A
+reservation queue should include the date when an entry was added to
+it.&nbsp; A requirement that a user checks out a book before a certain
+date can be represented by an enabling condition on when the date can
+be advanced.
+
+<p style="margin-top:15px">
+
+There's no problem writing PlusCal specs with this kind of real-time
+condition, though they might be simpler written directly in TLA+.&nbsp;
+However, the number of reachable states in such a spec increases
+exponentially with the length of time the system runs.&nbsp;  The library
+example is simple enough that it should be possible for TLC to check
+models that allow time to advance far enough to adequately debug the
+code.
+
+</DIV>
+
+
+<!--
+H2 id="h2chap11"  
+    class="show-hide" onclick="showHide('hide-chap11','chap11')">Chapter 11
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-chap11" > [show]</font>
+</H2>
+
+<DIV id="chap11" class = "hidden-div">
+
+This is a placeholder.
+
+</DIV 
+-->
+
+
+<H2 id="h2appA"  
+    class="show-hide" onclick="showHide('hide-appA','appA')">Appendix A
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-appA" > [show]</font>
+</H2>
+
+<DIV id="appA" class = "hidden-div">
+
+This chapter describes mathematical concepts informally and
+imprecisely, the way most
+mathematicians do.&nbsp;  
+
+To truly understand the concepts, you should understand 
+how they can be stated rigorously and precisely.&nbsp;
+
+I will try to help you do that.
+
+<p style="margin-top:20px">
+
+When a mathematician writes a formula like &thinsp;<code>x+2 > 4</code>&thinsp;, it can
+be a noun as in
+ <BLOCKQUOTE style="font-style:normal;margin-top:-10px;margin-bottom:5px">
+   We know that if &thinsp;<code>x</code>&thinsp; equals 3 then 
+   &thinsp;<code>x+2 > 4</code>&thinsp; is true.
+ </BLOCKQUOTE>
+or it can be a complete clause, as in
+ <BLOCKQUOTE style="font-style:normal;margin-top:5px;margin-bottom:5px">
+   If &thinsp;<code>x</code>&thinsp; equals 3, then &thinsp;<code>x+2 > 4</code>&thinsp;.
+ </BLOCKQUOTE>
+In TLA+, as in all formal mathematics, formulas are nouns.&nbsp;  The
+assertion that the formula &thinsp;<code>x+2 > 4</code>&thinsp; is true
+is written in TLA+ as
+<pre>
+    THEOREM  x+2 > 4
+</pre>
+Whether or not this assertion is true depends on the context in which
+it appears.&nbsp;  For example, it is true if it appears 
+in a module and is preceded by
+<pre>
+    CONSTANT x
+    ASSUME  x \in 3..10
+</pre>
+It is false if it's preceded by
+<pre>
+    x == 2
+</pre> 
+A rigorous understanding of the mathematical concepts described
+in this chapter is obtained by translating the informal assertions
+made in the text to theorems, and understanding the context in which
+those theorems are true.
+
+<DL style="margin-top:20px">
+<DT>Page 200, line 9</DT>
+<DD>
+  <BLOCKQUOTE>
+   Since their columns are different, 
+     &thinsp;<code style="font-style:normal">A /\ B /= A \/ B</code>&thinsp;. 
+  </BLOCKQUOTE>
+This is asserting that the following theorem is <i>not</i> true:
+<pre>
+    THEOREM A /\ B = A \/ B
+</pre>
+The assumed context is:
+<pre>
+  CONSTANTS  A, B
+  ASSUME  (A \in BOOLEAN) /\ (B \in BOOLEAN)
+</pre> 
+
+(The theorem is true in a context in which 
+ &thinsp;<code>A</code>&thinsp; and &thinsp;<code>B</code>&thinsp; 
+are Booleans and 
+ &thinsp;<code>A</code>&thinsp; equals &thinsp;<code>B</code>&thinsp;.)
+</DD> 
+
+<DT>Page 200, Line 14</DT>
+<DD>
+  <BLOCKQUOTE>
+   Since their columns are the same, 
+      &thinsp;<code style="font-style:normal">A = &#172;&#172;A</code>&thinsp;.
+  </BLOCKQUOTE>
+This asserts the truth of:
+<pre>
+    CONSTANT  A
+    ASSUME  A \in BOOLEAN
+    THEOREM  A = &#172;&#172;A
+</pre>
+</DD>
+
+<DT>Page 201, line 10</DT>
+<DD>
+  <BLOCKQUOTE>
+  Another way of saying A = B is to write A &#8660; B
+  </BLOCKQUOTE>
+The symbol &thinsp;&#8660;&thinsp; is typed
+ &thinsp;<code>&lt;=&gt;</code>&thinsp;
+or
+ &thinsp;<code>\equiv</code>&thinsp;.&nbsp;  It is the Boolean operator
+such that for any Boolean values 
+  &thinsp;<code>A</code>&thinsp; and &thinsp;<code>B</code>&thinsp;,
+the expression
+ &thinsp;<code>A &lt;=&gt; B</code>&thinsp; 
+equals &thinsp;<code>TRUE</code>&thinsp; if
+  &thinsp;<code>A</code>&thinsp; equals &thinsp;<code>B</code>&thinsp;
+and otherwise equals &thinsp;<code>FALSE</code>&thinsp;.&nbsp;
+
+The semantics of TLA+ do not specify the value of 
+   &thinsp;<code>A &lt;=&gt; B</code>&thinsp;
+unless both 
+  &thinsp;<code>A</code>&thinsp; and &thinsp;<code>B</code>&thinsp; 
+are Booleans.&nbsp;  Thus, TLC will evaluate
+   &thinsp;<code>FALSE &lt;=&gt; TRUE</code>&thinsp;
+to equal &thinsp;<code>FALSE</code>&thinsp;, but 
+will report an error if it tries
+to evaluate  &thinsp;<code>42 &lt;=&gt; 27</code>&thinsp;.&nbsp;
+
+It's good to write 
+  &thinsp;<code>exp1 &lt;=&gt; exp2</code>&thinsp; 
+rather than
+  &thinsp;<code>exp1 = exp2</code>&thinsp;
+if it appears in a context in which 
+  &thinsp;<code>exp1</code>&thinsp; &nbsp;and&nbsp; &thinsp;<code>exp2</code>&thinsp;
+should both be Boolean-valued expressions, since TLC will
+report an error if they're not.
+</DD>
+
+<DT>Page 202, line 10</DT>
+<DD>
+  <BLOCKQUOTE style="font-style:normal">
+  x &#8713; {{x}} &nbsp;<i>but</i>&nbsp; {x} &#8712; {{x}}.
+  </BLOCKQUOTE>
+I believe this is asserting the following two theorems:
+<pre>
+    THEOREM  x &#8713; {{x}}
+    THEOREM  {x} &#8712; {{x}}
+</pre> for any value of &thinsp;<code>x</code>&thinsp;.&nbsp; The second
+theorem is true.&nbsp; Since &thinsp;<code>{x}</code>&thinsp;
+is the one element of 
+  &thinsp;<code>{{x}}</code>&thinsp;,
+the first theorem is true if and only if 
+   &thinsp;<code>x</code>&thinsp; is not equal to
+   &thinsp;<code>{x}</code>&thinsp;.&nbsp;  
+But the semantics of TLA+ do not specify whether or not
+   &thinsp;<code>x</code>&thinsp; equals
+   &thinsp;<code>{x}</code>&thinsp;,
+so the first theorem is not a true TLA+ theorem.
+
+</DD>
+
+<DT>Page 203, Line 12</DT>
+<DD>
+  <BLOCKQUOTE>
+   TLC can test membership of infinite sets
+  </BLOCKQUOTE>
+
+This means that for some infinite sets 
+ &thinsp;<code>T</code>&thinsp;, 
+TLC can test whether a value
+ &thinsp;<code>v</code>&thinsp; is in 
+ &thinsp;<code>T</code>&thinsp;.&nbsp;  Try TLC on these two expressions:
+<pre>
+    4 \in {x \in Nat : x % 2 = 0}
+    4 \in {2*x : x \in Nat}
+</pre>
+</DD>
+
+<DT>Page 204, Lines 1 to 5</DT>
+<DD>
+Cardinal numbers like <i>two</i> and <i>seventeen</i> are answers to the
+question <q>how many?</q>.&nbsp;  Zero is a cardinal number.&nbsp;
+
+Ordinal numbers like <i>second</i> and <i>seventeenth</i> are answers
+to the question <q>which one?</q>.&nbsp; The first ordinal number is
+<i>first</i>; there is no number named <i>zeroth</i>.&nbsp; (That's
+why the first element of a non-empty sequence
+&thinsp;<code>seq</code>&thinsp; is
+&thinsp;<code>seq[1]</code>&thinsp;.)&nbsp;
+
+There is no good reason why either kind of number should be considered
+more natural than the other.&nbsp;  
+The standard TLA+ modules define the set 
+ &thinsp;<code>Nat</code>&thinsp;
+of natural numbers to contain 0 because that's what computer scientists
+do.
+</DD>
+
+<DT>Page 204, Lines 12 to -1</DT>
+
+<DD>
+I find this discussion rather confusing.  The Predicate
+Logic section should have contained these theorems,
+which are true for all sets 
+  &thinsp;<code>S</code>&thinsp; and Boolean-valued operators
+  &thinsp;<code>P</code>&thinsp;:
+<pre>
+   THEOREM  (\A x \in S : P(x))  &lt;=&gt;  &#172;&thinsp;(\E x \in S : &#172;&thinsp;P(x))
+   THEOREM  (\E x \in S : P(x))  &lt;=&gt;  &#172;&thinsp;(\A x \in S : &#172;&thinsp;P(x))
+</pre>
+They should help you understand the truth of the following theorems, for any
+Boolean-valued operator
+  &thinsp;<code>P</code>&thinsp;:
+<pre>
+   THEOREM  \A x \in {} : P(x)  
+   THEOREM  &#172;&thinsp;(\E x \in {} : P(x))  
+</pre>
+</DD>
+
+<DT>Page 206, Line 2</DT>
+<DD>
+  <BLOCKQUOTE>
+  TLA+ cannot quantify over infinite sets
+  </BLOCKQUOTE>
+
+This is false.&nbsp;  The following is a perfectly legal TLA+ theorem
+that the TLAPS proof system easily proves:
+<pre>
+   THEOREM \A x \in Nat \ {0} : 2*x > x
+</pre>
+It is true that TLC cannot evaluate a formula
+
+ &thinsp;<code>\A x \in S : ...</code>&thinsp;&nbsp;  or  <br>
+ &thinsp;<code>\E x \in S : ...</code>&thinsp;&nbsp;  
+
+if S is an infinite set.
+</DD>
+</DL>
+</DIV>
+
+
+<H2 id="h2appB"  
+    class="show-hide" onclick="showHide('hide-appB','appB')">Appendix B
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-appB" > [show]</font>
+</H2>
+
+<DIV id="appB" class = "hidden-div">
+
+<DL>
+<DT>Page 208, line -10</DT>
+<DD>
+It should be noted that the time and space TLC takes to evaluate
+ &thinsp;<code>Order(set)</code>&thinsp;
+are exponential in the set's cardinality.&nbsp;  The obvious
+recursive definition would be evaluated more efficiently.
+</DD>
+</DL>
+
+   
+
+</DIV>
+
+</DIV>
+</td>
+</tr>
+
+<!-- Bottom Back button -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-30px"><b>Back</b>
+</p>
+</a>
+</td>
+</tr>
+
+
+</table>
+ 
+
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/practical-tla.html?back-link=learning.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:34:27 GMT -->
+</HTML>

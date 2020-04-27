@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/advanced.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:33:03 GMT -->
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) 
+              [Netscape]">
+<!--
+%&b&<b>#</b>&
+%&c&&thinsp;<b>#</b>&thinsp;&
+-->
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+
+<script src="tlaweb.js"> </script>
+
+<!-- The following causes the name of this page in the left-hand column 
+     not to have a link.  -->
+
+<SCRIPT>
+   noLinkName = "Advanced Topics" ;
+ </SCRIPT>
+
+
+<title>Advanced Topics</title> 
+
+</HEAD>
+
+<BODY onload="initialize()">
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol" > </div> 
+
+<H1>Advanced Topics</H1>
+
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 27 June 2019</I></font>
+</td>
+<!-- td style="vertical-alight:top;width:auto" -->
+<!-- img src="tla-logo.png" style="width:170px;margin-top:14px"> </img -->
+<!-- /td -->
+</tr>
+
+</table>
+<hr style="margin-bottom:-5px;margin-top:-11px"> 
+
+<P style="margin-top:0px"> </P>
+
+<DIV class="hidden-div" style="color:red;margin-bottom:-22px"><b>
+   You'll miss a lot on this web site unless you enable Javascript
+   in your browser. </b></DIV>
+
+
+<H2 id ="h2intro" 
+ class="show-hide" onclick="showHide('hide-intro','intro')">
+    Introduction 
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-intro" >
+      [show]</font>
+</H2>
+
+<DIV id="intro" class = "hidden-div">
+
+This page assumes you are familiar enough with TLA+ to be able to
+understand a simple TLA+ spec (not just a PlusCal spec).&nbsp;
+
+It contains links to documents explaining topics that go beyond what
+most engineers need to know about TLA+.&nbsp;
+
+These topics may be useful to engineers who want to push the boundary
+of what they can do with TLA+, and they will be of interest to
+those who want a deeper understanding of the principles underlying
+TLA+.&nbsp;
+
+
+
+
+</DIV>
+
+<H2 id="h2stuttering"  class="show-hide" 
+    onclick="showHide('hide-stuttering','stuttering')">Stuttering Steps
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-stuttering" > 
+      [show]</font>
+</H2>
+
+<DIV id="stuttering" class = "hidden-div">
+
+It seems obvious to me that in any sensible definition of
+<i>implementation</i>, a clock that displays hours, minutes, and
+seconds should implement the specification of a clock that displays
+hours and minutes.&nbsp;  
+
+I realized in 1983 that the simplest way to ensure that this is true
+is to require that all specifications allow <q>stuttering
+steps</q>&mdash;steps in which the state of the system does not
+change.&nbsp;  Steps of an hour/minute/second clock in which only the
+seconds change implement stuttering steps of the hour/minute clock's
+specification.&nbsp;  In the decades since then, I have continued to explain
+this to people.&nbsp;  To my knowledge, no state-based specification
+formalism other than TLA has adopted the idea.&nbsp;
+
+I suspect that even many TLA+ users think it's weird to require that
+specifications allow stuttering steps.&nbsp; Here is a link to a short
+note explaining why not requiring it is weird:
+   <A href =
+   "stuttering1505.html?back-link=advanced.html#stuttering?unhideBut@EQhide-stuttering@AMPunhideDiv@EQstuttering"
+  > [a link]</A>.&nbsp;
+I don't understand why many people write such weird specs.
+
+
+</DIV>
+
+<H2 id="h2liveness"  class="show-hide" 
+    onclick="showHide('hide-liveness','liveness')">Safety, Liveness, 
+                  and Fairness
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-liveness" >
+      [show]</font>
+</H2>
+
+<DIV id="liveness" class = "hidden-div">
+
+The terms <i>safety</i>, <i>liveness</i>, and
+<i>fairness</i> are used informally throughout the TLA+
+documentation&mdash;including in the
+ <A href="http://lamport.azurewebsites.net/video/videos.html">
+   TLA+ Video Course</A>.&nbsp;  They are defined precisely 
+<A href="safety-liveness.pdf">in this note</A>, which also describes
+their significance.&nbsp;  Although it requires little knowledge of TLA+, 
+you might find the note to be tough going if you're not used to
+reading mathematics.&nbsp;  But it's worth the effort if you want a more
+complete understanding of TLA+.
+
+</DIV>
+
+<H2 id="h2proving-safety"  class="show-hide" 
+    onclick="showHide('hide-proving-safety','proving-safety')">Proving Safety Properties
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  id="hide-proving-safety" >
+      [show]</font>
+</H2>
+
+<DIV id="proving-safety" class = "hidden-div">
+
+I have been writing correctness proofs of concurrent algorithms for
+about 45 years.&nbsp;
+
+I developed what I find to be a natural way of writing these proofs.&nbsp;
+
+However, writing rigorous proofs has remained a black art that few
+people have mastered.&nbsp;
+
+Learning to write these proofs starts with learning to write proofs
+of safety properties.&nbsp;
+
+I believe that TLA+ and its tools can help you learn to write
+these proofs.&nbsp;  
+
+The document <a href="proving-safety.pdf">Proving Safety Properties</a>
+shows you how.&nbsp;  
+
+It explains the art of writing rigorous proofs, but not completely
+formal machine-checked proofs.&nbsp;
+
+Writing machine-checked proofs requires a lot of additional effort, as
+well as practice using the TLAPS proof system. 
+
+</DIV>
+
+<H2 id="h2hiding"  class="show-hide" 
+    onclick="showHide('hide-hiding','hiding')">Hiding,
+      Refinement,  and Auxiliary Variables
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  id="hide-hiding" >
+      [show]</font>
+</H2>
+
+<DIV id="hiding" class = "hidden-div">
+
+I started thinking about writing specifications around 1980.&nbsp; I
+quickly realized that it was important to understand what it meant for
+a program to satisfy a spec.&nbsp; I knew that, in principle, a spec
+and an executable program are both specifications of a physical
+system, written at two different levels of abstractions.&nbsp; So, I
+needed to understand what it meant for one specification to implement
+or refine another.&nbsp; This ultimately led me to TLA, the temporal
+logic underlying the TLA+ language, and to using the temporal
+existential quantification operator (written <code>\EE</code> in TLA+)
+to write specifications.&nbsp; This operator served to distinguish
+variables that represent externally observable parts of the system
+from ones that represent unobservable parts that need not appear in an
+implementation.&nbsp; Temporal existential quantification hid those
+<q>unobservable</q> variabled.
+
+<p>
+
+With the development of the TLA+ tools and seeing how TLA+ is used in
+practice, I came to realize that engineers and computer scientists
+didn't need the <code>\EE</code> operator.&nbsp; So, I generally don't
+talk about it; and I explain refinement without it.&nbsp; For example,
+<code>\EE</code> is not mentioned in the
+
+ <a href="http://lamport.azurewebsites.net/video/videos.html">TLA+ Video 
+  Course</a>.&nbsp;
+
+
+
+<p>
+
+While engineers don't need to use variable hiding and the
+<code>\EE</code> operator, knowing why I used them to write specs
+provides a deeper understanding of refinement and  
+auxiliary variables.&nbsp; So, I have explained this background in the note
+
+ <A href="hiding-and-refinement.pdf">Hiding, Refinement, and
+   Auxiliary Variables</A>.&nbsp; 
+
+You should read it before attempting to read the complete guide to
+auxiliary variables in the paper
+ <a href="http://lamport.azurewebsites.net/pubs/pubs.html#auxiliary">Auxiliary
+ Variables in TLA+</a>.&nbsp;
+
+
+</DIV>
+
+
+<!--
+<H2 id="h2xxxx"  class="show-hide" 
+    onclick="showHide('hide-xxxx','xxxx')">A Section
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  id="hide-xxxx" >
+      [show]</font>
+</H2>
+
+<DIV id="xxxx" class = "hidden-div">
+
+</DIV>
+-->
+
+
+
+
+
+
+
+
+<!-- **************** ENDING BOILERPLATE *************** -->
+
+</td>
+</tr>
+<!-- Bottom Back button -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-27px"><b>Back</b>
+</p>
+</a>
+
+<!-- For a long page, add more back buttons higher on the page
+   by add one or more items like this, adjusting the margin-top 
+   parameter as desired.
+
+   <a class="back-link" style="display:none" href="">
+   <p style="margin-top:-1100px"><b>Back</b> </p> </a>
+-->
+
+</td>
+</tr>
+
+</table>
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/advanced.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:33:30 GMT -->
+</HTML>
+

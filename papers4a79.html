@@ -1,0 +1,743 @@
+<HTML> 
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/papers.html?back-link=more-stuff.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+<HEAD>
+<META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) 
+              [Netscape]">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1"> 
+
+<!-- STYLE type="text/css">
+   H2 {line-height:45px; margin-bottom:0px; text-align: left; font-size:26px;
+       color:#000000}
+   H3 {line-height:10px; margin-bottom:8px; text-align: left}
+   body {background-color:#ffffe4; max-width:750px;
+         font-family:Calibri,Trebuchet MS,Verdana; }
+   DL {max-width:750px;
+         font-family:Calibri,Trebuchet MS,Verdana; }
+ </STYLE
+-->
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+
+<script src="tlaweb.js"> </script>
+<title>My TLA Papers</title>
+
+</HEAD> 
+<BODY onload="initialize()">
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol" > </div> 
+
+
+<H1>My Papers About TLA and TLA+ </H1>
+
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 30 November 2018</I></font>
+</td>
+<!-- td style="vertical-alight:top;width:auto" -->
+<!-- img src="tla-logo.png" style="width:170px;margin-top:14px"> </img -->
+<!-- /td -->
+</tr>
+</table>
+<HR>
+
+<DIV class="hidden-div" style="color:red;margin-bottom:-22px"><b>
+   You'll miss a lot on this web site unless you enable Javascript
+   in your browser. </b></DIV>
+
+<H2 id ="h2intro" 
+ class="show-hide" onclick="showHide('hide-intro','intro')">
+    What's Here
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-intro" >
+      [show]</font>
+</H2>
+
+<DIV id="intro" class = "hidden-div">
+
+
+This page lists approximately every paper I've published or perhaps
+should have published about TLA and TLA+.&nbsp;
+
+Newer papers are in reverse chronological order and have links to 
+<HREF =
+     "http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html">
+   my publication page</A>.&nbsp;
+
+Older papers are in chronological order with an index and self-contained
+descriptions.&nbsp;
+
+The boundary between older and newer is the turn of the millenium.
+
+
+</DIV>
+<H2 id="h2newer"  class="show-hide" 
+    style="margin-bottom:-10px"
+    onclick="showHide('hide-newer','newer')">Newer Papers
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  id="hide-newer" >
+      [show]</font>
+     
+</H2>
+
+<DIV id="newer" class = "hidden-div">
+
+
+<DL> <DT> <A
+HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#auxiliary"><B>Auxiliary Variables in TLA+</B></A>
+<DD>
+
+Auxiliary variables are added to a spec to permit the definition of a
+refinement mapping under which a specification implements a
+higher-level specification.&nbsp; This paper explains how to add them
+to a TLA+ spec.
+
+</DT>
+</DD>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#proof"><B>How to Write a 21st Century Proof</B></A>
+<DD>
+Written primarily for mathematicians, this provides an introduction
+to the kind of hierarchical proofs supported by the TLA+ language
+and checked by 
+ <A HREF=
+   "http://tla.msr-inria.inria.fr/tlaps">TLAPS 
+   (the TLA+ Proof System)</A>.
+</DT>
+</DD>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#euclid"><B> 
+Euclid Writes an Algorithm: A Fairytale
+</B></A>
+<DD>
+This is a short, whimsical introduction to TLA, TLA+, and TLA proofs.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#web-byzpaxos"><B>Byzantizing Paxos by Refinement</B></A>
+<DD>
+This contains an informal description of a significant proof that
+was done with 
+<A HREF=
+   "http://tla.msr-inria.inria.fr/tlaps">TLAPS</A>,
+ and a pointer to the complete proof.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#deroever-festschrift"><B>Computer Science and State
+Machines </B></A>
+<DD>
+This is a very brief note that explains the basic idea that inspired TLA.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#teaching-concurrency"><B>Teaching Concurrency </B></A>
+<DD>
+Another short note that I don't think mentions TLA, but that should 
+be of interest to anyone who teaches basic computer science.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#state-machine"><B>Computation and State Machines</B></A>
+<DD>This is a 30-page paper that explains in detail the ideas behind the
+preceding paper, <i>Teaching Concurrency</i>.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#commentary-web"><B>Leslie 
+Lamport: The Specification Language TLA+ </B></A>
+<DD>
+A brief note, mostly about the history behind TLA and TLA+.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#spec-book-chap"><B>TLA+</B></A>
+<DD>
+This is a book chapter I was asked to write containing a TLA+ solution to
+an uninteresting specification problem.  It contains some comments about
+the specification process that may be of interest.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#pluscal"><B>The PlusCal Algorithm Language </B></A>
+<DD>
+This is the best place to learn about 
+ <A HREF="http://research.microsoft.com/en-us/um/people/lamport/tla/pluscal.html">the PlusCal algorithm language</A>.
+It complements the language manual.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#dcas"><B>Checking a Multithreaded Algorithm with +CAL</B></A>
+<DD>
+A case study of using PlusCal and the TLC model checker.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#charme2005"><B>Real-Time Model Checking is Really
+Simple </B></A>
+<DD>
+This is an abridged version of the following paper.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#real-simple"><B>Real Time is Really Simple </B></A>
+<DD>
+This is a good place to find out about using TLA+ in practice for checking
+real-time algorithms.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#combining"><B>Implementing and Combining Specifications </B></A>
+<DD>
+A note that may be helpful in learning to write real specifications.
+</DD>
+</DL>
+
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#wsfm-web"><B>Formal Specification of a Web Services
+Protocol </B></A>
+<DD>
+A paper about a simple real-world specification.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#high-level"><B>High-Level Specifications: Lessons from
+Industry </B></A>
+<DD>
+A note about the use of TLA+ in industry.
+</DD>
+</DT>
+
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#fmsd"><B>Checking Cache-Coherence Protocols with TLA+ </B></A>
+<DD>
+Another industrial research report.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#tla+-book"><B>Specifying Systems: The TLA+
+Language and Tools for Hardware and Software Engineers </B></A>
+<DD>
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/tla/book.html">
+The TLA+ book.</A>
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#spec-and-verifying"><B>Specifying and Verifying Systems with TLA+ </B></A>
+<DD>
+A description of early experience using TLA+ and the TLC model checker.
+</DD>
+</DT>
+
+<P>
+<DT> 
+<A HREF="http://research.microsoft.com/en-us/um/people/lamport/pubs/pubs.html#wildfire-challenge"><B>The Wildfire Challenge Problem </B></A>
+<DD>
+A nice example of a simplified real-world verification problem.
+</DD>
+</DT>
+
+</DT>
+
+
+
+</DIV>
+
+
+<H2 id="h2older"  class="show-hide" 
+    style="margin-bottom:-10px"
+    onclick="showHide('hide-older','older')">Older Papers
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  id="hide-older" >
+      [show]</font>
+</H2>
+
+<DIV id="older" class = "hidden-div">
+
+<UL>
+  <LI><A HREF = "#TLA">The Temporal Logic of Actions</A>
+  <LI><A HREF = "#Intro">Introduction to TLA</A> 
+  <LI><A HREF = "#Specifying">Specifying Concurrent Systems with TLA+</A>
+  <LI><A HREF = "#Summary">A Summary of TLA+</A>
+  <LI><A HREF = "#Model-Checking">Model Checking TLA+ Specifications</A>
+  <LI><A HREF = "#Cache-Coherence">TLA+ Verification of 
+                                  Cache-Coherence Protocols</A>
+  <LI><A HREF = "#DefinitionsAndModules">The Module Structure of TLA+</A> 
+  <LI><A HREF = "#TLA+Operators">The Operators of TLA+</A> 
+  <LI><A HREF = "#Refinement">Refinement in State-Based Formalisms</A>
+  <LI><A HREF = "#Processes">Processes are in the Eye of the Beholder</A> 
+  <LI><A HREF = "#Possible">Proving Possibility Properties</A> 
+  <LI><A HREF = "#WinThreads">Win32 Threads API Specification</A>
+  <LI><A HREF = "#Dagstuhl">A TLA Solution to the RPC-Memory Specification 
+                 Problem</A> 
+  <LI><A HREF = "#Lazy">Lazy Caching: An Assertional View</A> 
+  <LI><A HREF = "#Old-Fashioned">An Old-Fashioned Recipe for Real Time</A>
+  <LI><A HREF = "#ConjoiningSpecs">Conjoining Specifications</A>
+  <LI><A HREF = "#Pictures">TLA in Pictures</A>
+  <LI><A HREF = "#Hybrid">Hybrid Systems in TLA+</A>
+  <LI><A HREF = "#Fault-Tolerant">Specifying and Verifying 
+                        Fault-Tolerant Systems</A>
+  <LI><A HREF = "#CAV93">Verification of a Multiplier: 64 Bits and Beyond</A>
+  <LI><A HREF = "#CAV92">Mechanical Verification
+                         of Concurrent Systems with TLA</A>
+  <LI><A HREF = "#Notes">TLA Notes</A> 
+</UL>
+
+<A NAME = ""> </A>
+
+
+<DL>
+<DT> <A NAME = "TLA">
+     <B>The Temporal Logic of Actions</B> </A><BR> 
+      Leslie Lamport<BR>
+      <I>30 April 1994</I>
+  <DD> This is the basic TLA reference, introducing the logic and
+       proof rules.<P>
+      <EM>Abstract</EM>: 
+      The temporal logic of actions (TLA) is a logic for specifying and
+      reasoning about concurrent systems.  Systems and their properties are
+      represented in the same logic, so the assertion that a system meets its
+      specification and the assertion that one system implements another are
+      both expressed by logical implication.  TLA is very simple; its syntax
+      and complete formal semantics are summarized in about a
+      page.  Yet, TLA is not just a logician's toy; it is extremely powerful,
+      both in principle and in practice.  This report introduces TLA and
+      describes how it is used to specify and verify concurrent algorithms.
+      The use of TLA to specify and reason about open systems will be
+      described elsewhere. (51 pages) <BR>
+      Appeared  in <EM>ACM Toplas 16, 3 (May 1994) 872-923</EM><BR>
+      <A HREF = "all-src79-acm.ps.z">Postscript</A> -
+      <A HREF = "all-src79-acm.dvi.z">DVI</A> <P>      
+
+
+<DT> <A NAME = "Intro">
+      <B><A HREF = "http://www.hpl.hp.com/techreports/Compaq-DEC/SRC-TN-1994-001.html">Introduction to TLA</B></A> <BR> 
+      Leslie Lamport<DT>
+      <I>16 December 1994</I>
+      <DD> A short (7-page) introduction 
+           to what TLA formulas mean.
+       It should allow you to understand TLA specifications.</DD><P>
+
+<DT> <A NAME = "Specifying">
+      <B>Specifying Concurrent Systems with TLA+</B> <BR> 
+      Leslie Lamport<BR>
+      <I>3 March 1999</I>
+      <DD>A complete introduction to writing
+   TLA+ specifications.  It is intended for engineers with no background
+   in TLA or formal methods.  It includes an explanation of almost all
+   the constructs of TLA+.  (65 pages) <BR>
+   Appeared in <I>Calculational System
+   Design</I>.  M. Broy and R. Steinbr&uuml;ggen, editors.  <BR>
+      <A HREF = "marktoberdorf.ps.z">Postscript</A> -
+      <A HREF = "marktoberdorf.dvi.z">DVI</A>     <P>
+
+<DT> <A NAME = "Summary">
+     <B>A Summary of TLA+</B> <BR>
+      Leslie Lamport<BR>
+     <I>6 June 2000</I>
+<DD> This is a 7-page "cheat sheet" that briefly describes all the
+constructs and built-in operators of TLA+ and the operators defined in
+the common standard modules, and that lists the user-definable
+operator symbols and the ascii representations of symbols.<BR>
+ <A HREF = "summary.ps">Postscript (300K) </A> - 
+ <A HREF = "summary.ps.z">Compressed Postscript (170K) </A> - 
+ <A HREF = "summary.pdf">PDF (120K)</A> 
+</DL>
+
+<DT> <A NAME = "Model-Checking">
+      <B>Model Checking TLA+ Specifications</B> <BR> 
+      Yuan Yu, Panagiotis Manolios, and Leslie Lamport<BR>
+      <I>5 March 1999</I>
+      <DD>Describes TLC, the model checker for TLA+ specifications 
+      written mostly by Yuan Yu.<P>
+      <EM>Abstract</EM>: TLA+ is a specification language for concurrent and 
+  reactive
+  systems that combines the temporal logic TLA with full first-order
+  logic and ZF set theory.  TLC is a new model checker for debugging a
+  TLA+ specification by checking invariance properties of a
+  finite-state model of the specification.  It accepts a subclass of
+  TLA+ specifications that should include most descriptions of real
+  system designs.  It has been used by engineers to find errors in the
+  cache coherence protocol for a new Compaq multiprocessor.  We
+  describe TLA+ specifications and their TLC models, how TLC works,
+  and our experience using it.  In Charme '99.
+ (12 pages)<BR>
+  Appeared in <I>Correct  Hardware Design and Verification Methods 
+ (CHARME'99)</I>, Laurence Pierre and Thomas Kropf editors. 
+  Lecture Notes in Computer Science  number 1703 (1999), 54-66. <BR>
+      <A HREF = "charme.ps.z">Postscript</A> -
+      <A HREF = "charme.dvi.z">DVI</A>     <P>
+
+<DT> <A NAME = "Cache-Coherence">
+      <B>TLA+ Verification of Cache-Coherence Protocols</B> <BR> 
+      Homayoon Akhiani, Damien Doligez, Paul Harter, 
+      Leslie Lamport, Mark Tuttle, and Yuan Yu
+      <I>10 February 1999</I>
+      <DD> Describes two projects to use TLA+ to formally specify and verify
+     cache-coherence protocols for multiprocessor computers being
+     built at Compaq. (20 pages)<BR>
+      <A HREF = "fm99.ps.z">Postscript</A> -
+      <A HREF = "fm99.dvi.z">DVI</A>     <P>
+
+
+<DT> <A NAME = "DefinitionsAndModules">
+     <B><A HREF = 
+  "ftp://ftp.digital.com/pub/DEC/SRC/technical-notes/SRC-1996-002.html">
+The Module Structure of TLA+</A></B><BR>
+          <I>12 September 1996</I>
+<DD> An html document that informally describes the revised syntax and
+semantics for the module structure of TLA+.  This is a preliminary
+draft; there have been a few minor changes to TLA+ since this was written.
+(About 15 pages)
+    <P>
+
+<DT> <A NAME = "TLA+Operators">
+     <B><A HREF = 
+   "http://www.hpl.hp.com/techreports/Compaq-DEC/SRC-TN-1997-006A.html">The 
+      Operators of TLA+</B></A><BR>
+          <I>12 April 1997</I>
+<DD> This document is an introduction to the syntax and semantics of
+the operators of TLA+.  It assumes that you are familiar with ordinary
+mathematics (sets and functions) and are at least acquainted with TLA.
+It should enable you to understand the expressions that appear in TLA+
+specifications.  Most of this information appears in 
+ <A HREF = "#Specifying">Specifying Concurrent Systems with TLA+</A>, 
+with a couple of very minor changes.  (20 pages) <P>
+
+<DT> <A NAME = "Refinement">
+     <B><A HREF =
+ "http://www.hpl.hp.com/techreports/Compaq-DEC/SRC-TN-1996-001.html">
+Refinement in State-Based Formalisms</B></A><BR>
+          <I>18 December 1996</I>
+<DD> A note explaining what refinement and dummy variables
+     are all about. It also sneaks in an introduction to
+     TLA. (7 pages)
+    <P>
+
+<DT> <A NAME = "Processes">
+     <B>Processes are in the Eye of the Beholder</B> </A><BR> 
+      Leslie Lamport<BR>
+      <I>16 January 1996</I>
+  <DD> An illustration of the power of TLA for transforming
+       algorithms.  
+        A two-process algorithm is shown to be equivalent to an N-process
+       one, illustrating the insubstantiality of processes.  A completely
+      formal equivalence proof in TLA (the Temporal Logic of Actions) is
+      sketched.<BR>
+      Appeared in <EM>Theoretical Computer Science, 179</EM>
+     (1997), 333-351. <BR>
+      <A HREF = "tcs.ps.z">Postscript</A> -
+      <A HREF = "tcs.dvi.z">DVI</A>       -
+      <A HREF = "all-tcs.tex.z">LaTeX</A><P>
+
+<DT> <A NAME = "Possible">
+     <B>Proving Possibility Properties</B> </A><BR> 
+      Leslie Lamport<BR>
+      <I>4 July 1995</I>
+  <DD> <EM>Abstract</EM>: A method is described for proving 
+       &quot;always possibly&quot; properties of specifications in formalisms with 
+       linear-time trace semantics.  It is shown to be relatively complete for 
+       TLA (Temporal Logic of Actions) specifications.
+       <BR>
+       To appear  in <EM>Theoretical Computer Science</EM><BR>
+      <A HREF = "src137.ps.z">Postscript</A> -
+      <A HREF = "src137.dvi.z">DVI</A>       -
+      <A HREF = "all-src137.tex.z">LaTeX</A><P>
+
+<DT> <A NAME = "WinThreads">
+<B><A HREF = "threads/threads.html">Win32 Threads API 
+                        Specification</A></B> <BR> 
+          <I>14 May 1996</I>
+   <DD> A preliminary, unfinished TLA+ specification of the kernel
+   threads procedures from the Windows Win32 Application Programming
+   Interface (API).  Win32 is the API for the Windows 95 and Windows NT
+   operating systems.  This document shows what a real-world
+   specification looks like.  It also illustrates how one can
+   write an "object oriented" specification in TLA+.<P>
+
+<DT> <A NAME = "Dagstuhl">
+     <B>A TLA Solution to the RPC-Memory Specification Problem</B></A><BR>
+         Mart&iacute;n Abadi, Leslie Lamport, and Stephan Merz<BR>
+       <I>16 January 1996</I>
+   <DD> Presents a TLA solution to a specification and verification problem
+       proposed at a Dagstuhl workshop.  (45 pages, with
+     index)<BR>	
+     Appeared in <EM>Formal Systems Specification: The RPC-Memory 
+     Specification Case Study.</EM>  Manfred Broy,
+    Stephan Merz, and Katharina Spies editors.  
+    LNCS 1169, (1996), 21-66.<BR>
+        <A HREF = "http://lamport.azurewebsites.net/dagstuhl/proceedings.tex.Z">LaTeX</A> -
+        <A HREF = "http://lamport.azurewebsites.net/dagstuhl/proceedings.ps.Z">Postscript</A> -
+       <A HREF = "http://lamport.azurewebsites.net/dagstuhl/proceedings.dvi.Z">DVI</A>   <BR>
+      <A HREF = "http://lamport.azurewebsites.net/dagstuhl/dagstuhl.html">Click here for more information.</A><P>
+
+
+<DT> <A NAME = "Lazy">
+     <B>Lazy Caching in TLA</B> </A><BR> 
+      Peter Ladkin, Leslie Lamport, Bryan Olivier, and Denis Roegel<BR>
+      <I>8 February 1999</I>
+   <DD> We address the problem, proposed by Gerth, of verifying that the
+       simplified version of the lazy caching algorithm of Afek, Brown, and
+       Merritt, described 
+        informally in<BR>
+        <DL><DD>
+        <B>Verifying Sequential Consistent Memory Problem Definition</B><BR>
+        Rob Gerth <BR>
+        <I>April 1993</I><BR>
+        <A HREF = "Intro.ps.z">Postscript</A></DL>
+       is sequentially consistent.  We specify the algorithm and
+       sequential consistency in TLA+, a formal specification language based
+      on TLA (the Temporal Logic of Actions).  We then describe a formal
+     correctness proof in TLA.  (50 pages) <BR>
+     Appeared in <I>Distributed Computing 12</I>, 2/3, 1999, 151-174.
+
+     <BR>
+       <A HREF = "gerth3.ps.z">Postscript</A> -
+       <A HREF = "gerth3.dvi.z">DVI</A><BR> <P>
+
+<DT><B><A NAME = "Old-Fashioned">
+       An Old-Fashioned Recipe for Real Time</B> </A> <BR>
+        Martin Abadi and Leslie Lamport <BR>
+      <I>22 December 1993</I>
+    <DD> <EM>Abstract</EM>: 
+      Traditional methods for specifying and reasoning about concurrent
+      systems work for real-time systems.  Using TLA (the temporal logic of
+      actions), we illustrate how they work with the examples of a queue and
+      of a mutual-exclusion protocol.  In general, two problems must be
+      addressed: avoiding the real-time programming version of Zeno's
+      paradox, and coping with circularities when composing real-time
+      assumption/guarantee specifications.  Their solutions rest on
+      properties of machine closure and realizability. <BR>
+      Appeared in <EM> ACM Toplas 16, 5 (September, 1994) 1543-1571</EM><BR>
+       <A HREF = "all-src91-acm.ps.z">Postscript</A> -
+      <A HREF = "all-src91-acm.dvi.z">DVI</A>       -
+      <A HREF = "all-src91-acm.tex.z">LaTeX</A><P>
+     
+   <DT> <A NAME = "ConjoiningSpecs">
+        <B> Conjoining Specifications</B></A> <BR>
+        Martin Abadi and Leslie Lamport<BR>
+      <I>3 November 1995</I>
+    <DD> This paper describes how to write and reason about open system 
+      specifications--also known as
+      rely/guarantee specifications.  It is rather hard going,
+      but Section 2 gives a simple introduction to the issues. <P>
+     <EM>Abstract</EM>: 
+      We show how to specify components of concurrent systems.  The
+      specification of a system is the conjunction of its components'
+      specifications.  Properties of the system are proved by reasoning
+      about its components.  We consider both the decomposition of a given
+      system into parts, and the composition of given parts to form a
+      system.<BR>
+      Appeared in <EM> ACM Toplas 17, 3 (May, 1995) 507-534 </EM><BR>
+       <A HREF = "src118.ps.z">Postscript</A> -
+      <A HREF = "src118.dvi.z">DVI</A>       -
+      <A HREF = "all-src118.tex.z">LaTeX</A>
+     (requires <A HREF = "acmtrans.sty">acmtrans.sty</A>)<P>
+
+
+
+   <DT><A NAME = "Pictures"> <B>TLA in Pictures</B> </A><BR>
+        Leslie Lamport<BR>
+      <I>31 August 1994</I>
+    <DD> Other formalisms and informalisms no longer have all the
+         fun.  Now, you can draw pictures of TLA specifications.<P>
+         <EM>Abstract</EM>: 
+         Predicate-action diagrams, which are similar to conventional
+      state-transition diagrams, are defined as representations of formulas
+      in the temporal logic of actions (TLA).  These diagrams can be used to
+      express formal properties of specifications and to illustrate
+      correctness proofs. (8 large pages) <BR>
+      Appeared in <EM> IEEE Transactions on Software Engineering 21,
+      9, (September 1995) 768-775 </EM> <BR>
+       <A HREF = "src127.ps.z">Postscript</A> -
+      <A HREF = "src127.dvi.z">DVI</A>       -
+      <A HREF = "src127-all.tex.z">LaTeX</A> (requires 
+         <A HREF = "IEEEtran.sty">IEEEtran.sty</A>) <P>
+      <B>There is a minor error in this paper that no-one else seems
+         to have noticed.</B><P>
+
+   <DT><A NAME = "Hybrid"> <B>Hybrid Systems in TLA+ </B> </A><BR>
+        Leslie Lamport<BR>
+      <I>6 April 1993</I>
+    <DD>Here is the famous gas burner of Ravn, Rischel, and Hansen
+        done in TLA+.  This paper shows how to formally specification and
+        reason about solutions to integral (as in integral calculus) 
+        equations. <P>
+        <EM>Abstract</EM>: 
+         \TLA+ is a general purpose, formal specification language based on the
+      Temporal Logic of Actions, with no built-in primitives for specifying
+      real-time properties.  Here, we use \TLA+ to define operators for
+      specifying the temporal behavior of physical components obeying
+      integral equations of evolution.  These operators, together with
+      previously defined operators for describing timing constraints, are
+      used to specify a toy gas burner introduced by Ravn, Rischel, and
+      Hansen.  The burner is specified at three levels of abstraction, each
+      of the two lower-level specifications implementing the next
+      higher-level one.  Correctness proofs are sketched. <BR>
+      Appeared in <EM>Hybrid Systems</EM>, edited by
+     Grossman, Nerode, Ravn, and Rischel, LNCS 736.<BR>
+       <A HREF = "hybrid.ps.z">Postscript</A> -
+      <A HREF = "hybrid.dvi.z">DVI</A>       -
+      <A HREF = "all-hybrid.tex.z">LaTeX</A><P>
+
+
+<DT> <A NAME = "Fault-Tolerant">
+     <B>Specifying and Verifying Fault-Tolerant Systems</B> </A> <BR>
+        Leslie Lamport and Stephan Merz <BR>
+       <I>14 October 1994 </I>
+   <DD> 
+      <EM>Abstract</EM>: We formally specify a well known solution to the 
+      Byzantine generals problem and give a rigorous, hierarchically 
+      structured proof of its correctness.  We demonstrate that this is 
+      an engineering exercise, requiring no new scientific ideas.<BR>
+      Appeared in <EM>Formal Techniques in Real-Time and Fault-Tolerant 
+      Systems</EM>. H. Langmaack, W.-P. de Roever, and J. Vytopil, 
+      editors. LNCS 863, 41-76..<BR>
+       <A HREF = "ftrtft94.ps.z">Postscript</A> -
+       <A HREF = "ftrtft94.dvi.z">DVI</A>       -
+       <A HREF = "all-ftrtft94.tex.z">LaTeX</A> <P>
+
+<DT> <A NAME = "CAV93">
+     <B>Verification of a Multiplier: 64 Bits and Beyond</B></A> <BR>
+     R. P. Kurshan and Leslie Lamport<BR>
+      <I>14 April 1993</I>
+   <DD> This is the first application of a general method, described in 
+       <A HREF = "#ConjoiningSpecs">"Conjoining Specifications"</A>, for
+       splitting off finite-state parts of a non-finite-state verification
+       problem for verification by a model checker.<P>
+      <EM>Abstract</EM>: 
+       Verifying a 64-bit multiplier has a computational complexity that puts
+      it beyond the grasp of current finite-state algorithms, including
+      those based upon homomorphic reduction, the induction principle, and
+      bdd fixed-point algorithms.  Theorem proving, while not bound by the
+      same computational constraints, may not be feasible for routinely
+      coping with the complex, low-level details of a real multiplier.  We
+      show how to verify such a multiplier by applying COSPAN, a
+      model-checking algorithm, to verify local properties of the complex
+      low-level circuit, and using TLP, a theorem prover based on the
+      Temporal Logic of Actions, to prove that these properties imply the
+      correctness of the multiplier.  Both verification steps are automated,
+      and we plan to mechanize the translation between the languages of TLP
+      and COSPAN. <BR>
+      Appeared in <EM>Proceedings of the Fifth International Conference, 
+      CAV'93.</EM>  LNCS 697, 166-179.
+       <A HREF = "cav93.ps.z">Postscript</A> -
+       <A HREF = "cav93.dvi.z">DVI</A>       -
+       <A HREF = "all-cav93.tex.z">LaTeX</A> <P>
+
+<DT> <A NAME = "CAV92">
+     <B>Mechanical Verification of Concurrent Systems with TLA</B></A> <BR>
+     Urban Engberg, Peter Groenning, and Leslie Lamport<BR>
+      <I>14 September 1992</I>
+   <DD> This describes a now obsolete version of TLP, the mechanical
+       verification system based primarily on LP. <P>
+      <EM>Abstract</EM>: 
+      We describe an initial version of a system for mechanically checking
+      the correctness proof of a concurrent system.  Input to the system
+      consists of the correctness properties, expressed in TLA (the temporal
+      logic of actions), and their proofs, written in a humanly readable,
+      hierarchically structured form.  The system uses a mechanical verifier
+      to check each step of the proof, translating the step's assertion into
+      a theorem in the verifier's logic and its proof into instructions for
+      the verifier.  Checking is now done by LP (the Larch Prover),
+      using two different translations--one for action reasoning and one
+      for temporal reasoning.  The use of additional mechanical verifiers is
+      planned.  Our immediate goal is a practical system for mechanically
+      checking proofs of behavioral properties of a concurrent system; we
+      assume ordinary properties of the data structures used by the system. <BR>
+      
+      Appeared in <EM>Proceedings of the Fourth International Conference, 
+      CAV'92.</EM>  LNCS 663, 44-55.<BR>
+       <A HREF = "cav92.ps.z">Postscript</A> -
+       <A HREF = "cav92.dvi.z">DVI</A>       -
+       <A HREF = "all-cav92.tex.z">LaTeX</A> <P>
+
+<DT> <A NAME = "Notes">
+     <A HREF = "notes.html"><B>TLA Notes</B></A> 
+         <DD> A collection of rough, half-baked notes that 
+              still seem relevant, including 
+              ones sent to an old TLA mailing list.<P>
+
+</DL> 
+</DIV>
+<!-- **************** ENDING BOILERPLATE *************** -->
+
+</td>
+</tr>
+<!-- Bottom Back button may need to adjust margin-top parameter -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-27px"><b>Back</b>
+</p>
+</a>
+
+<!-- For a long page, add more back buttons higher on the page
+   by add one or more items like this, adjusting the margin-top 
+   parameter as desired.
+
+   <a class="back-link" style="display:none" href="">
+   <p style="margin-top:-1100px"><b>Back</b> </p> </a>
+-->
+
+</td>
+</tr>
+
+</table>
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/papers.html?back-link=more-stuff.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:42:03 GMT -->
+</HTML>
+
+

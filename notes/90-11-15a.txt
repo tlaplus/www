@@ -1,0 +1,160 @@
+Vaughan asks
+
+   How might a logic based on sets of traces deal with each of the
+   following situations?
+   
+   1.  Distinguish the race implicit in a|b from the race-free situation
+   implied by ab+ba.
+   
+   2.  Reason about observations made by a team of distributed observers
+   who agree on what events happened but not in what order.
+   
+   3.  Reason about the possible interleavings of two concurrent sine
+   waves.  (Presumably one falls back on some other technique for
+   combining traces than interleaving them.)
+
+The answer is that I don't know and I don't care.  These questions
+never arise in my work.
+
+How can it be that I find these issues to be irrelevant when Vaughan,
+who's an intelligent and (generally :-) reasonable computer scientist,
+considers them important?  To answer this, I must begin with a
+discussion of the nature of science.
+
+Any science is ultimately concerned with the real world.  A scientific
+theory consists of a mathematical formalism together with a way of
+relating that formalism to the real world.  For example, Newtonian
+mechanics consists of a mathematical theory of point masses moving
+along trajectories in mathematical 3-space, together with a way of
+relating those mathematical objects to the motions of real objects,
+such as planets.  Note that not every concept in the mathematcal
+formalism need correspond to something in the physical reality--for
+exaample, the vector potential of classical electromagnetism has no
+physical counterpart.
+
+Any useful scientific theory has a limited domain of application.  A
+theory-of-everything is generally good for nothing.  Newtonian
+mechanics can't describe the flow of fluids, for which one needs a
+theory containing mathematical concepts corresponding to friction and
+viscosity.
+
+For computer science, the real world usually consists of computers
+(hunks of wire and silicon) executing programs.  Theories in computer
+science are based on such diverse mathematical formalisms as Turing
+machines, temporal logic, and CCS.
+
+To judge a scientific theory, one must know what its claimed domain of
+applicability is.  The work of mine that I mentioned in an earlier
+message involves a theory whose domain is the specification and
+verification of functional properties of concurrent systems.  I won't
+describe this domain here, except to note that "functional properties"
+include eventual termination and upper and lower time bounds on
+termination; they exclude probability of termination and expected time
+to termination.
+
+Computer scientists have tended to be vague about the domain of
+applicability of their theories.  As a result, people who work in one
+theory often think their theory is good for everything.  For example, I
+have heard people say that the algebraic laws of CCS make it good for
+verifying distributed algorithms.  CCS works fine for verifying biscuit
+machines.  It is hopelessly impractical for verifying even the simplest
+distributed spanning tree algorithm, let alone the more complex
+algorithms that system builders use.  Robin Milner realizes this (I've
+discussed it with him), but many of his disciples don't.
+
+This doesn't mean that CCS is worse than my theory; just that it has a
+different domain of applicability.  It is as silly to say that CCS is
+better or worse than my theory as it is to say that physics is better
+or worse than biology.  Human nature being what it is, almost all
+physicists believe in their hearts that physics is more important than
+biology.  However, physicists understand that not everyone believes
+this, so a university will teach biology even if the dean of faculty is
+a physicist.  One wishes that computer scientists were as
+understanding.
+
+I think there are two general reasons why a concept that's important to
+theory A may be absent from theory B: 
+
+ (i) The concept is irrelevant to the domain of applicability of 
+     theory B.   
+
+(ii) The concept belongs to the mathematical formalism of theory A 
+     and, even though the two theories have overlapping domains of
+     applicability, theory B's method of translating reality into
+     mathematical formalism makes the concept irrelevant or 
+     meaningless.
+
+Case (ii) is the more insidious cause of misunderstanding.  People get
+so used to their favorite theory that they confuse its mathematical
+formalism with physical reality.  For example, some advocates of CCS
+will say that my theory is deficient because it doesn't distinguish
+between internal and external nondeterminism.  They don't realize that
+internal/external nondeterminism is part of the mathematical formalism
+of CCS, not a property of physical reality, so there is no reason why
+it should be a meaningful concept in another theory.  This error is not
+confined to one side of any ideological fence.  A colleague of mine
+once asserted that he could prove any kind of property of a program,
+since he could prove safety and liveness properties and any property is
+the conjunction of a safety and a liveness property.  He was confusing
+the real-world concept of a property (in "prove any kind of property")
+with the mathematical concept of a property as a set of behaviors (in
+"any property is the conjunction ...").
+
+It can be argued that (ii) is an unavoidable source of
+misunderstanding, since one can discuss physical reality only in terms
+of mathematical models.  I don't think the situation is so hopeless.
+We can make statements about the physical world like "if you press this
+key, then the system crashes" that mean approximately the same thing to
+everyone, regardless of his philosophical persuasion.
+
+I think that Vaughan's question 3 (sine waves) is an example of (i) and
+his question 2 (teams of observers) is an example of (ii).  His
+question 1 (race conditions) is more interesting and warrants
+discussion.
+
+A race condition is bad if it makes the circuit behave incorrectly.
+When verifying circuits, one is interested only in proving that a
+circuit behaves correctly, not that it behaves incorrectly.  So, one
+never has to prove the existence of a race condition.  The
+specification of the circuit describes its external behavior, and a
+race condition is something that happens inside the circuit.  So,
+proving the absence of a race condition is never a primary goal.  If
+there is a potential race condition that never actually occurs--for
+instance, because of the initial conditions--then the proof will
+contain a lemma (a mathematical formula) whose physical interpretation
+will be the absence of a race condition.
+
+However, the concept of a race condition is not irrelevant.  A race
+condition on its inputs might cause a circuit component to produce an
+invalid output voltage--a "1/2" instead of a "0" or a "1".  In this
+case, a mathematical model of the component that allows only the
+outputs "0" and "1" is inadequate.  With such a model, the domain of
+applicability of the theory would not include the actual circuit.
+Fortunately, with more sophisticated models (for example, by including
+a "1/2" output), I believe it is possible to use my theory to reason
+about real circuits.  (I haven't done such reasoning myself, but others
+have using similar theories.) The concept of a race condition is
+relevant for modeling the real circuit in the mathematical formalism,
+but it doesn't appear in the formalism itself.
+
+Scientific theories are useful because the mathematical formalism is
+simpler than physical reality.  Newtonian physics eliminates an awful
+lot of important details--like you and me--when it represents the earth
+as a point mass.  Those details are irrelevant for computing planetary
+orbits.  They are not irrelevant for studying human history.  Science
+is the art of simplification.
+
+   A theory should be as simple as possible, but no simpler.
+                                           - Albert Einstein
+
+The test of a scientific theory is how well it helps us understand
+and/or manipulate the real world.
+
+I will close with a word about mathematics.  Many computer scientists
+aren't scientists at all; they're mathematicians.  They work in the
+domain of mathematical formalism, with no concern for its application
+to the real world.  That's fine.  The world needs pure mathematicians
+as well as scientists.  But it's important for mathematicians to
+realize that they're not scientists.  Number theorists don't criticize
+Newtonian mechanics for using real numbers rather than integers.
+Computer-scientist/mathematicians should be equally sensible.

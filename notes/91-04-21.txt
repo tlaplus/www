@@ -1,0 +1,295 @@
+Synopsis
+--------
+
+It's been a while since I've sent out a TLA message.  Time to wake
+everyone up.  Just two things to report.  They are summarized here
+and discussed in detail below.
+
+1.  Many people believe that you can simplify reasoning about a
+closed system by breaking into the composition of simpler open
+systems and reasoning independently about the open components.  (Or
+that you can simplify reasoning about an open system by decomposing
+it into simpler open components.) That's wrong.  Going from closed
+to open systems always means more work.
+
+2.  Martin Abadi and I have written basically two papers on
+specification: "The Existence of Refinement Mappings" (SRC Report
+29, to appear in Theoretical Computer Science in a couple of
+months) and "Composing Specifications" (SRC Report 66, presented at
+a REX Workshop in the Netherlands in 1989).  These were purely
+semantic--talking about sets of sequences, not logic.  There are
+two basic semantic concepts: closed sets (also known as safety
+properties) and realizability.  We have recently realized that
+these semantic concepts are expressible within TLA. More precisely,
+the "closure" and "realizable-part-of" operators, which were
+defined semantically, can be defined in TLA.  An amusing question is
+whether all the theorems we proved semantically can be proved
+within TLA.  This might make a nice PhD thesis topic (hint, hint, to
+all of you in academia).
+
+The first topic reads easily enough in ASCII, so I haven't bothered
+formatting it for LaTeX. (I also thought it would interest more of
+you than the second part.)  The second topic is formatted using the
+spec92 style file.  If you want to read everything together, you can
+just copy the first part of the file into the second, after the
+begin{spec} command.
+
+
+Opening Closed Systems 
+---------------------- 
+I will describe the argument in terms of TLA, where the
+specification of an open system is a formula E => M, where E is the
+environment assumption and M the system guarantee, and parallel
+composition is conjunction.  The argument holds for any
+rely/guarantee style of specification.  Just replace E => M by
+(E,M) or any other syntax you like, and replace /\ by || or however
+you want to represent parallel composition.
+
+Suppose you want to prove a property P about a system S with
+specification E => M. What you want to prove is that the property P
+holds when the system is combined with a correct environment--one
+that satisfies the system's environment assumption.  In other
+words, you have to prove:
+
+(1)  E /\ M => P
+
+Now, suppose it were possible to simplify the task by decomposing
+the system into two subsystems S1 and S2.  Presumably the reason
+this will simplify things is that property P is actuallly
+guaranteed by one of the subsystems, say S1.  So, you want to prove
+that S satisfies P by decomposing S into the composition of S1 and
+S2 and proving S1 satisfies P. Proving S1 satisfies P means proving
+
+(2)  E1 /\ M1 => P.
+
+Decomposing S into S1 and S2 means finding E1, M1 and E2, M2 so
+that the specification of S1 is (E1 => M1) and the specification of
+S2 is (E2 => M2).  Moreover, the guarantees M1 and M2 of the
+subsystems aren't going to be random; for S1 and S2 to be a
+decomposition of S, their combined guarantees must be the same as
+S's.  In other words,
+
+(3)  M1 /\ M2 = M
+
+But what do you have to prove to show that S1 and S2 compose
+properly?  In other words, what must be true for their composition
+to satisfy the specification E => M1 /\ M2, which asserts that,
+when placed in an environment satisfying E, it guarantees M1 and
+M2?  For S1 and S2 to compose properly, the environment assumptions
+of each have to be satisfied in the composition.  In other words,
+when S1 is run in an environment consisting of S2 and an
+environment satisfying E, then E1 is satisfied.  Since M2 is the
+guarantee provided by S2, the obvious condition is
+
+(4)  E /\ M2 => E1
+
+This is actually too strong to be provable in practice, and one
+really needs a weaker hypothesis that looks something like
+
+(5a)  E /\ M1 /\ M2 => E1
+
+The reason (4) isn't good enough is that E /\ M2 doesn't say
+anything about what the first component system is doing, so you
+can't deduce any invariants from it.  The left-hand side of (5a)
+essentially describes the closed system consisting of S1, S2, and
+their surrounding environment, so you prove invariants with it.
+Similarly, to prove that S2's environment assumption is satisfied
+in the composition, you also have to prove the analogous
+
+(5b)  E /\ M1 /\ M2 => E2
+
+So, to prove P by decomposing S into S1 and S2, you you have to
+prove (2), (3), (5a), and (5b).  Moreover, (5a) and (5b) are
+oversimplified.  When liveness is involved, they are too weak to
+yield a valid composition, and they need to be modified (by adding
+some closure operators and some other conditions on the E's and
+M's).
+
+But even forgetting this additional complication, (2), (3), and
+(5a), without (5b), imply (1).  If you can find the E's and M's to
+do the decomposition into open systems, then you could have found
+the formulas E1 and M1 by themselves such that
+
+(6) E /\ M => E1 /\ M1
+
+proved (2) and deduced (1) without doing any decomposition.  At
+best, decomposing the system into open subsystems produces a proof
+that is equivalent to one that you could have done working
+completely in the closed system.  In reality, it's a lot worse.
+
+In practice, decomposing M as M1 /\ M2 is straightforward.  For
+example, if S is a two-process system, M1 and M2 will be the
+specifications of the individual processes.  However, E1 and E2 are
+likely to be much, much, much more complicated than E. For example,
+consider any mutual exclusion algorithm from the literature--the
+mutual exclusion literature, not the verification literature! This
+will essentially be a closed system, so E will equal TRUE (or, if
+not, will be either simple or irrelevant to mutual exclusion).
+Imagine trying to state the environment assumption for an
+individual process i that guarantees that the other process is not
+in the critical section when process i is.  Those E's will be very
+complicated--much more complicated than the actual invariant used
+to prove mutual exclusion of the closed system.  I maintain that
+one would have to be crazy to try to prove a mutual exclusion
+algorithm in such an opened-up fashion.  And I will continue to
+maintain that until someone proves me wrong by giving such a proof
+for a nontrivial mutual exclusion algorithm (say, my "Fast Mutual
+Exclusion Algorithm", published not too many years ago in TOCS).
+
+One decomposes systems into open subsystems to allow the subsystems
+to be implemented by different people (or by one person, with
+limited memory, at different times).  Doing the decomposition adds
+the significant cost of figuring out exactly what assumptions one
+part of the system makes of the other part in order for the two
+parts to implement the whole system correctly.  This is so hard
+that, to gain the benefit of separate implementation, one will
+usually sacrifice efficiency by writing simpler but stronger
+environment assumptions E1 and E2, and correspondingly stronger
+module guarantees M1 and M2 to make (5a) and (5b) valid.  (Put
+another way, modularity rules out global optimization that takes
+advantage of simultaneous knowledge of the implementations of both
+components.)
+
+
+% LaTeX file begins here. 
+%
+\documentstyle[11pt,spec92]{article}
+\renewcommand{\o}{\circ}
+\newcommand{\C}{\cal C}
+
+
+\subscripts
+\superscripts
+\begin{document}
+
+% Insert anything else you want printed after the following
+% \begin{spec} command
+%
+\begin{spec}
+Representing Closure
+--------------------
+
+The closure :C:(P) of a property P is the smallest safety property
+containing P. (We used to denote the closure operator by an
+overbar.  But I like using overbar for refinement mapping, so we
+are probably going to switch to the :C:(...) notation.) A behavior
+satisfies :C:(P) iff every finite prefix of the behavior can be
+extended to a behavior in P.
+
+Here's the definition of :C:(F) for any TLA formula F.  Let v be an
+n-tuple of variables containing all variables that occur free in F,
+let w be an n-tuple of variables all distinct from those of v, and
+let b be a single variable distinct from the variables in v and w.
+First, define
+
+  B  ==  (b = 0) /\ [][b' = 1]_b /\ <>(b = 1)
+
+Formula B asserts that b equals 0 for a finite time, then equals 1
+forever.  Letting F(w/v) denote the result of substituting the
+variables of w for the variables of v, we have
+
+  :C:(F)  ==  :A: b : B => (:E: w : F(w/v) /\ [](b=0 => v=w))
+
+The formula 
+
+   F(w/v) /\ [](b=0 => v=w)
+
+asserts that the w-variables satisfy F, and that the w-variables
+and the v-variables are equal as long as b is zero.  The ":E: w"
+asserts that there is some way to choose the w-variables so that
+this is true.  
+
+
+Representing the Realizable Part
+---------------------------------
+
+In the past, we defined the :mu:-realizable part R_[:mu:](P) of a
+property P using a semantics in which state-changes were labeled
+and :mu: was a set of labels.  We are now going to do things a la
+TLA, so :mu: is just going to be an action--a :mu:-step is a step
+that is attributed to the system.  A :mu:-step will always change
+the value of some variable, so there will be no stuttering :mu:
+steps.
+
+The realizable part R_[:mu:](P) is the subset of behaviors that can
+be obtained by "strategies" that implement P.  A strategy is a rule
+for choosing :mu:-steps.  Formally, it is a mapping that assigns to
+a sequence of states (representing the execution history up to that
+point) either a state (the next state the system wants to produce)
+or else the special value :bot: (indicating that the system doesn't
+want to do anything).
+
+In the following, f denotes a rigid variable (a constant), v
+denotes an n-tuple of variables containing all variables that are
+in :mu: or in the TLA formula F, and h denotes a variable different
+from any of the variables of v.
+
+First, we define some notation for talking about sequences of
+n-tuples of values:
+
+  VAL^n      : the set of all n-tuples of values
+  (VAL^n)^*   : the set of all finite sequences of elements of VAL^n
+  <<>>      : the empty sequence
+  h :o: <<v>> : the sequence obtained by concatenating the element v
+\\              to the end of the sequence h.  
+  |h|       : the length of the sequence h .  
+  last(h)   : the last element of the sequence h.  
+
+The last three are unspecified unless h is in (VAL^n)^* and v is in
+VAL^n.  Moreover, last(h) is unspecified if h = <<>>.  We assume
+that :bot: is not in VAL^n.
+
+Next, we define a formula H essentially asserting that h is a
+history variable recording the sequence of all past values of v:
+
+   H == /\ (h = <<v>>)          
+        /\ [][h' = h :o: <<v'>>]_[(h,v)] 
+        /\ :A: n : (n :in: Naturals => <>(|h| > n))
+
+Note that the first two conjuncts imply that h records all changes
+to v, and may also record some steps in which v didn't change.  The
+third conjunct asserts that h gets arbitrarily long.  Hence, if v
+eventually stutters forever, then this gets recorded in h.
+
+Next, we define the formula Strategy(:mu:,f), asserting that f is a
+:mu:-strategy.  A :mu:-strategy must produce only :mu:-steps, so
+the definition is as follows.
+
+  Strategy(:mu:,f) == :A: h : (h :in: VAL^n) /\ (|h| # 0)
+                           => \/ :mu:(last(h)/v, f(h)/v')
+                              \/ f(h) = :bot:
+
+
+Next, Outcome(:mu:,f) is defined to be the set of all outcomes
+obtained by playing the strategy f against an opponent who can make
+only ~:mu: moves, and who gives the strategy infinitely many
+chances to play.
+
+  Outcome(:mu:,f) == :E: h : /\ H 
+\\\\\                        /\ [][:mu: => v'=f(h)]_[(h,v)] 
+\\\\\                        /\ []<><:mu:>_[(h,v)] \/ []<>(f(h) = :bot:)
+
+The first conjunct asserts that h is keeping history.  The second
+asserts that every :mu: step is done according to strategy f, and
+the third asserts that either there are infinitely many :mu: steps,
+or else that infinitely often the strategy was willing to "pass".
+
+Finally, the realizable part R_[:mu:](F) of F asserts that the
+behavior can be produced by some strategy all of whose
+:mu:-outcomes satisfy F.
+
+    R_[:mu:](F) == :E: f : /\ :A: v : O_[:mu:](f) => F
+\\\\\\\\                   /\ O_[:mu:](f)
+
+
+Remember that f is a rigid variable--its value doesn't change
+during the execution.
+
+I have a feeling that all the relevant theorems from our two papers
+involving closure and R_[:mu:] can be proved in TLA using only the
+rules in the TLA report, plus the rules asserting the validity of
+adding history and prophecy variables.  (See "The Existence of
+Refinement Mappings".)  I also have a feeling that doing so would
+involve a lot of work.
+\end{spec}
+\end{document}

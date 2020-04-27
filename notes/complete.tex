@@ -1,0 +1,1543 @@
+%%* "A Completeness Theorem for TLA" 
+%%*  Long hand proof, unchecked (Oct 90 version)
+
+% NOTATION:
+%  :X: == multiplication sign
+%  :F: == script F
+%  :G: == script G
+%  :H: == script H
+%  :I: == script I
+
+\documentstyle[11pt,spec92]{article}
+
+\newcommand{\X}{\times}
+\newcommand{\F}{{\cal F}}
+\newcommand{\G}{{\cal G}}
+\renewcommand{\H}{{\cal H}}
+\newcommand{\I}{{\cal I}}
+
+ \topmargin -216pt \headheight 100pt \headsep 100pt \footskip 100pt 
+ \textheight = 680pt
+
+\makeatletter
+\def\ps@plain{\let\@mkboth\@gobbletwo
+\def\@oddhead{\hbox{}\hfil 
+\raisebox{-107pt}[0pt][0pt]{\makebox[0pt][l]{\hspace*{20pt}\framebox
+{\Large\rm\thepage}}}}\def\@oddfoot{}\def\@evenhead{\@oddhead
+}\def\@evenfoot{}\def\sectionmark##1{}\def\subsectionmark##1{}}
+
+\let\ps@headings = \ps@plain
+\let\ps@myheadings = \ps@plain
+
+\def\pagenumbering#1{\gdef\thepage{\csname @#1\endcsname
+ \c@page}}
+
+\makeatother
+ \topmargin -216pt \headheight 100pt \headsep 100pt \footskip 100pt 
+ \textheight = 680pt
+
+\pagestyle{plain}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                      SHORTEN TEXT                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                 MODIFICATION DATE                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                             %
+% Defines \moddate to expand to the modification date         %
+% and \prdate to print it in a large box.                     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\ypmd{%                                                   %
+%                                                             %
+%                                                             %
+  Last modified on Sat  5 January 2019 at 11:18:46 PST by lamport}       %
+%                                                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\moddate}{\expandafter\xpmd\ypmd}                 %
+\def\xpmd Last modified                                       %
+on #1:#2:#3 by lamport{#1:#2}                                 %
+\newcommand{\prdate}{\noindent\fbox{\Large\moddate}}          %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subscripts
+\superscripts
+\begin{document}
+\begin{spec}
+A COMPLETENESS THEOREM FOR TLA
+
+Preface: A Quick Introduction to TLA
+-------------------------------------
+
+Here's a quick and dirty informal definition and semantics for TLA.
+A more precise one is given later.  If you are already familiar
+with the new, improved TLA (defined a little differently than in
+SRC Report No. 57) you can skip to the Introduction.
+
+Values: 
+I assume a set of values, big enough to contain all the constants
+of interest.  It includes the values 1, TRUE, NAT (the set of all
+naturals), {n :in: NAT : n a prime}, etc.
+
+State, Variable: 
+A variable is something that assigns a value to every state.  I let
+s.x, denote the value state s assigns to variable s.  Or maybe a
+state s is something that assigns a value s.x to a variable x.
+Take your pick.
+
+State Function: 
+An expression made from variables and constants, such as x^2 + 3*y.
+A state function f assigns a value s.f to every state s.  For
+example,
+
+    s.(x^2 +3*y) = (s.x)^2 + 3*(s.y). 
+
+Predicate: 
+A boolean-valued state function--for example,
+           x^2 < 3*y
+
+Action: 
+A Boolean expression involving variables, primed variables and
+constants--for example, x + 1 < 2*y'.  An action maps pairs of
+states to Booleans.  Letting s.A.t denote the value that action A
+assigns to the pair (s,t), I define
+
+  s.(x + 1 < 2*y').t  = (s.x) + 1 <  2*(t.y)
+
+In other words, the unprimed variables talk about the left-hand
+state, and the primed variables talk about the right-hand state.
+Think of s.A.t = TRUE as meaning that an A-step can take state s to
+state t.  An action is valid, written |= A, iff s.A.t is true for
+all states s and t.
+
+Enabled(A): 
+For any action A, the predicate Enabled(A) is defined by
+   s.Enabled(A) == :E: t : s.A.t
+
+f'=f: 
+For any state function f, the action f'=f, which is sometimes
+written Unchanged(f), is defined by
+  s.(f'=f).t  ==  (t.f) = (s.f)
+
+
+[A]_f: 
+The action [A]_f is defined by
+   [A]_f == A \/ (f'=f)
+An [A]_f step is either an A step or leaves f unchanged.
+
+
+<A>_f: 
+The action <A>_f is defined by
+   <A>_f == ~[~A]_f 
+It equals A /\ (f'#f).  An <A>_f step is an A step that changes f.
+
+
+The Raw Logic:
+A Raw Logic formula is any formula made from actions using
+logical operators and the unary [] operator--for example
+
+    A \/ [](B /\ []~[]~A)
+
+where A and B are actions.  A Raw Logic formula is a Boolean-valued
+function on infinite sequences of states.  An infinite sequence of
+states is called a BEHAVIOR.  An action A is interpreted as the
+temporal formula asserting that first step of the behavior is an A
+step.  The formula []A asserts that every step is an A step.  In
+general, let s_0, s_1, ...  |= F denote the value that formula F
+assigns to the sequence s_0, s_1, ....  The semantics of Raw Logic
+formulas is defined as follows, where A is any action and F and G
+are any formulas:
+
+   s_0, s_1, s_2, ... |= A  == s_0.A.s_1
+   s_0, s_1, s_2, ... |= []F 
+       == :A: n :geq: 0 : s_n, s_[n+1], s_[n+2], ... |= F
+   s_0, s_1, s_2, ... |= ~F  ==  ~(s_0, s_1, s_2, ... |= F)
+   s_0, s_1, s_2, ... |= F \/ G == etc.
+
+A formula F is valid, written |= F, iff it is true for all
+behaviors.
+
+
+TLA:
+The Raw Logic is wonderfully simple, but it is too expressive.  It
+allows you to assert that something is true of the next state,
+which ruins any effort to heierarchically refine programs.  We
+define TLA to be the subset of Raw Logic formulas obtained by
+application of [] and logical operators starting not from arbitrary
+actions, but from predicates and actions of the form [A]_f.  For
+example:
+
+    P => ~[]~[][A]_f \/ [](Q => [][B]_g)   
+
+Observe that [][A]_f asserts that every step is either an A step
+or else leaves f unchanged.  
+
+As is usual in temporal logic, we define <> and ~> by
+
+  <>F == ~[]~F
+  F ~> G == [](F => []G)
+
+The Raw formula <>A is a TLA formulas iff A is a predicate or an
+action of the form <><A>_f.
+
+Technical point.  Since []F /\ []G = [](F /\ G) holds for any F and
+G, it's convenient to let TLA include formulas of the form 
+[](P /\ [][A]_f) where P is a predicate.
+
+
+Introduction
+------------
+
+This is a relative completeness proof for TLA, a la Cook.  It is
+not a completeness result for all of TLA, just for the class of
+formulas that one is interested in proving.  The formulas we're
+interested in are of the form
+
+   Program => Property
+
+A Program has the form
+
+  P /\ [][A]_f /\ Fairness
+
+for P a predicate.  So far, all the Fairness conditions have
+have been conjunctions of the form SF_f(B) or WF_f(B), where
+B implies A and
+
+  WF_f(B) == []<><B>_f \/ []<>~Enabled(<B>_f)
+  SF_f(B) == []<><B>_f \/ <>[]~Enabled(<B>_f)
+
+The theorem allows the more general class of programs in which
+Fairness is the conjunction of formulas of the form
+  
+   []<>~TACT \/ <>[]TACT  or []<>~TACT \/ []<>TACT,
+
+where TACT denotes any formula of the form Q /\ [B]_g, so ~TACT is
+a formula of the form Q \/ <B>_g.  The Fairness formula must
+satisfy the additional requirement that program is machine closed,
+meaning that for any safety property S:
+
+  If |= (P /\ [][A]_f /\ Fairness) => S 
+  then |= (P /\ [][A]_f) => S 
+     
+(The theorem requires this only when S is of the form []TACT.)
+Machine closure, which was called "feasibility" by Apt, Francez,
+and Katz, is a reasonable requirement for any fairness condition.
+It can be argued that a condition not satisfying it is not a
+fairness condition, since it can't be implemented by a memory-less
+scheduler.  
+
+The Property can have any of the following forms: 
+
+  Predicate
+  []Predicate
+  Predicate ~> Predicate
+  GeneralProgram
+
+where a GeneralProgram is like a Program, except without the
+machine-closure requirement on its fairness condition.  The absence
+of this requirement is important, for the following reason.  To
+prove that program :Pi:_1 implements program :Pi:_2, one proves
+:Pi:_1 => :Phi:_2, where :Phi:_2 is obtained from :Pi:_2 by
+substituting state functions for variables.  This substitution
+preserves the form of the formula :Pi:_2, but can destroy
+machine-closure.
+
+Proving relative completeness for safety properties in TLA is
+pretty much the same as proving it for the Floyd/Hoare method.  The
+completeness results for Hoare's method assumes the expressibility
+of the predicate sp(S, P) for program statements S and predicates
+P, where sp is the strongest postcondition operator.  Assuming such
+predicates for arbitrary statements S, which include loops or
+recursion, is equivalent to assuming the expressibility of sp(A, P)
+and sin(A, P) for atomic actions A, where sin is the strongest
+invariant operator.  
+
+Proving relative completeness for liveness is somewhat trickier.
+It requires induction over well-founded sets.  Taking a simple,
+intuitive approach leads to a result whose practical interest is
+rather doubtful.  For example, Mann and Pnueli ("Completing the
+Temporal Picture") use the axiom of choice to pull a well-founded
+ordering on the state space out of a hat.  Such a construction
+requires the assumption that every semantic predicate is
+syntactically expressible.  
+
+Getting the precise expressibility assumptions, and avoiding
+mistakes, required a careful formal exposition.
+
+
+The Assumptions
+---------------
+In relative completeness results for Hoare logic, one assumes a
+complete system for reasoning about predicates.  In TLA, all the
+serious reasoning is in the domain of actions.  So, we assume a
+complete system for reasoning about actions.  More precisely,
+letting |- denote provability, we assume a set ACT of expressible
+actions such that (|= A) => (|- A) for any action A in ACT. There
+are various simple assumptions about ACT--such as its being closed
+under boolean operations.  Let PRED denote the set consisting of
+all predicates in ACT (remember that a predicate is an action that
+doesn't mention unprimed variables).  The least reasonable
+assumption is that for any P in PRED and A in ACT, sin(A, P) and
+sp(A, P) are in PRED. Of course, this assumption is what really
+puts the "relative" in "relative completeness".
+
+The relatively complete logical system consists of the following:
+
+1. The usual assortment of simple propositional temporal logic
+   rules and axioms that you'd expect, since TLA includes
+   simple temporal logic (the logic that's the same as the Raw
+   Logic except starting with predicates, not arbitrary actions).
+
+2. An induction principle, which is what you'd expect for any
+   relatively complete system for proving temporal logic
+   liveness properties.
+
+3. The two TLA axioms:
+
+      |- ([]P :equiv: P /\ [][P => P']_[P])
+
+      |-(A => B)  =>  |-([]A => []B)
+
+   where P is a predicate, and A and B are actions of the form 
+   P /\ [A]_f.
+
+The axioms of 3 are the only ones that mention actions.  The axioms
+of 1 only mention arbitrary formulas, and the induction principle
+of 2 talks only about predicates.  These axioms are actually valid
+for the Raw logic, and in that logic the second axiom of 3
+is a special case of the axiom
+
+     |- (F => G)  =>  |- ([]F => []G)
+
+from 1, for arbitrary formulas F and G. However, [A]_f => [B]_g
+isn't a TLA formula (it's a formula in the logic of actions, but
+not in TLA), so the second axiom of 3 is needed if you want to do
+all your reasoning completely within TLA.
+
+The induction axiom 2 is tricky enough to be worth mentioning.  To
+get it right, we first have to generalize everything to include
+logical variables.  If you want to describe an n-process algorithm
+with a TLA formula, for an arbitrary but fixed n, then n is a
+logical variable of the formula.  A logical variable represents an
+unspecified value that is the same for all states of a behavior.
+In the semantics of actions and TLA formulas, Booleans have to be
+replaced by Boolean-valued formulas involving logical variables.
+(Formally, Booleans become boolean-valued functions on
+interpretations, where an interpretation is an assignment of values
+to all logical variables.) Logical variables pop up all the time
+when you use TLA in practice.  For example, if you have a
+distributed algorithm with a set Node of nodes, then Node is a
+logical variable.  In fact, if you go really overboard in
+formalism--as you must to verify things mechanically--then
+everything that's not a program variable (the kind of variable I
+first talked about) or a logical operator is a logical variable.
+In the expression x + 3, the + and the 3 are logical variables.  We
+just happen to have a lot of axioms about the logical variables +
+and 3, such as 1+1+1 = 3, while we have just a few axioms about the
+logical variable n (for example n :in: NAT, n > 0).
+
+But, I digress.  I was talking about the induction principle.  An
+induction principle involves induction over a well-founded ordering
+on a set.  Intuitively, a well-founded ordering on a set S is a
+relation > such that there does not exist an infinite sequence 
+c_1 > c_2 > c_3 > ...  .  More precisely, 
+
+   Well-Founded(>, S) 
+      == ~ :A: i : (i :in: NAT) => 
+                     :E: c_i : (c_i :in: S) /\ (c_i > c_[i+1])
+
+But, what does this formula mean?  For me, the most sensible way to
+interpret it as a logical formula is to rewrite it as
+
+   Well-Founded(v > w, S) 
+      ==  :A: c : ~ :A: i : (i :in: NAT) =>
+                               (c(i) :in: S) /\ (c(i) > c(i+1))
+
+where v > w is a formula with free logical variables v and w, and
+(c(i) > ci+1)) is the formula obtained by substituting c(i) for v
+and c(i+1) for w in the formula v > w.  This is a higher-order
+formula, involving quantification over a function symbol c.
+
+The completeness result requires, as an assumption, that if the
+formulas "v > w" and "v :in: S" are expressible, then
+Well-Founded(v > w, S) is provable if it's true.  I think that if
+you look closely at Manna and Pnueli's paper, you'll find that they
+are implicitly assuming this for any formula "v > w"--not just for
+an expressible one.
+
+Anyway, the actual temporal induction principle looks as follows,
+where P(w) denotes a formula containing w as free logical
+variables, P(v) denotes the result of substituting v for w, and F
+is an arbitrary temporal formula.
+
+    If |- :E: w :in: S
+       w not free in F
+       |- Well-Founded(>, S) 
+       |- (F /\ w :in: S
+             => (P(w) ~> :E: v : (v :in: S) /\ (w > v) /\ P(v)))
+    then |- ~F
+
+I've actually lied a bit.  I assume this rule when w is a k-tuple
+of distinct logical variables, and I assume the provability only of
+Well-Founded(v > w, VAL^k), where v > w is an expressible formula
+and VAL^k denotes the set of k-tuples of values.  I could have done
+it the other way by making a few more expressibility
+assumptions--such as assuming that "v :in: VAL^k" is
+expressible--but I think that would have been a little more
+complicated.
+
+
+ACTIONS
+-------
+Primitives
+-----------
+
+The following are primitive notions, along with their intuitive
+explanations.
+
+ VAL  : A set of values, containing the values TRUE and FALSE
+        (among many others).  The semantics of TLA is based
+        on this set.
+
+ ST   : A set of states.
+
+ PVBL : A set of program variables.  These variables appear in TLA
+        formulas and represent the primitive state components.  
+        That is, a state assigns a value in VAL to every variable 
+        in PVBL.
+
+ LVBL : An infinite set of logical variables.  A logical variable
+        denotes a fixed, unspecified elements of VAL; it represents
+        a program "constant".  
+
+ ACT   : The set of expressible actions.
+
+ PRED  : The set of expressible predicates.
+
+ SFCN  : The set of expressible state functions.
+
+
+Notations
+---------
+
+VAL^k  == The set of all k-tuples of elements in VAL.
+
+PVBL^k == The set of k-tuples of DISTINCT program variables in PVBL.
+
+LVBL^k == The set of k-tuples of DISTINCT logical variables in LVBL.
+
+   Two k-tuples v, w :in: LVBL^k are said to be DISJOINT iff they
+   have no components in common.
+
+For v :in: LVBL^k, f any formula, c in LVBL^k or VAL^k:
+  f[c/v] == The result of substituting each component of 
+            c for the corresponding component variable of v.
+
+   If g(v) denotes a formula, I will let g(c) denote g(v)[c/v].
+
+INTRPT == The set of mappings [LVBL -> VAL].
+
+   INTRPT is the set of interpretations--substitutions of values
+   for logical variables.  For any set S, an element of the set of
+   mappings [INTRPT -> S] is an object that yields an element of S
+   after substituting values for all logical variables.
+
+
+Expressibility and Completeness Assumptions
+-------------------------------------------
+
+Below are the expressibility assumptions and the semantic
+interpretations of those assumptions.  These semantic
+interpretations provide a semantics for the (nontemporal) logic of
+actions.  In the following, I assume
+
+   s, t :in: ST
+   x    :in: PVBL^k
+   c    :in: VAL^k
+   v    :in: LVBL^k
+   P, Q :in: PRED
+   A, B :in: ACT
+   f, g :in: SFCN
+
+Formally, the assumptions are universally quantified over these
+objects.  The semantic domains are defined as follows, where [[O]]
+denotes the "meaning" of an object O.
+
+  [[x]] : ST -> VAL^k
+  
+  [[f]] : ST -> [INTRPT -> VAL]
+  
+  [[P]] : ST -> [INTRPT -> {TRUE, FALSE}]
+     
+  [[A]] : ST :X: ST -> [INTRPT -> {TRUE, FALSE}]
+
+The following notation is used in place of the semantic brackets
+[[ ]].
+
+     s.x    ==  [[x]](s)
+     s.f    ==  [[f]](s)
+     s.P    ==  [[P]](s)
+     s.A.t  ==  [[A]](s,t)
+
+Thus, for example, s.P is an object that yields a Boolean after
+substituting values for all logical variables.  Validity of
+an action formula is defined by
+
+        |= A  == :A: int :in: INTRPT : 
+                    :A: s,t :in: ST : s.A.t(int)
+
+Thus, validity of A means that s.A.t is true for all substitutions
+of values for logical variables and all states s and t.
+
+The following are the assumptions and their meanings.
+
+EX(-1). TRUE :in: PRED
+
+      s.TRUE  == TRUE
+
+EX0. P, P' :in: ACT 
+     P :in: SFCN
+
+     s.P.t   == s.P
+     s.P'.t  == t.P
+
+   A predicate is identified with an action that does not depend on
+   the second [new] state.  Since VAL contains the elements TRUE
+   and FALSE, a predicate P is a fortiori "semantically" a state
+   function.  The assumption P :in: SFCN states that this semantic
+   state function is expressible.
+
+EX1. sin(A,P) :in: PRED
+     sp(A,P)  :in: PRED, 
+
+      s.sp(A,P) == :E: t : t.P /\ t.A.s
+      s.sin(A,P) == :E: i :geq: 0 : s.sp^i(A,P)
+        where sp^0(A,P) == P
+              sp^[i+1](A,P) == sp(A,sp^i(A,P))
+
+   The operators sp and sin are the usual strongest postcondition
+   and strongest invariant operators.
+
+EX2. A /\ B, ~A, A \/ B :in: ACT
+     P /\ Q, ~P, P \/ Q :in: PRED
+
+        s.(A /\ B).t  ==  s.A.t /\ s.B.t 
+        s.(A \/ B).t  ==  s.A.t \/ s.B.t 
+        s.(~A).t      ==  ~(s.A.t)
+               
+   The corresponding semantic definitions for predicates follow
+   from EX2 and EX0.
+
+EX6. x = w :in: PRED, and  ~ |= ((:E: w : (x = w)) :equiv: FALSE)
+
+        s.(x = w)  == s.x = w
+
+   The assumption invalidity assumption asserts that given any
+   finite set of variables x_i and values v_i, there is a state
+   in which each x_i has the value v_i.
+
+EX7. Only a finite number of program variables appear in A.
+
+        :E: k, x : :A: r, s, t, u :in: ST :
+            (r.x = t.x /\ s.x = u.x) => r.A.s = t.A.u
+
+   In the semantic definition, x is any k-tuple of program
+   variables whose components include all the variables that appear
+   in A. (Since there is no quantification over program variables
+   in actions, any variable that appears in A is free in A.)
+
+
+EX7b. Only a finite number of logical variables appear
+      free in A.
+
+        :E: w :in: LVBL^k : 
+           v disjoint from w => s.A.t :equiv: s.A[c/v].t
+
+   In the semantic definition, w is a k-tuple of logical variables
+   containing all logical variables occurring free in A.
+
+EX8. (a) NAT :in: SFCN
+     (b) If S :in: SFCN and u :in: LVBL then (u :in: S) :in: PRED
+     (c) If Q :in: PRED, x :in: PVBL, w :in: LVBL then
+         Q[w/x] :in: PRED
+     (d) v > w :in: CONSTPRED, then 
+         Well-Founded(v>w, VAL^k) :in: CONSTPRED.
+
+
+         CONST PRED = set of all PRED's with no free logical
+         variables.  So, Q :in: CONSTPRED iff 
+         (:E: s : s.Q) :equiv: |= Q
+
+If w :in: LVLB^k has components disjoint from v, and
+     w>v :in: PRED, then Well-Founded(w>v, VAL^k) :in: PRED.
+
+        s.Well-Founded(w>v, S) ==
+            ~ :A: i :geq: 0 : :E: c_i :in: S : s.(c_[i+1] > c_i)
+
+           where S :subseteq: VAL^k
+                 (c_[i+1] > c_i) == ((w > v)[c_[i+1]/w])[c_i/v]
+                 
+   This is the formal definition of well-founded ordering > on a
+   set S of k-tuples of values.  Usually, w>v will be a "constant"
+   relation--one that is independent of the state.
+
+EX9. If w :in: LVBL^k, then (:E: w : P) :in: PRED.
+
+         s.(:E: w : P) == :E: c :in: VAL^k : s.P[c/w]
+
+EX10. f' = f :in: ACT
+
+          s.(f' = f).t  ==  t.f = s.f
+
+EX11. (f,g) :in: SFCN.
+
+        s.(f,g) == (s.f, s.g)
+
+   Note that if SFCN contains any reasonably rich set of state
+   functions, then this assumption requires that VAL contains all
+   ordered pairs of elements in VAL.
+
+
+Relative Completeness Assumption
+---------------------------------
+
+A logical system consists of a set of wff's and a collection of
+rules for proving that certain wff's are theorems.  We usually let
+|- F denote that the wff F is a theorem of the system.  Since we
+are considering two logical systems, the logic of actions and TLA,
+there are two logical systems and two "|-"s.  We'll use |-_[ACT]
+for the logic of actions.
+
+The relative completeness assumption is:
+
+ RC1.  For all A :in: Act: (|= A) :equiv: |-_[ACT] A
+
+This of course assumes the soundness as well as the completeness of
+the proof system for actions.
+
+
+
+TEMPORAL LOGIC
+--------------
+
+Notation
+--------
+
+[A]_f == A \/ (f' = f)
+
+<A>_f == ~[~A]_F 
+      =  A /\ (f' # f)
+
+ST^[:omega:] == The set of infinite sequences of elements in ST.
+
+For :sigma: :in: ST^[:omega:] , i :geq: 0 :
+
+  :sigma:_i == The ith state in :sigma:, where the first state
+               is :sigma:_0.
+
+  :sigma:^[+i] == The sequence  :sigma:_i, :sigma:_[i+1], ...
+                  in ST^[:omega:]
+
+
+
+Temporal Logic
+--------------
+
+The wffs of a simple temporal logic consist of a set of formulas
+TEMPORAL defined in terms of a set ELEM of elementary formulas by
+the following BNF grammar:
+
+  TEMPORAL  ==  ELEM | ~TEMPORAL | TEMPORAL \/ TEMPORAL
+                 | TEMPORAL /\ TEMPORAL | []TEMPORAL
+
+In the following, I assume
+
+    F, G :in: TEMPORAL
+    :sigma: :in: ST^[:omega:]
+
+The semantic domain for temporal formulas is defined by
+
+   [[F]] : ST^[:omega:] -> (INTRPRT -> {TRUE, FALSE})
+
+I will eliminate the semantic brackets by writing
+
+    :sigma: |= F  == [[F]](:sigma:)
+
+The semantics of the temporal logic is defined in terms of the
+semantics of elementary formulas by:
+
+    :sigma: |= ~F      == ~(:sigma: |= F)
+    :sigma: |= F \/ G  == (:sigma: |= F) \/ (:sigma: |= G)
+    :sigma: |= F /\ G  == (:sigma: |= F) /\ (:sigma: |= G)
+    :sigma: |= []F     == :A: i :geq: 0 : :sigma:^[+i] |= F
+
+Validity is defined by
+
+    |= F  == :A: :sigma: :in: ST^[:omega:] : :sigma: |= F
+
+The temporal logic RAW is defined by letting ELEM == ACT,
+where, for A :in: ACT, 
+
+    :sigma: |= A  == :sigma:_0.A.:sigma:_1
+
+Since an action A in ACT is a RAW formula, we have defined |= A
+twice: once in defining the semantics of actions, and just now in
+defining the semantics of RAW formulas.  It is easy to check that
+the two definitions are equivalent.
+
+The temporal logic TLA is defined by letting
+
+    TACT  ==  [ACT]_[SFCN]  | PRED /\ [ACT]_[SFCN] 
+    ELEM  ==  PRED | []TACT
+
+It follows from EX2, and EX10 that TACT is a subset of ACT, so EX0
+implies that TLA is a subset of RAW.  The semantics of TLA are then
+defined by the semantics of RAW.
+
+Note: We would get the same logic by defining ELEM just to be PRED
+or [ACT]_[SFCN].  However, that would leave us in the somewhat
+embarrassing position of being able to write the formula 
+[]P /\ [][A]_f but not being able to write the equivalent formula
+[](P /\ [][A]_f).  
+
+The following derived operators are defined, for any F, G :in: RAW.
+
+   <>F     == ~[]~F
+   F ~> G  == [](F => <>G)
+
+Expressibility assumption EX2 implies <><A>_f :in: TLA for any 
+A :in: ACT and f :in: SFCN.
+
+
+
+AXIOMS AND DEDUCTION RULES FOR TLA
+----------------------------------
+
+We let |-_[TLA] denote the provability relation for TLA.
+The first deduction rule is:
+
+  STL0. For any P :in: PRED: (|-_[ACT] P) => (|-_[TLA] P)
+
+Assuming that all our complete logical system for TLA is sound, so
+|-_[TLA] P implies |= P, it follows from the relative completeness
+assumption RC that |-_[TLA] P implies |-_[ACT] P.  Hence, STL0
+implies that |-_[TLA] and |-_[ACT] are equivalent for predicates in
+PRED.  Since these predicates are the only elements of both ACT and
+TLA, we will drop the subscripts and use the same provability symbol
+|- for both actions and TLA formulas.
+
+In the following rules and axioms, F and G are assumed to be
+arbitrary formulas in TLA.
+
+The next part of the logical system of TLA consists of modus ponens
+(|- F and |- (F => G) imply |- G) and the axioms of propositional
+calculus.  Instead of giving these axioms explicitly, we simply
+state the following rule:
+
+  PROPCALC:  If F is derivable by Modus Ponens and substitution 
+             of TLA formulas for atoms in tautologies of
+             propositional logic, then |- F.
+
+A rule of the form F, G |- H means that |- H can be derived from 
+|- F and |- G.  We sometimes write this rule in the form
+
+   F, G
+   ----
+    H
+
+The remaining axioms and rules are:
+
+  STL1. |- [](F /\ G) :equiv: []F /\ []G
+  STL2. |- [][]F = []F
+  STL4. |- <>[]F /\ <>[]G :equiv: <>[](F /\ G)
+  STL6. |- []<>[]F = <>[]F
+  STL7. (F => G) |- ([]F => []G)
+  STL8. |- ([]F => F)
+  TLA1. For all P :in: PRED : |- ([]P :equiv: P /\ [][P => P']_[P])
+  TLA2. For all A, B :in: TACT :
+         |-(A => B)  =>  |-([]A => []B)
+
+  LATTICE:
+      w :in: LVBL^k
+      :E: w :in: S
+      w not free in F
+      Well-Founded(<, S) 
+      (F /\ w :in: S) => (P(w) ~> :E: v : (v :in: S) /\ (v < w) /\ P(v))
+      ------------------------------------------------------------------
+      ~F
+
+           
+
+Note: All these rules and axioms are valid for formulas F and G in
+RAW, not just for formulas in TLA.  Extending the rules and axioms
+to RAW would Make TLA2 a special case of STL7.
+
+The following are derived rules and axioms.
+
+
+
+INV : For P :in: PRED, A :in: TACT : 
+       (|- P /\ A => P') => (|- P /\ []A => []P)
+1. (|- P /\ A => P') => (|- []A => [][P => P']_P)
+    Pf: |- P /\ A => P'
+          => |- A => (P => P')        (PROPCALC)
+          => |- A => [P => P']_P      (PROPCALC)
+          => |- []A => [][P => P']_P      (TLA2)
+2. (|- P /\ A => P') => (|- P /\ []A => P /\ [][P => P']_P)
+    Pf: 1 and PROPCALC.
+3. QED
+   Pf: 2, TLA1, and PROPCALC.
+
+Lemma PRETACT: A, B :in: TACT => A /\ B :in: TACT
+Pf: ...
+
+PROG: For P, Q :in: PRED, A :in: TLACT, B :in: ~TLACT:
+      If |- P /\ A => P' and |- P /\ A /\ B => Q', then
+      |- []A /\ []<>B=> (P ~> Q)
+
+Assume:   A. |- P /\ A => P' 
+          B. |- P /\ A /\ B => Q'
+To Prove: |- []A /\ []<>B=> (P ~> Q)
+Note: I will use PROPCALC without explicit mention.
+1. |- ~Q /\ [~Q => ~Q']_[~Q] => ~Q'
+   Pf: By RC, and
+        ~Q /\ [~Q => ~Q']_[~Q] 
+         :equiv: ~Q /\ ((~Q => ~Q') \/ (~Q = ~Q'))
+         :equiv: ~Q /\ (~Q :equiv: ~Q')
+         :equiv: ~Q' /\ (~Q :equiv: ~Q')
+         => ~Q'
+
+2. QED
+   Pf: |- P /\ A /\ B => Q'                     (Assumption B)
+        => |-  ~Q' /\ P /\ A =>  ~B       
+        => |- ~Q /\ [~Q => ~Q']_[~Q] /\ P /\ A =>  ~B     (1)
+        => |- [](~Q /\ [~Q => ~Q']_[~Q] /\ P /\ A) =>  []~B  
+                                              (TLA2 and Lemma PRETACT)
+        => |- [](~Q) /\ [][~Q => ~Q']_[~Q] /\ [](P /\ A) =>  []~B  
+                                                         (STL1)
+        => |- [](~Q) /\ []P /\ []A =>  []~B    (TLA1 and STL8)
+        => |- []P /\ []A /\ <>B  => <>Q            (def of <>)
+        => |- []P /\ []A /\ []<>B => <>Q                (STL8)
+        => |- P /\ []A /\ []<>B => <>Q      (Assumption B, INV)
+        => |- []A /\ []<>B => (P => <>Q)    
+        => |- [](A /\ <>B) => (P => <>Q)  (STL1, def of ~>)
+
+  STL3. F |- []F
+        Pf: From STL7, with F -> TRUE, G -> F, STL0, and PROPCALC.
+
+        NOTE ADDED 17 Nov 93: I think this proof is wrong because we
+        can't deduce |- []true from STL0 and PROPCALC.  I think the
+        best fix is to change the conclusion of STL0 to []F.
+
+  STL5. |- []<>F \/ []<>G :equiv: [](<>F \/ <>G)
+        Pf: []<>F \/ []<>G 
+            :equiv: ~(~[]<>F /\ ~[]<>G)    (PROPCALC)
+            :equiv: ~(<>[]~F /\ <>[]~G)   (Def of <>)
+            :equiv: ~(<>[](~F /\ ~G)           (STL4)
+            :equiv: ~(<>[]~(F \/ G)        (PROPCALC)
+            :equiv: [](<>F \/ <>G)        (Def of <>)
+
+  STL9. |- []F /\ []<>G => <>(F /\ G)
+        PF: []F /\ []<>G 
+               => []<>F /\ []<>G      STL14)
+               => []<>(F /\ G)        (STL5)
+               => <>(F /\ G)          (STL8)
+  STL10. F => G |- <>F => <>G
+         Pf: Assume:   |- F => G
+             To Prove: |- <>F => <>G
+             1. |- ~G => ~F
+                Pf: PROPCALC
+             2. |- []~G => []~F
+                Pf: 1 and STL7
+             3. |- ~[]~F => ~[]~G 
+                Pf: PROPCALC
+             4. QED
+                Pf: 3 and def of <>
+
+  STL11. ((P /\ F) => <>Q) |- []F => (P ~> Q)
+         Pf: |- P /\ F => <>Q
+              => |- F => (P => <>Q)            (PROPCALC)
+              => |- []F => (P ~> Q)  (STL7 and Def of ~>)
+
+  STL12. F => G |- F ~> G
+         Pf: |- F => G
+               => |- [](F => G)         (STL8)
+               => |- [](F => <>G)       (STL8)
+               :equiv: |- F ~> G   (Def of ~>)
+
+  STL13. |- (F ~> G) /\ (G ~> H) => (F ~> H)
+         Pf: ...
+
+  STL14. |- F => <>F
+         Pf: By STL8, with F replaced by ~F.
+  STL15. |- <><>F :equiv: <>F
+         Pf: By STL2, with F replaced by ~F, 
+
+  STL16. |- <>[]~TRUE :equiv: ~TRUE
+         |- []<>TRUE :equiv: TRUE
+
+  STL17. |- []FALSE :equiv: FALSE
+
+  STL18. (|- F => G) => |- F ~> G
+
+The following result asserts that these rules are all sound.
+
+Proposition SOUND: :A: F :in: TLA : (|- F) => (|= F)
+Proof: Obvious (?!).
+
+Classes of TLA Formulas
+----------------------------
+
+We now define some classes of formulas.  We introduce the obvious
+notation by which, for any sets :F: and :G: of formulas, :F: => :G:
+denotes the set of all formulas F => G with F :in: :F: and 
+G :in: :G:.  Thus, for example :F: \/ :F: denotes all formulas
+F \/ G with F and G in :F:, which is not the same as :F:.
+
+For any set :F: of formulas, :F:^* is defined to be the set
+of finite conjunctions of formulas in :F:.  More precisely,
+
+    :F:^0      ==  {TRUE}
+    :F:^[i+1]  ==  :F:^i /\ :F:, for i :geq: 0
+    :F:^*      ==  :E: i :geq: 0 : :F:^i
+
+In TLA, a program is represented by a formula F of the form
+
+    P /\ [][N]_x /\ WF_1 /\ ... /\ WF_m /\ SF_1 /\ ... /\ SF_n
+      where WF_i = []<><A_i>_x \/ []<>~Enabled(<A_i>_x)
+            SF_i = []<><B_i>_x \/ <>[]~Enabled(<B_i>_x)
+            A_i => N
+            B_i => N
+
+and x is a k-tuple of program variables.  Such a formula F is
+"machine closed", meaning that for any formula G that represents a
+safety property, |= F => G iff |= P /\ [][N]_x => G.
+
+All TLA properties that we prove have the form F => G for such an
+F. To prove that one program implies another, we prove a formula 
+F => G where F is a formula representing a program, and G is 
+obtained from a formula representing a program by substituting
+state functions for the program variables.  Because of this
+substitution, G need not be machine closed.  
+
+There are thus two classes of "program formulas" of interest,
+machine-closed formulas of the class defined above, and the more
+general class of formulas obtainable from machine-closed formulas
+by substituting state functions for variables.  We abstract and
+generalize these two sets of formulas by the formulas PGM and
+MCPGM.
+
+We define the class PGM by
+
+    PGM == PRED /\ []TACT /\ WF^* /\ SF^*
+
+     where WF == []<>~TACT \/ []<>~TACT
+           SF == []<>~TACT \/ <>[]TACT
+
+We define MCPGM to be the subset of PGM consisting of all
+formulas F :in: PGM satisfying the following condition
+
+      :E: G :in: PRED /\ []TACT : 
+         /\ (|- F => G) 
+         /\ :A: A :in: TACT : (|= F => []A) =>  (|= G => []A)
+
+
+The Completeness Theorem
+------------------------
+
+A logic is relatively complete for a formula set of formulas
+:F: iff, for every formula F :in: :F:, if F is valid then
+it is provable.  We write this as Comp(:F:), defined by
+
+   Comp(:F:) == :A: F :in: :F: : (|= F) => (|- F)
+
+The relative completeness assumption RC asserts Comp(ACT).
+Our completeness result is:
+
+THEOREM: 
+  1. Comp(MCPGM => PRED)
+  2. Comp(MCPGM => []TACT)
+  3. Comp(MCPGM => (PRED ~> PRED))
+  4. Comp(MCPGM => PGM)
+
+
+THE PROOF
+---------
+
+The Relation [=
+---------------
+
+We define a "provable subset" relation [= among sets of formulas,
+where :F: [= :G: means that every formula in :F: is provably
+equivalent to a formula in :G:.
+
+   :F: [= :G:  == :A: F :in: :F: : 
+                     :E: G :in: :G: : |- (F :equiv: G)
+
+   :F: [=] :G: ==  (:F: [= :G:) /\ (:G: [= :F:) 
+
+Lemma PSUB: For any subsets :F:, :F:_i, and :G:_i of TLA:
+  1. :F: [= :F:
+  2. (:F:_1 [= :F:_2) /\ (:F:_2 [= :F:_3) => (:F:_1 [= :F:_3)
+  3. (:F:_1 [= :G:_1) /\ (:F:_2 [= :G:_2)
+       => /\ ~:F:_1 [= ~:G:_1
+          /\ (:F:_1 /\ :F:_2) [= (:G:_1 /\ :G:_2)
+          /\ (:F:_1 => :F:_2) [= (:G:_1 => :G:_2)
+  4. (:A: i :geq: 0 : :F:_1 [= :G:_i) => F^* [= G^*
+
+Pf: This follows easily from PROPCALC.
+
+Lemma PSUBCOMP and ANDCOMP: For any subsets :F: and :G: of TLA:
+   0. (:F: [= :G:) /\ Comp(:G:) => Comp(:F:).
+   1. Comp(:F:) :equiv: Comp(:F:^*)
+   2. {TRUE} [= :G: => (Comp(:F: => :G:^*) :equiv: Comp(:F: => :G:))
+
+
+Pf of 0: 
+  (:F: [= :G:) /\ Comp(:G:) 
+     :equiv: /\ :A: F :in: :F: : :E: G :in: :G: : |- F :equiv: G
+\\\\\\       /\ :A: G :in: :G: : |= G => |- G
+     => :A: F :in: :F: : :E: G :in: :G: : 
+              (|- F :equiv: G) /\ (|= G => |- G)
+     => :A: F :in: :F: : |= F =>
+          :E: G :in: :G: : (|- F :equiv: G) /\ (|= G => |- G)
+     => :A: F :in: :F: : |= F =>
+          :E: G :in: :G: : (|- F :equiv: G) /\ |- G (Prop SOUND)
+     => :A: F :in: :F: : |= F => |- F                 (PROPCALC)
+     :equiv: Comp(:F:)
+
+Pf of 1: 
+ 1.1. Comp(:F:^*) => Comp(:F:)
+      Pf: By part 0, since :F: [= :F:^*
+ 1.2. Comp(:F:) => Comp(:F:^*)
+   1.2.1. Comp({TRUE})
+          Pf: PROPCALC implies |- TRUE.
+   1.2.2. For i > 0, Comp(:F:) /\ Comp(:F:^i) => Comp(:F:^[i+1])
+          Assume:  Comp(:F:), Comp(:F:^i), F :in: :F:, and G :in: :F:^i
+          To Prove: |= F /\ G => |- F /\ G
+          Pf: |= F /\ G 
+                  => |= F /\ |= G    (def of |=)
+                  => |- F /\ |- G    (assumption)
+                  => |- F /\ G       (PROPCALC)
+   1.2.3. QED
+          Pf: 1.2.1, 1.2.2, Induction, and definition of :F:^*.
+ 1.3. QED
+
+Pf of 2:
+ 2.1. Comp(:F: => :G:) => Comp(:F: => :G:^*) 
+      Pf: By Part 0, since (:F: => :G:^*) [= (:F: => :G:).
+ 2.2. ({TRUE} [= :G:) /\ Comp(:F: => :G:^*) => Comp(:F: => :G:) 
+      2.2.1. ({TRUE} [= :G:) =>
+               (:F: => :G:^0) [= (:F: => :G:)
+      2.2.2.   (:F: => :G:^i) [= (:F: => :G:)^i
+               => (:F: => :G:^[i+1]) [= (:F: => :G:)^[i+1]
+             Pf: By PROPCALC, which implies
+                  |- (F => (G_1 /\ G_2)) :equiv: (F => G_1) /\ (F => G_2)
+      2.2.3. ({TRUE} [= :G:) => ((:F: => :G:^*) [= (:F: => :G:)^*)
+             Pf: 2.2.1, 2.2.2, and mathematical induction.
+      2.2.4. ({TRUE} [= :G:) /\ Comp((:F: => :G:)^*) => Comp(:F: => :G:^*)
+             Pf: 2.2.3 and Part 0.
+      2.2.5. QED
+             Pf: 2.2.4 and Part 1, with (:F: => :G:)
+                 substituted for :F:.
+
+
+Lemma TACT:  TACT^* [= TACT
+Proof: Use Lemma PRETACT.
+ 1. For any A and B in ACT and any f and g in SFCN:
+     (a) [(A \/ (f' = f)) /\ (B \/ (g' = g)]_[(f,g)] :in: TACT
+     (b) |= ([A]_f /\ [B]_g 
+             :equiv: [(A \/ (f' = f)) /\ (B \/ (g' = g)]_[(f,g)])
+    Pf: Part (a) follows from EX2, EX10, and EX11.  Part (b) follows,
+        by a simple calculation, from the definition of validity
+        for actions.
+ 2. QED
+    Pf: Follows easily by induction from 1 and EX2.
+
+
+
+
+Reduction and Completeness
+--------------------------
+
+Lemma REDDEF: For any subsets :F: and :G: of TLA:
+  :A: F :in: :F: : :E: G :in: :G: : /\ (|= F) => (|= G)
+                                    /\ (|- G) => (|- F)
+    => (Comp(:G:) => Comp(:F:))
+
+Pf: Trivial.
+
+Lemma COMPRED: 
+  Comp(:F:) /\ Comp(:G:) => Comp(:F: /\ :G:)
+
+Pf: Trivial.    
+
+
+Lemma BOXRED: For any sets :F: and :G: of formulas in TLA:
+     Comp([]:F: => :G:) => Comp([]:F: => []:G:) 
+Assume:   A. Comp([]:F: => :G:) 
+          B. F :in: :F:, G :in: :G:, and |= []F => []G
+To Prove: |- []F => []G
+  1. |= []F => G
+     Pf: Assumption B, STL 8 and Lemma SOUND.
+  2. |- ([]F => G) => |- ([]F => []G) 
+     Pf: STL7 and STL2.
+  3. QED
+     Pf: 1, 2, and assumptions.
+
+
+Lemma SIN: For any P :in: PRED, A :in: TACT, G :in: TLA, 
+and F :in: WF^* /\ SF^*:
+    1./\ |= (P /\ []A /\ F => []G)  => |= [](sin(A, P) /\ []A /\ F => []G)
+    2./\ |- [](sin(A, P) /\ []A /\ F => []G) => |- (P /\ []A /\ F => []G)
+
+Pf: LET I == sin(A, P) 
+    Assume P :in: PRED, A :in: TACT, ...
+
+  0. For all :tau: :in: ST^[:omega:] and n :geq: 0 :
+       (:tau: |= F) :equiv: (:tau:^[+n] |= F)
+     Pf: Assume:  :tau: :in: ST^[:omega:] , n :geq: 0 , 
+      0.1. :A: H :in: []<>~TACT \/ <>[]TACT :
+              (:tau: |= H) :equiv: (:tau:^[+n] |= H)
+           Pf: Follows easily from definitions.
+      0.2. :A: H :in: []<>~TACT \/ []<>TACT :
+              (:tau: |= H) :equiv: (:tau:^[+n] |= H)
+           Pf: Follows easily from definitions.
+      0.3. QED
+           Pf: By 0.1 and 0.2, since :sigma: |= H_1 /\ H_2 equals
+               :sigma: |= H_1 /\ :sigma: |= H_2  by def of |=.
+
+  1. |- P /\ []A => []I
+     1.1. |- P => I
+          Pf: |= P => I and Relative Completeness Assumption 2.
+     1.2. |- I /\ A => I'
+          1.2.1. ...
+     1.3. QED
+          Rule INV
+  
+  2. :A: :sigma: :in: ST^[:omega:] :
+       :sigma: |= []I /\ []A /\ F
+         => :E: :tau:, n :  /\ :sigma: = :tau:^[+n] 
+\\\\\\                      /\ :tau: |= P /\ []A /\ F
+     Assume:   3A. :sigma: |= []I /\ []A /\ F
+     To Prove: :E: :tau:, n :  /\ :sigma: = :tau:^[+n] 
+                               /\ :tau: |= P /\ []A /\ F
+     2.1. :sigma:_0.I
+          Pf: by assumption, definition of |= and [].
+     2.2. Choose :tau:_0, ..., :tau:_[n] such that
+                 :tau:_0.P, :tau:_[i-1].A.:tau:_i,
+                 and :tau:_[n] = :sigma:_0.
+          Pf: 2.1, definition of sin(P, A).
+     2.3. Let :tau:_[n+i] == :sigma:_i, then
+             :tau: |= P /\ []A 
+          Pf: By 2.2 and assumption 3A.
+     2.4. :tau: |= F
+          Pf: :sigma: |= F by assumption 3A, and
+              :tau: |= F follows by 0.
+     2.5. QED
+          Pf: 2.3, 2.4.
+  
+  3.  |= (P /\ []A /\ F => []G)  
+           => |= ([]I /\ []A /\ F => []G)
+      3.1. :A: :sigma: :
+              /\ |= (P /\ []A /\ F => []G)  
+              /\ :sigma: |= ([]I /\ []A /\ F)
+              => :sigma: |= []G
+  
+           Assume:   4A.1. |= (P /\ []A /\ F => []G)  
+                     4A.2. :sigma: |= ([]I /\ []A /\ F)
+           To Prove: :sigma: |= []G
+           3.1.1. Choose :tau: s.t. 
+                    1./\ :sigma: = :tau:^[+n] 
+                    2./\ :tau: |= P /\ []A /\ F
+                  Pf: By 2.
+           3.1.2. :tau: |= []G
+                  Pf: By assumption 4A.1, 3.1.1.2, and definition 
+                      of |=.
+           3.1.3. QED
+                  By 3.1.2, 3.1.1.1, and definition of |= []G.
+  
+      3.2. QED
+           By 3.1, since
+           |= ([]I /\ []A /\ F => []G) ==
+             :A: :sigma: : :sigma: |= ([]I /\ []A /\ F) 
+                 => :sigma: |= []G
+           
+  4. |- ([]I /\ []A /\ F => []G) => |- (P /\ []A /\ F => []G)  
+     Pf: 1 and PROPCALC.
+
+  5. QED
+     3 and 4.
+
+Lemma SINRED: For any set :F: of formulas in TLA:
+   Comp([]TACT /\ WF* /\ SF* => []:F:) => Comp(PGM => []:F:) 
+
+Pf: Lemma SIN and Lemma REDDEF.
+
+Lemma R1.  /\ Comp(MCPGM => PRED)
+           /\ Comp(MCPGM => []TACT)
+           /\ Comp(MCPGM => WF)
+           /\ Comp(MCPGM => SF)
+             => Comp(MCPGM => PGM)
+Pf: 1. /\ Comp(MCPGM => PRED)
+       /\ Comp(MCPGM => []TACT)
+       /\ Comp(MCPGM => WF^*)
+       /\ Comp(MCPGM => SF^*)
+       => Comp(MCPGM => PGM)
+      Pf: Lemma COMPRED and definition of PGM.
+    2. /\ Comp(MCPGM => WF) => Comp(MCPGM => WF^*)
+       /\ Comp(MCPGM => SF) => Comp(MCPGM => SF^*)
+       Pf: By Lemma ANDCOMP, since STL16 implies
+           {TRUE} [= WF and {TRUE} [= SF.
+    3. QED
+       Pf: 1 and 2.
+
+
+Lemma WFRED: WF [= SF
+ 1. F :in: WF :equiv: :E: A, B :in: TACT : F = []<>~A \/ []<>~B
+    Pf: Def of WF.
+
+ 2. :A: A, B :in: TACT :
+      |- ([]<>~A \/ []<>~B) :equiv: ([]<>~(A /\ B) \/ <>[]~TRUE)
+      Pf: STL5,, STL16, and PROPCALC.
+
+ 3. F :in: WF => :E: G :in: SF : |- F :equiv: G
+    Pf: 1, 2, EX2, EX-1, and def of SF.
+
+ 4. QED
+    Pf: 3 and def of [=
+
+Lemma IORED: For any sets :F:, :G: and :H: of formulas in TLA:
+ Comp([]:F:^* /\ []:G: => []:H:) =>
+   Comp([]:F:^* /\ (<>[]:F:)^* /\ []:G: => []:H:)
+  1. []:F:^* /\ (<>[]:F:)^* /\ []:G: => []:H: 
+         [= [](:F:^*) /\ []:G: => [](<>~(:F:^*) /\ []:H:)  (STL1 and STL6)
+    Pf: []:F:^* /\ (<>[]:F:)^* /\ []:G: => []:H: 
+         [= [](:F:^*) /\ <>[](:F:^*) /\ []:G: => []:H:  (STL4)
+         [=] [](:F:^*) /\ []:G: => ([]<>~(:F:^*) /\ []:H:)  (PROPCALC)
+
+  2. [](:F:^*) /\ []:G: => <>~(:F:^*) /\ []:H:   
+      [= [](:F:^*) /\ []:G: => []:H:
+    Pf: [](:F:^*) /\ []:G: => <>~(:F:^*) /\ []:H:   
+         [=] [](:F:^*) /\ [](:F:^*) /\ []:G: => []:H:   (PROPCALC)
+         [=] [](:F:^*) /\ []:G: => []:H:                (STL1)
+
+  3. QED
+     Pf: Comp([]:F:^* /\ []:G: => []:H:) 
+          => Comp([]:F:^* /\ (<>[]:F:)^* /\ []:G: => []:H:)
+                                              (2 and PSUBCOMP.0)
+          => Comp([](:F:^*) /\ []:G: => <>~(:F:^*) /\ []:H:) 
+                                              (1 and PSUBCOMP.0)
+          => Comp([](:F:^*) /\ []:G: => [](<>~(:F:^*) /\ []:H:))
+                                     (STL1 and Lemma BOXRED)
+          => Comp([]:F:^* /\ (<>[]:F:)^* /\ []:G: => []:H:)
+1 and Lemma PSUBCOMP.0.     
+
+Lemma PGMRED: For any set :F: of formulas in TLA:
+    Comp([]TACT /\ ([]<>~TACT)^* => []:F:) => Comp(PGM => []:F:)
+  1. For any subsets :F:, :G:, :H:, and :I: of TLA:
+        :F: /\ (:G: \/ :H:)^* => :I:
+          [= (:F: /\ :G:^* /\ :H:^* => :I:)^*
+   1.1. :F: /\ (:G: \/ :H:)^0 => :I:
+               [= (:F: /\ :G:^* /\ :H:^*)^* => :I:)^*
+     Pf: Trivial
+   1.2. If :F: /\ (:G: \/ :H:)^i => :I:
+              [= (:F: /\ :G:^* /\ :H:^* => :I:)^*
+          then :F: /\ (:G: \/ :H:)^[i+1] => :I:
+                 [= (:F: /\ :G:^* /\ :H:^* => :I:)^*
+     Pf: :F: /\ (:G: \/ :H:)^[i+1] => :I:
+           [=] :F: /\ (:G: \/ :H:)^i /\  (:G: \/ :H:) => :I:
+           [=] /\ :G: => (:F: /\ (:G: \/ :H:)^i => :I:)
+               /\ :H: => (:F: /\ (:G: \/ :H:)^i => :I:)
+             [=  /\ :G: => (:F: /\ :G:^* /\ :H:^* => :I:)^*
+                 /\ :H: => (:F: /\ :G:^* /\ :H:^* => :I:)^*
+             [=  /\ (:G: => (:F: /\ :G:^* /\ :H:^* => :I:))^*
+                 /\ (:H: => (:F: /\ :G:^* /\ :H:^* => :I:))^*
+             [=  /\ (:F: /\ :G:^* /\ :H:^* => :I:)^*
+                 /\ (:F: /\ :G:^* /\ :H:^* => :I:)^*
+             [=] (:F: /\ :G:^* /\ :H:^* => :I:)^*
+     1.3. QED
+            Pf: 1.1, 1.2, and mathematical induction.             
+
+
+
+  2. []TACT /\ WF^* /\ SF^* => []:F:
+       [= ([]TACT /\ ([]<>~TACT)^* => []:F:)
+    Pf: []TACT /\ WF^* /\ SF^* => []:F:
+          [= ([]TACT /\ ([]<>~TACT)^* /\ SF^* => []:F:)            
+                                (By 1, with :G: = :H: = []<>~TACT)
+          [= ([]TACT /\ ([]<>~TACT)^* /\ (<>[]TACT)^* => []:F:)     
+                                (By 1, with :G: = []<>~TACT, :H: = ...)
+          [= ([]TACT /\ ([]<>~TACT)^* => []:F:)
+                                           (Lemma IORED and STL1)
+
+  3. Comp([]TACT /\ ([]<>~TACT)^* => []:F:) 
+       => Comp([]TACT /\ WF^* /\ SF^* => []:F:)
+     PF: 2 and Lemma PSUBCOMP.0.
+
+  4. Comp([]TACT /\ WF^* /\ SF^* => []:F:) => (PGM => []:F:)  
+     Pf: Lemma SINRED.
+
+  5. QED
+     Pf: 3 and 4.
+
+Lemma R2. Comp(PGM => SF) => Comp(PGM => WF)
+  1. (PGM => WF) [= (PGM => SF)
+      Pf: Lemma WFRED and Lemma PSUB.3.
+  2. QED
+     Pf: 1 and Lemma PSUBCOMP.0.
+
+
+Lemma R3. Comp(~([]TACT /\ ([]<>~TACT)^*)) => Comp(PGM => SF)
+
+ 1. Comp(~([]TACT /\ ([]<>~TACT)^*))
+      => Comp([]TACT /\ ([]<>~TACT)^* => <>[]TACT)
+    Pf: By Lemma PSUBCOMP.0, since
+         []TACT /\ ([]<>~TACT)^* => <>[]TACT
+          [=] ~([]TACT /\ ([]<>~TACT)^* /\ []<>~TACT)
+          [= ~([]TACT /\ ([]<>~TACT)^*)
+
+ 2. Comp([]TACT /\ ([]<>~TACT)^* => <>[]TACT)
+       => Comp([]TACT /\ ([]<>~TACT)^* /\ <>[]TACT => <>[]TACT)
+    Pf: Lemma IORED and STL6.
+
+ 3. Comp([]TACT /\ ([]<>~TACT)^* /\ <>[]TACT => <>[]TACT)
+      => Comp([]TACT /\ ([]<>~TACT)^* => SF) 
+    Pf: By Lemma PSUBCOMP.0, since
+          []TACT /\ ([]<>~TACT)^* => SF
+             [=] []TACT /\ ([]<>~TACT)^* => []<>~TACT \/ <>[]TACT
+             [=] []TACT /\ ([]<>~TACT)^* /\ <>[]TACT => <>[]TACT 
+ 4. Comp([]TACT /\ ([]<>~TACT)^* => SF) => Comp(PGM => SF)
+    Pf: By Lemma PGMRED,  since STL5 and STL2 imply SF [=] []SF.
+
+ 5. QED
+    Pf: 1 - 4 and transitivity of =>.
+
+
+Lemma R4. Comp(~([]TACT /\ ([]<>~TACT)^*)) => 
+    /\ Comp(PGM => PRED)
+    /\ Comp(PGM => (PRED ~> PRED))
+
+  1. Comp(~([]TACT /\ ([]<>~TACT)^*)) => Comp(PGM => FALSE) 
+     Pf: By Lemma PGMRED and STL17.
+
+  2. Comp(PGM => FALSE) => Comp(PGM => PRED) 
+     Pf: By Lemma PSUBCOMP.0, since
+           PGM => PRED 
+             [=] ~PRED /\ PGM => FALSE
+             [= PGM => FALSE
+  3. Comp(PGM => PRED) => Comp(PGM => (PRED => <>PRED) 
+     Pf: By Lemma PSUBCOMP.0, since
+           PGM => (PRED => <>PRED)
+            [=] (PGM /\ ~<>PRED) => ~PRED
+            [=] (PGM /\ []PRED) => PRED
+            [=  PGM => PRED               (By Lemma TACT)
+
+  4. Comp(PGM => (PRED => <>PRED) => Comp(PGM => (PRED ~> PRED))    
+     Pf: By Lemma SINRED, Lemma PSUBCOMP.0, and Lemma PSUB.3, since 
+         []TACT /\ WF^* /\ SF^* [= PGM.
+
+  5. QED
+     Pf: 1 - 4.  
+
+Lemma R5. Comp(MCPGM => []TACT) 
+  1. Comp(PRED /\ []TACT => []TACT) => Comp(MCPGM => []TACT) 
+     Pf: By definition of MCPGM.
+
+  2. Comp([]TACT => []TACT) => Comp(PRED /\ []TACT => []TACT) 
+     Pf: By Lemma SIN and Lemma REDDEF.
+  
+  3. Comp([]TACT => []TACT)
+     Assume: F :in: []TACT => []TACT, |= F
+     To Prove: |- F
+     3.1. For all G :in: []TACT there exist P :in: PRED,
+          A :in: ACT, and f :in: SFCN such that 
+             |- G :equiv: [](P /\ [(P = P') /\ A]_(f,P)).
+          Pf: It follows from TLA1, STL8, and the definition of [A]_f
+              that 
+                 |- [](P /\ [][B]_f) :equiv: 
+                      [](P /\ [(P'=P) /\ (B \/ (f'=f)]_(f,P))
+              The result then follows from the definition of
+              TACT, EX(-1), and |= [TRUE]_f :equiv: TRUE,
+              which by Assumption RC implies |-  [TRUE]_f :equiv: TRUE.
+       
+     3.2. Choose P, Q :in: PRED; A, B :in: ACT, and
+          f, g :in: SFCN such that
+            F = [](P /\ [(P'=P) /\ A]_f) => []B
+          Pf: By 3.1.
+     
+     3.3. |= (P /\ [(P'=P) /\ A]_f) => B
+          Assume: s,t :in: ST and s.(P /\ [(P'=P) /\ A]_(f,P)).t
+          To Prove: s.B.t
+          3.3.1. t.P
+                 Pf: s.(P /\ [(P'=P) /\ A]_(f,P)).t implies
+                     s.P and s.P = t.P. 
+          3.3.2. t.(P /\ [(P'=P) /\ A]_(f,P)).t
+                 Pf: By 3.3.1.
+          3.3.3. Define :sigma: :in: ST^[:omega:] by 
+                 :sigma:_0 = s and :sigma:_i = t for all i > 0.
+                 Then :sigma: |= [](P /\ [(P'=P) /\ A]_f) 
+                 Pf: 3.3.2, assumption, and def of |=.
+          3.3.4. :sigma: |= []B
+                 Pf: 3.3.3 and assumption |= F.
+          3.3.5. :sigma:_0.B.:sigma:_1
+                 Pf: 3.3.4 and definition of |= []B.
+          3.3.6. QED
+                 Pf: 3.3.5 and 3.3.3.
+      3.4. |- (P /\ [(P'=P) /\ A]_f) => B
+           Pf: 3.3 and assumption RC.
+      3.5. QED
+           Pf: 3.4 and TLA2.
+
+  4. QED          
+     Pf: 1 - 3.          
+
+Lemma SPSIN.   
+  1. |= sin(A, P) /\ A => sin(A, P)'
+  2. |= P /\ A => sp(A; P)'
+
+
+Lemma MAIN: If N, ~A_1, ..., ~A_n :in: TACT, then
+  |= ~([]N /\ []<>A_1 /\ ... /\ []<>A_n)
+   =>   |- ~([]N /\ []<>A_1 /\ ... /\ []<>A_n)
+Assume:   |= ~([]N /\ []<>A_1 /\ ... /\ []<>A_n)
+To Prove: |- ~([]N /\ []<>A_1 /\ ... /\ []<>A_n)
+
+1. Let x :in: PVBL^k include all program variables free in
+   N and the A_i, and let w :in: LVBL^k not include an
+   logical variables free in N or any of the A_i.
+   Pf: The existence of x and w follow from EX7 and EX7b.
+
+2. Define 
+     P_0(w) == x = w
+     P_i(w) == sin(N, sp(N /\ A_i, P_[i-1]) for 1 :leq: i :leq: n
+   Then P_i :in: PRED for 0 :leq: i :leq: n
+  
+  Pf: EX6 and EX1.
+
+3. Choose v :in: LVBL^k, disjoint from w and not containing
+   any logical variables free in N or the A_i.
+   Pf: EX7b.
+
+4. Define w>v == P_n(w)[v/x]
+   Then |= Well-Founded(>, VAL^k).
+   Pf: Define a sequence s_0, ... , s_p to be G-LIVE iff
+         /\ :A: i :in: (0 .. p] : s_[i-1].N.s_i
+         /\ :A: j :in: [1 .. n] : 
+                :E: i :in: (0 .. p] : s_[i-1].A_j.s_i
+   4.0. w>v :equiv: |= (x = v) => P_n(w)
+     4.0.1. For any Q : if u :in: LVBL^k, and u does not appear free
+            in Q, then Q :equiv: :A: u : (v = u) => Q[u/v]
+            Pf: Ordinary logic.
+     4.0.2. For any predicate Q, 
+            Q[u/x] :equiv: :A: s : ((s.x = u) => s.Q)
+            Pf: Obvious.
+     4.0.3. QED
+            Pf: P_n(w)[v/x] 
+                 :equiv: :A: u : (u = v) /\ P_n(w)[v/x][u/v] (by 1)
+                 :equiv: :A: u : (u = v) /\ P_n(w)[u/x]      (obvious)
+                 :equiv: :A: s : (s.x = u) => s.((x = v) /\ P_n(w))  (2)
+                 :equiv: :A: s : s.((x = v) /\ P_n(w))
+                     (x contains all free program variable in P_n(w))
+                 :equiv: |=(x = v) /\ P_n(w)   (def of |=)
+   4.1. For any state s and any d :in: VAL^k, if s.P_n(d)
+        then there exists a G-LIVE sequence s_0, ... , s_p
+        s.t. s_p = s and s_0.x = d
+      4.1.1. :A: j :in: [1 .. n] : t_0.P_[j](d) => 
+                :E: t_1, ... , t_q :
+                   /\ t_q.sp(N /\ A_j; P_[j-1])(d)
+                   /\ :A: i :in: (0 .. q] : t_i.N.t_[i-1]
+             Pf: Def of sin, since sin(...)(d) = sin(...(d)).
+      4.1.2. :A: j :in: [1 .. n] : t_0.sp(N /\ A; P_[j-1])(d)
+                => :E: t_1 : /\ t_1.(N /\ A_j).t_0
+                             /\ t_1.P_[j-1](d)
+             Pf: Def of sp.
+      4.1.3. t_0.P_0(d) => :E: t_1, ... , t_q :
+                   /\ t_q.x = d
+                   /\ :A: i :in: (0 .. q] : t_i.N.t_[i-1]
+             Pf: Def of sin, since sin(...)(d) = sin(...(d)).
+      4.1.4. QED
+             Pf: Use 4.1.1 - 4.1.3 to construct the sequence
+                 backwards, starting from s.
+
+   4.2. If d>c then for any state s_0 s.t. s_0.x = d
+        there exists a G-LIVE sequence s_0, ... , s_p s.t. s_p.x = c.
+        Pf: Assume  d>c and s_0.x = d.
+        4.2.1. If u_0, ... , u_p is a G-LIVE sequence s.t.
+               u_0.x = d and u_p.x = c, and t_i.x = u_i.x for
+               all i, then t_0, ... , t_p is a G-LIVE sequence s.t.
+               t_0.x = d and t_p.x = c.
+               Pf: Follows from hypothesis that x includes all
+                   the free variables: more precisely, that the
+                   x are chosen according to EX7.
+        4.2.2. Choose a G-LIVE sequence t_0, ..., t_p s.t. 
+               t_0.x = d and t_p.x = c
+               Pf: By 4.0, d>c implies (s.x = c) => s.P_n(d).
+                   The assumption that VAL is nonempty (it contains
+                   TRUE) implies that there exists a state s with
+                   s.x = c.  (The nonemptiness of VAL is implied by 
+                   the existence of c if k > 0.)
+        4.2.3. QED
+               Pf: Let s_i = t_i for i > 0.  Then s_0, ... , s_p is
+               a G-LIVE sequence by 4.2.1 and 4.2.2., and s_p.x = c.
+               by 4.2.2.
+  4.3. If c_1 > c_2 > ... then there exists :sigma: :in: ST^[:omega:] 
+       such that
+         (a) :A: i :geq: 0 : :sigma:_i.N.:sigma:_[i+1]
+         (b) :A: j :in: [1 .. n] there exist infinitely many 
+             j :geq: 0 such that :sigma:_i.A_j.:sigma:_[i+1]
+       Pf: By EX6, there exists a state s_0 such that
+           s_0.x = c_1.  We can then apply 4.2 inductively
+           yp 4.2, there exist G-LIVE sequences :tau:(i) such
+           that the last state of :tau:(i) is the first state
+           of :tau:(i+1).  Let :sigma: be the behavior obtained
+           by concatenating the behaviors :tau:(i).
+
+  4.4. QED
+       Pf: Assume c_1 > c_2 > ... , and let :sigma: be the sequence
+           obtained in 4.3.  By definition of |=,
+           :sigma: |= []N /\ []<>A_1 /\ ... /\ []<>A_n,
+           contradicting the hypothesis
+           |= ~([]N /\ []<>A_1 /\ ... /\ []<>A_n).
+
+5. QED
+   5.1. :A: j :in: [1 .. n] : 
+           |- ([]N /\ []<>A_1 /\ ... /\ []<>A_n) => (P_[j-1] ~> P_j)
+     Pf: Assume j :in: [1 .. n]
+         LET R == sp(N /\ A; P_[j-1])
+         5.1.1. |= P_[j-1] /\ N => (P_[j-1])'
+                Pf: Lemma SPSIN.1
+         5.1.2. |= P_[j-1] /\ N /\ A_j => R'
+                Pf: Lemma SPSIN.2
+         5.1.3. |- []N /\ []<>A_j => (P_[j-1] ~> R)
+                Pf: Assumption RC and Rule PROG.
+         5.1.4. R => P_j
+                Pf: Lemma SPSIN.3
+         5.1.5. []N /\ []<>A_j => (P_[j-1] ~> P_j)
+                Pf: STL12 and STL13.
+         5.1.6. QED
+                Pf: 5.1.5 and PROPCALC
+   5.2. |- ([]N /\ []<>A_1 /\ ... /\ []<>A_n) => ((x = w)~> P_n(w))  
+        Pf: 5.1 and STL13, since P_0 equals x = w by definition.
+
+   5.3. |- P_n(w) => :E: v :in: VAL^k : (w > v) /\ x = v
+        5.3.1. |= P_n(w) :equiv: :E: v :in: VAL^k : x = v /\ P_n(w)
+               Pf: Def of |=.
+        5.3.2. |= x = v /\ P_n(w) :equiv: (w > v) 
+               Pf: Definition of > 
+        5.3.3. |= P_n(w) => :E: v :in: VAL^k : (w > v) /\ x = v
+               Pf: 5.3.1 and 5.3.2.
+        5.3.4. QED
+               Pf: EX9 and assumption RC.
+   5.4. QED
+        Pf: 4, 5.2, 5.3, STL18, EX8, and the LATTICE Rule, with 
+            x = w substituted for P(w), and VAL^k substituted for S.
+    
+  
+Lemma R6. Comp(~([]TACT /\ ([]<>~TACT)^*))
+Pf: Lemma MAIN and Lemma REDDEF.
+          
+
+PROOF OF THEOREM:
+Follows from Lemmas R1 - R6, since MCPGM :subseteq: PGM.
+\end{spec}
+\end{document}

@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/toolbox.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:32:27 GMT -->
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) [Netscape]">
+   <TITLE>The TLA Toolbox</TITLE>
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+<!-- FILE SPECIFIC STYLE DECLARATIONS -->
+<style type="text/css">
+   .smallLI {margin-top:-10px}
+   .medLI {margin-top:-10px}
+   .smallpar {margin-top: 7px} 
+   .smallUL{margin-top:-10px}
+   .medUL{margin-top:-3px}
+        }
+  UL {margin-top:0px; margin-bottom:0px} 
+  .smallpar {margin-top:7px}
+  DT {margin-top:10px}
+  h3 {margin-bottom:10px}
+  h4 {margin-top:7px; margin-bottom:0px;
+     }
+</style>
+
+
+
+<script src="tlaweb.js"> </script>
+<SCRIPT>
+noLinkName = "The Toolbox";
+</SCRIPT>
+
+
+</HEAD>
+<BODY BGCOLOR=#ffffe4 onload="initialize()">
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol" > </div> 
+
+<H1>The TLA+ Toolbox</H1>
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 15 July 2019</I></font>
+</td>
+<td style="vertical-alight:top;width:auto">
+</td>
+</tr>
+</table>
+<HR style="margin-bottom:12px;margin-top:-11px">
+
+<DIV class="hidden-div" style="color:red;margin-bottom:-22px"><b>
+   You'll miss a lot on this web site unless you enable Javascript
+   in your browser. </b></DIV>
+
+
+ <H2 id=h2intro
+  class="show-hide" onclick="showHide('hide-intro','intro')">
+<a name="what">
+ What is the Toolbox?
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-intro" > [show]</font>
+</a></H2>
+
+<DIV id="intro" class="hidden-div"> 
+
+The TLA Toolbox is an IDE (integrated development environment)
+for the TLA+ tools.&nbsp; You can use it to:
+
+<UL>
+<LI class=smallLI>Create and edit your specs, with the locations of parsing errors
+marked in the modules.</LI>
+<p>
+<LI class=smallLI>Run the PlusCal translator, with the locations of translation
+errors marked in the PlusCal code.<BR></LI>
+<p>
+<LI class=smallLI>View the pretty-printed versions of your modules.</LI>
+<p>
+<LI class=smallLI>Run the TLC model checker.&nbsp; 
+
+
+The Toolbox allows you to explorer an error trace produced by
+TLC&mdash;for example, by evaluating arbitrary formulas at each step
+in the trace.
+
+
+<p>
+<LI class=smallLI> Run the 
+<a href="http://tla.msr-inria.inria.fr/tlaps">TLA+ proof system.</a>
+
+</UL>
+The Toolbox was written by Simon Zambrovski and improved by Markus Kuppe
+and Daniel Ricketts.
+
+</DIV>
+
+
+<H2 id ="obtaining" 
+ class="show-hide" onclick="showHide('hide-obtain','obtain')">
+<a name="obtaining">Obtaining the Toolbox
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-obtain"> [show]</font>
+</a></H2>
+
+<DIV id="obtain" class="hidden-div"> 
+First, make sure you have a Java runtime, version 1.8 or later.&nbsp;
+Then download and install the Toolbox.&nbsp;  You may then have to 
+install pdflatex.
+
+<H3 id ="h2download" class="show-hide" 
+    onclick="showHide('hide-download','download')">
+<a name="downloading">Downloading the Toolbox
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-download" > [show]</font>
+</a></H3> 
+<DIV id="download" class="hidden-div">
+
+Below is a link to a page from which you can download the versions
+of the Toolbox for various systems, the name of the file indicating
+which system it is for.&nbsp;  For example, 
+  &nbsp;<code>TLAToolbox-1.4.5-linux.gtk.x86_64.zip</code>&nbsp;
+is for 64-bit Linux.&nbsp;
+
+Please thank Microsoft and HP for the open-source release of the 
+code by reading the following agreement.
+<p>
+
+<b>By installing, copying, or otherwise using this software, you agree
+to be bound by the terms of its license.&nbsp;&nbsp;
+
+<A HREF="license.html">Read the license.</A></b>
+
+<p>
+
+You can download the Toolbox from either of these sites:<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<A
+HREF="https://github.com/tlaplus/tlaplus/releases/latest">
+<b>-- DOWNLOAD FROM GITHUB --</b></A>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<A
+HREF="https://tla.msr-inria.inria.fr/tlatoolbox/products/">
+<b>-- ALTERNATE DOWNLOAD
+ SITE --</b></A>
+
+<p>
+
+Put the downloaded zip file in a convenient folder.
+
+</DIV>
+
+<H3 id ="h2install" 
+    class="show-hide" onclick="showHide('hide-install','install')">
+    Installing the Toolbox
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-install" >
+      [show]</font>
+</H3>
+
+<DIV id="install" class="hidden-div"> 
+Here are the instructions for the different operating systems.
+
+<h4>Windows</h4>
+
+Download the zip file into a convenient folder.&nbsp; 
+Extract the contents of the file by right-clicking on it
+in the File Explorer and selecting <i>Extract All</i>.&nbsp;
+
+You can choose what folder to put the extracted files in; the
+default is a subfolder of the folder containing the zip file.&nbsp;
+
+Select the <i>Show extracted files when complete</i> option and
+click on <i>Extract</i>.&nbsp;  The extracted files will be
+in a subfolder named <i>toolbox</i>&nbsp;  
+
+Open that subfolder.&nbsp;  You can run the Toolbox by double-clicking on
+the file called <code>toolbox</code> or <code>toolbox.exe</code>.&nbsp;  
+
+But before doing that, you probably want to make it easier to
+run the Toolbox later by doing one of the following:
+<ul>
+<li style="margin-top:-10px"> 
+  Create a shortcut by right-clicking on the file and selecting
+    <i>Create shortcut</i>, then
+  move the shortcut to the desktop or some other convenient 
+    location.&nbsp;
+  You can run the Toolbox by double-clicking on the shortcut.
+<li style="margin-top:5px"> Right-click on the file and select <i>Pin to Start</i> or
+    <i>Pin to taskbar</i>.&nbsp; You can then run the Toolbox from the
+    Start Menu or the taskbar.
+</ul>
+
+<h4 style="margin-top:-10px">Mac OS</h4>
+
+Download the file and, if necessary, unzip it by double-clicking on
+it.&nbsp; (Depending on how your browser and system are set up, the
+downloaded file may already be unzipped.)&nbsp; This results in an
+application bundle called <i>TLA+ Toolbox.app</i>, which you can move
+to the Applications folder.&nbsp; The Toolbox can be started by
+double-clicking that application.&nbsp; When you open the application
+for the first time, you will likely need to control-click
+(right-click) on the application, choose <i>Open</i> from the
+drop-down menu, and confirm that you want to open the application in
+the subsequent dialog box.&nbsp; This is due to Apple's security
+settings since the Toolbox is not distributed through the App Store.
+
+<p>
+
+For Homebrew users, a Toolbox Cask is available with the name
+<code>tla-plus-toolbox</code>.
+
+<h4>Linux</h4>
+
+<!--
+   Here are instructions for Debian, Ubunto, Fedora, RHEL, and CentOS:
+   <ul>
+   <li> Open the download site in a browser
+   
+   <li> For Debian and Ubunto, click on the link to the <code>.deb</code>
+        file; for Fedora, RHEL, and CentOS, click
+        on the link to the <code>.rmp</code> file.
+   
+   <li> The browser will open the software installer, 
+   prompting to install the Toolbox.
+   
+   <li> Click on the <i>install</i> button.
+   </ul>
+   The Toolbox can then be opened with the system menu.  
+   
+   <p>
+   For other flavors of Linux, download the proper zip file and
+   extract its contents to a convenient directory.&nbsp;  Open the
+   <code>toolbox</code> subdirectory.&nbsp;  You can then run the Toolbox
+   by executing the <code>toolbox</code> file in that subdirectory. 
+-->
+
+
+Extract the contents of the zip file to a convenient directory.&nbsp;
+Open the <code>toolbox</code> subdirectory.&nbsp; You can then run the
+Toolbox by executing the <code>toolbox</code> file in that
+subdirectory.&nbsp; 
+
+<!-- A later release of the Toolbox will provide a more
+   convenient way to install it.
+-->
+
+
+
+</DIV>
+
+
+<h3 id="h2pdflatex"  class="show-hide" 
+    onclick="showHide('hide-pdflatex','pdflatex')">Installing pdflatex
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-pdflatex" >
+      [show]</font>
+</h3>
+
+<DIV id="pdflatex" class = "hidden-div">
+To run the TLA+ pretty-printer (with the Toolbox's <i>Produce PDF
+Version</i> command), the <code>pdflatex</code> program must be
+installed on your computer.&nbsp;  That program is distributed as
+part of a LaTeX installation, and it will already be installed if
+you use TeX or LaTeX.&nbsp;  It may also be installed if  
+you're running Linux.&nbsp;  Run the command
+ <pre>    pdflatex -help</pre>
+in a command shell / terminal window to see if it's already
+installed.&nbsp; If it isn't, you should install LaTeX on your
+computer.&nbsp;
+
+<A href="https://www.latex-project.org/">The LaTeX Project</a>
+has links to various sources of LaTeX.&nbsp; 
+
+Here are ones that we recommend for different operating systems.&nbsp;
+
+Whatever method you use, you should check with a command shell
+that it is installed.&nbsp;  (Open a new command shell after you
+install LaTeX.)
+
+<h4>Windows</h4>
+
+<a href="https://miktex.org/">MikTeX</a> comes with detailed
+<a href="https://miktex.org/howto/install-miktex">installation
+instructions</a>.
+
+<h4>Mac OS</h4>
+
+The <a href="http://www.tug.org/mactex/">MacTeX</a> web page points to
+simple instructions for downloading the file
+<code>MacTeX.pkg</code>.&nbsp; It claims that running the file
+provides straightforward instructions for installing LaTeX.&nbsp; 
+You can ignore instructions on how to write a LaTeX document.
+
+<p>
+
+If you already use a manager for open-source software packages such as
+<a href="https://www.macports.org/">MacPorts</a> or <a
+href="http://brew.sh/">Homebrew</a>, you can use it to install
+LaTeX.&nbsp; Please refer to the instructions of your package manager
+for details.
+
+<h4>Linux</h4>
+
+The provider of your Linux software should also be able to provide you
+with LaTeX for it.
+</DIV>
+
+<h3 id="h2running"  class="show-hide" 
+    onclick="showHide('hide-running','running')">Running the Toolbox
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-running" >
+      [show]</font>
+</h3>
+
+<DIV id="running" class = "hidden-div">
+
+When you run the Toolbox, the instructions that appear on the
+welcome screen tell you what to do next: namely, read the indicated
+<i>help</i> page.&nbsp; For now, the <i>help</i> pages are the only
+user manual that exists for the Toolbox.&nbsp; Read it.&nbsp; Even
+after using the Toolbox for a while, you're unlikely to have
+discovered all its features.&nbsp; Read all the <i>help</i>
+pages.&nbsp; You never know what you might find in them.  </P>
+</DIV>
+
+</DIV>
+
+
+
+
+
+
+<H2 id ="h2problem" 
+ class="show-hide" onclick="showHide('hide-problem','problem')">
+<a name="problem">
+If You Find a Problem&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-problem" > [show]</font>
+</a></H2>
+
+<DIV id="problem" class="hidden-div">
+
+The Toolbox works well, and users are generally happy with it.&nbsp;
+However, there are a number of minor bugs that haven't yet been
+fixed.&nbsp; The current bug repository, where you can look for known
+bugs and report new ones, is:
+<p>
+&nbsp;&nbsp;&nbsp;
+<!-- <A href="https://tlaplus.codeplex.com/workitem/list/advanced">
+   The CodePlex Repository <i>Issues</i> page</A> -->
+<a href="https://github.com/tlaplus/tlaplus/issues">
+   The GitHub Repository tlaplus <i>Issues</i> page
+</a>
+<p>
+Bugs from before 2013, including
+many that were considered not worth the trouble of fixing, are
+in:
+<p>
+&nbsp;&nbsp;&nbsp;
+<A href="http://tla.msr-inria.inria.fr/bugzilla/">
+   The Bugzilla Database</a>
+<p>
+
+Implementing the Toolbox has involved a lot of work by few people.
+They were able to build a
+sophisticated tool in a short time by using <a
+href="http://www.eclipse.org/">Eclipse</a>.&nbsp; However, this required
+compromises, and there are some annoying (but not serious)
+inconveniences in the Toolbox because they either didn't have the time
+or the Eclipse expertise to fix them.&nbsp; So, please try to be
+helpful instead of angry if something doesn't work right.&nbsp; Report
+the problem if it's not already in the bug list, and help us fix it if you
+can.&nbsp; Thanks.
+
+</DIV>
+
+
+<H2 id ="h2release" 
+ class="show-hide" onclick="showHide('hide-release','release')">
+<a name="release">Release History
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-release" > [show]</font>
+</a></H2>
+
+<DIV id="release" class="hidden-div">
+<b>Version 1.6.0 of 11 July 2019</b> 
+  &nbsp;&nbsp;
+  <a href="https://github.com/tlaplus/tlaplus/releases/tag/v1.6.0">[details]</a>
+   <br>
+
+- Users can choose to have the Toolbox send us anonymous statistics about
+  how they use TLC.&nbsp; We encourage you to do so.
+<br>
+
+-  The Toolbox's interface for running TLC has been redesigned
+to make it easier to use.
+<br>
+
+-  Installing the Toolbox now automatically installs Java, so there
+is no need to install it manually.
+<br>
+
+-  Features have been added to make error-trace exploration expressions
+more powerful and easier to write.&nbsp;  Click on <q>?</q> in the 
+menu for adding an exploration expression for details.
+
+<br>
+
+-  There is now a TLC profiler to help find errors in a spec
+and to help optimize model checking.&nbsp;  See <i>Profiling</i>
+in the <i>Features</i> section of the <i>TLC Options Page</i>
+help page.
+
+<p>
+
+<b>Version 1.5.7 of 18 July 2018</b> 
+  &nbsp;&nbsp;
+  <a href="https://github.com/tlaplus/tlaplus/releases/tag/v1.5.7">[details]</a>
+   <br>
+- 32-bit versions of the Toolbox are no longer available.<br>
+
+- Bugs in the TLC implementation of the standard <code>Bags</code>
+ module have been corrected.<br>
+
+- An experimental standard module <code>Randomization</code>,
+ described <a href="inductive-invariant.pdf">here</a>,
+ has been added.<br>
+
+- Numerous improvements have been made to TLC and
+the Toolbox.
+
+<p>
+
+<b><a name="155bug">Version 1.5.6 of 30 January 2018</a></b>
+  &nbsp;&nbsp;
+  <a href="https://github.com/tlaplus/tlaplus/releases/tag/v1.5.6">[details]</a>
+<br>
+- Corrects the TLC bug described
+
+  <A href =
+   "toolbox-1-5-589d8.html?back-link=toolbox.html#release?unhideBut@EQhide-release@AMPunhideDiv@EQrelease"
+  > here</A>.
+
+<br>
+
+- Fixes a bug in the Toolbox's update mechanism that would cause
+  it to make TLC impossible to run.<br>
+
+- Fixes a TLC bug that caused it to stop with an
+  integer overflow exception after many hours of model checking.
+
+<p>
+
+<b>Version 1.5.5 of 5 January 2018</b>
+  &nbsp;&nbsp;
+<a href="https://github.com/tlaplus/tlaplus/releases/tag/v1.5.5">[details]</a>
+  <br>
+- Provides only a partial fix of the TLC bug 
+  fixed in version 1.5.6. <br>
+
+<p>
+
+
+<b>Version 1.5.4 of Approximately 7 October 2017</b>
+  &nbsp;&nbsp;
+<a href="https://github.com/tlaplus/tlaplus/releases/tag/v1.5.4">[details]</a>
+<br>
+
+- All known issues with Java9 and macOS High Sierra have been fixed.<br>
+
+- The Toolbox can now display a visual representation of
+  a small state graph.<br>
+
+- TLC's error reporting has been improved.<br>
+
+- A number of features have been added and bugs have been fixed in
+  the Toolbox and TLC.<br>
+<p>
+
+<b>Version 1.5.3 of 14 April 2017</b>
+  &nbsp;&nbsp;
+<a href="https://github.com/tlaplus/tlaplus/releases/tag/v1.5.3">[details]</a>
+<br>
+
+- Bug fixes include eliminating incorrect error traces in 
+  TLC liveness checking.<br>
+- Execution by  multiple worker threads in TLC has been speeded up.<br>
+- The Toolbox can now be set as the default program for running .tla files.<br>
+- The built-in PDF viewer is now the default on Windows and Linux.<br>
+- TLC can be run on multiple EC2 or Azure instances
+  by button pushing.<br>
+- An apt repository is provided for Linux installations.<br>
+<p>
+
+<b>Version 1.5.2 of 21 December 2015</b>
+  &nbsp;&nbsp;
+<a href="https://github.com/tlaplus/tlaplus/releases/tag/v1.5.2">[details]</a>
+ <br>
+
+- Added a quick access dialog for showing and selecting models
+   and modules. <br>
+- The toolbox now maintains backups of previous versions of modules.<br>
+- Models now have a field for free-form comments.<br>
+- Only one Toolbox instance can now be run at a time.<br>
+- A <code>-userFile</code> parameter allows redirecting 
+   Print/PrintT output to a file.<br>
+- Not all states of very long error traces are displayed initially.<br>
+- Ended support for 32-bit Toolbox releases on Mac OSX.<br>
+- Several optimizations and bug fixes were made.
+<p>
+
+
+<b>Version 1.5.1 of 1 June 2015</b>
+  &nbsp;&nbsp;
+<a href="https://github.com/tlaplus/tlaplus/releases/tag/v1.5.1">[details]</a>
+<br>
+  - Fixes several bugs in TLC and a bug in the Toolbox's
+    trace explorer
+<p>
+
+<b>Version 1.5.0 of 11 May 2015</b>
+  &nbsp;&nbsp;
+<a href="https://github.com/tlaplus/tlaplus/releases/tag/v1.5.0">[details]</a>
+<br>
+  - Distributed TLC in the Cloud--significantly improves 
+    distributed TLC.<br>
+  - Significantly speeds ups TLC's liveness checking.<br>
+  - Improvements to the <a href="https://tla.msr-inria.inria.fr/tlatoolbox/doc/prover/decompose.html">Decompose Proof Command</a>.<br>
+  - Improvements to the TLC Errors view, including ability to
+    show trace<br>
+    &nbsp;&nbsp;   in reverse order.<br>
+  - Has some changes to the way the Toolbox handles its subwindows.<br>
+  - Fixes all known bugs in TLC's liveness checking.<br>
+  - Fixes TLC bug of infinite looping if a recursively
+    defined operator is used <br>
+    &nbsp;&nbsp;  as an operator argument in its own
+    definition.<br>
+  - Numerous bug fixes.
+<p>
+
+</DIV>
+
+<H2 id ="h2ancient" 
+ class="show-hide" onclick="showHide('hide-ancient','ancient')">
+<a name="ancient">Ancient Release History
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font id="hide-ancient" > [show]</font>
+</a></H2>
+
+<DIV id="ancient" class="hidden-div">
+
+   <b>Version 1.4.8 of 25 February 2014</b><br>
+   - Added a feature to Renumber Proof command.<br>
+   - Disallowed &lt;*&gt; and &lt;+&gt; in names of named proof steps.<br>
+   - Minor bug fixes to Toolbox and TLC.<br>
+   - Corrected definition of Tail in standard Sequences module.
+   <p>
+   
+   
+   <b>Version 1.4.7 of 24 April 2013</b><br>
+   - Fixes bugs in the Toolbox's Decompose Proof command
+   <p>
+   
+   <b>Version 1.4.6 of 18 April 2013</b><br>
+   - Fixes bug in PlusCal translation of fairness for algorithms with procedures.
+   <br>
+   - Adds handling of strings to TLC's implementation of Tail and SubSeq.<br>
+   - Fixes a minor TLATeX bug.
+   <p>
+   
+   <b>Version 1.4.5 of 22 February 2013</b><br>
+   - The <a href="https://tla.msr-inria.inria.fr/tlatoolbox/doc/prover/decompose.html">Decompose Proof Command</a> has been added to the Toolbox editor.<br>
+   &nbsp;&nbsp;
+   It makes it easy to perform the standard hierarchical decompositions of
+   a proof<br>
+   &nbsp;&nbsp; based on the structure of the formula to be proved.<br>
+   
+   - A few minor bugs have been fixed.
+   <p>
+   
+   
+   
+   <b>Version 1.4.4 of 30 November 2012</b><br>
+   - There have been numberous changes to distributed TLC and
+     how to run it.<br>
+   
+   - Syntax coloring of PlusCal algorithms was added.<br>
+   
+   - TLATeX now formats PlusCal algorithms.<br>
+   
+   - Support for library folders required by
+   Version 1.1.1 of TLAPS has been added.
+   
+   <p>
+   
+   <i>Version 1.4.3.c of 24 May 2012</i><br>
+   <i>Version 1.4.3.b of 24 April 2012</i><br>
+   <i>Version 1.4.3.a of 17 April 2012</i><br>
+   &nbsp;&nbsp;&nbsp; These are intermediate versions that contain
+   the current version of TLAPS.tla and <br>
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fix mostly minor bugs.
+   <br>
+   
+   &nbsp;&nbsp;&nbsp;
+   Version 1.4.3.c fixes a bug that can cause an updated version
+   of the Toolbox<br>
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  to use an earlier version of TLC.
+   <br>
+   
+   &nbsp;&nbsp;&nbsp; 
+   The latest version is available only by updating.&nbsp;  (Select 
+    &nbsp;<code>Check for Updates</code>&nbsp;<br>
+   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+   on the Toolbox's 
+     &nbsp;<code>Help</code>&nbsp;
+   menu.)
+   
+   <p>
+   
+   <b>Version 1.4.3 of 10 April 2012</b><br>
+     - Adds a "Cardinality of largest enumerable set" TLC parameter.<br>
+     - Fixed the order of definitions and declarations in the MC.tla file.<br>
+     - Includes TLC version 2.05 of 7 April 2012, which 
+       adds the TLCEval operator to the TLC module.<br>
+     - Includes PlusCal Verion 1.8 of 30 March 2012.
+   
+   <p>
+   
+   <b>Version 1.4.2 of 17 February 2012</b><br>
+   - Selecting a location in an error report and 
+   control-clicking jumps to its source in PlusCal code.<br>
+   
+   - Supports library folders (directories) for modules used in multiple 
+     specs.<br>
+   
+   - Provides a built-in pdf viewer that can be used for viewing pretty-printed
+     modules.
+   <p>
+   
+   <b>Version 1.4.1 of 19 January 2012</b><br>
+   - Contains a new editor command for jumping from a region in the TLA+ translation<br>
+   &nbsp;&nbsp;of a PlusCal algorithm to the region of PlusCal code that generated it. <br>
+   
+   - Introduces some additional editor commands, including one for parenthesis matching.<br>
+   - Fixes a number of bugs, including ones that occurred when TLC checked large models.
+   <p>
+   
+   <b>Version 1.4.0 of 16 September 2011</b><br>
+   - Includes a method for obtaining new releases from
+         inside the Toolbox.<br>
+   - Includes PlusCal Version 1.6, which:<br>
+   &nbsp;&nbsp;&nbsp; * Slightly changes the syntax for specifying fairness.<br>
+   &nbsp;&nbsp;&nbsp; * Permits using previously declared 
+    macros in a macro definition.<br>
+   - Added the Forget Specification command.<br>
+   - Includes a first release of the distributed version of TLC.<br>
+   - Includes a fix to SANY to support binary, octal, and hex numbers.<br>
+   - Added default overriding of definitions like 
+        <code>Foo == CHOOSE v : v \notin S</code>.<br>
+   - Definition overriding section of advanced model page now opens 
+       if there are overrides.<br>
+   - Fixed a TLC bug in overriding instantiated definitions.<br>
+   - Displays timeout as a reason for prover failure. <br>
+   <p>
+
+   <b>Version 1.3.1 of 5 April 2011</b><br>
+   - Includes PlusCal Version 1.5, which adds:<br>
+   &nbsp;&nbsp;&nbsp; * Fairness specifation in a PlusCal algorithm.<br>
+   &nbsp;&nbsp;&nbsp; * Translation simplifications, including omission of
+                   the <i>pc</i> variable when not needed.<br>
+   - Contains a number of minor bug fixes.<br>
+   <p>
+   
+   <b>Version 1.2.1 of 2 October 2010</b><br>
+   - Added a sophisticated interface for running the TLAPS proof checker.<br>
+   - Added a command for displaying all globally defined symbols.<br>
+   - Added commands for displaying all uses of a symbol.<br>
+   - The Goto Declaration command now works for locally defined symbols.<br>
+   - Added commands for formatting boxed comments.<br>
+   - Made some additional minor changes.
+   
+   <p>
+   
+   <b>Version 1.1.2 of 6 May 2010</b><br>
+   
+   - Added trace Explorer, which evaluates expressions on an error trace.<br>
+   - Added folding of proofs to permit reading them hierarchically.<br>
+   - Added TLA Proof Manager menu item that currently does nothing. 
+   
+   <p>
+   
+   <b>Version 1.1.1 of 22 Mar 2010</b><br>
+   - Fixes TLC bug that made restarting from a checkpoint not work.<br>
+   - Various minor bug fixes.
+   
+   <p>
+   
+   <B>Version 1.1.0 of 4 February 2010</B><br>
+   - The initial public release.
+
+<p>
+
+</DIV>
+
+
+<!-- /table-->
+
+<!-- /DIV -->
+</td>
+</tr>
+</table>
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/toolbox.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:32:31 GMT -->
+</HTML>

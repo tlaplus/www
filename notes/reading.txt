@@ -1,0 +1,37 @@
+To read a TeX/ASCII file in ASCII, ignore everything up to and
+including the \begin{spec}.  The following abbreviations are used.
+(See the LaTeX manual for the meaning of the \...  commands.)
+Additional abbreviations, used in a particular file, are listed at the
+beginning of the file.
+
+   :xxx: -->  \xxx, for any "xxx".
+   /\    -->  \wedge  (logical "and")
+   \/    -->  \vee    (logical "or")
+   ~     -->  \neg    (logical negation)
+   =>    -->  \Rightarrow (implication)
+   :A:   -->  \forall  (upside down "A")
+   :E:   -->  \exists  (upside down "E")
+   []    -->  \Box      (TLA "always")
+   <>    -->  \Diamond  (TLA "eventually")
+   ~>    -->  \leadsto  (TLA "leads to")
+   #     -->  \neq  (not equal to)
+   |=    -->  \models  (logical validity)
+   |-    -->  \vdash   (logical entailment)
+   ==    -->  "equals by definition" -- small \Delta on top of "="
+   ->    -->  \rightarrow 
+   <-    -->  \leftarrow
+   ||    -->  \|  ("parallel")
+   <<    -->  similar to \ltlt (much less than)
+   >>    -->  similar to \gtgt (much greater than)
+   [[    -->  two close left brackets
+   ]]    -->  two close right brackets
+   (+)   -->  \oplus   
+   (-)   -->  \ominus
+
+x subscript y is represented by
+    x_y  or x_[y]
+
+x superscript y is represented by
+    x^y or x^[y]
+
+Backslash's ("\"s) at the beginning of a line are to be ignored.

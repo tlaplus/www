@@ -1,0 +1,179 @@
+		    Some Thoughts on Specification
+		    ------------------------------
+
+There seem to be many different approaches to specifying and reasoning
+about concurrent systems.  Here are some thoughts on why they seem
+different, and how we might find out whether they really are
+different.  Among these various approaches, there seem to be two major
+branches which, for want of better names, I'll call the Hatfields (Hs)
+and the McCoys (Ms):
+
+  Hs: CSP, process algebras such as CCS, ...
+  Ms: Temporal logic, Unity, I/O automata, ...
+
+Although I am one of the Ms, I have tried here to display my
+allegiance only by admitting ignorance of what the Hs are doing.
+I doubt if I've succeeded.
+
+The Problem of Specifying Open Systems
+--------------------------------------
+I will use everyone's favorite example, the biscuit machine.  A
+specification of a biscuit machine describes how the machine should
+behave.  An implementation of the machine is correct if its actual
+behavior is one allowed by the specification.  The specification might
+allow the dispensing of the biscuit and the returning of the change to
+occur in either order.  A correct implementation might always deliver
+the biscuit first, then return the change.
+
+To reason about the biscuit machine, it must be represented formally
+as a program, where by "program" I include such diverse objects as CCS
+processes and temporal-logic formulas.  We must prove that any
+behavior produced by the program that implements the machine is a
+possible behavior of the program that specifyies the machine.  But a
+biscuit machine by itself does nothing; it requires a user to deposit
+coins and push buttons.  To reason about their behaviors, we must
+combine the biscuit-machine programs with a program that represents
+the user.  Letting || denote the composition of programs, we must
+prove that program ImplSys implements program SpecSys, where these
+programs are defined by
+
+  SpecSys  =  User || Biscuit-Machine Specification
+  ImplSys  =  User || Biscuit-Machine Implementation
+
+But, what does it mean for ImplSys to implement SpecSys?  The naive
+answer is that every behavior of ImplSys is a possible behavior of
+SpecSys.  However, this condition is not sufficient because it allows
+the implementation to work by constraining the user's behavior.  For
+example, if the User and Implementation are CSP or CCS processes, then
+this condition is satisfied by an implementation that never permits a
+joint "deposit-coin" action.  How can we rule out such an
+implementation?  One approach is to require bisimulation, meaning that
+ImplSys and SpecSys allow exactly the same behaviors.  This condition
+is sufficient, but it isn't necessary.  In particular, it rules out
+the implementation that always delivers the biscuit before giving
+change.  I don't understand exactly how this problem is solved by the
+Hs, and I would appreciate a brief explanation.
+
+The Hs have been grappling with this problem since (at least) the mid
+70's.  For about a decade, the problem was ignored by the Ms.  If
+pressed, the Ms would probably have said that the problem arises only
+because of the Hs' joint actions.  But the problem arises in the Ms'
+formalisms too.  For example, in temporal logic, the User and
+Biscuit-Machine Implementation are temporal formulas, and || is
+conjunction.  The implementation that works by preventing the user
+from doing anything is the negation of User, which makes ImplSys
+identically False.  Every behavior allowed by False satisfies any
+specification, since there are no such behaviors.
+
+Some Ms started attacking this problem in the mid 80's.  The approach
+taken by Unity and I/O automata is to write implementations that are
+manifestly incapable of constraining the User.  For example, in his
+Unity specification of a queue, Misra required the implementation to
+satisfy its safety properties regardless of what the environment does.
+In I/O automata, input actions must always be enabled.  (These
+approaches do restrict the User in benign ways through assumptions
+about the programs--for example, restricting him to deposit only coins
+of certain denominations, not allowing him to deposit sticks of
+dynamite.)
+
+However, forbidding all restrictions on the user is too restrictive.
+One often specifies a system to be used in a known environment.  Such
+a system needs to operate correctly only in that environment.  For
+example, one might want to forbid the user from depositing a new coin
+until the machine has delivered the biscuit and returned change for
+the previous purchase.
+
+The biscuit machine cannot prevent the user from doing something he
+shouldn't.  Forbidding a user action means that the machine is not
+guaranteed to meet its specification if the user performs the action.
+In an I/O-automata specification, such a condition is expressed by
+having a forbidden user action cause the automaton to enter a "chaos"
+state in which the machine may do anything.
+
+In TLA (the Temporal Logic of Actions), we take the following
+approach.  We partition all possible actions into system actions and
+environment actions.  (Actions that should not happen, such as
+inserting dynamite in the coin slot, can be assigned to either the
+system or the environment.)  The formula specifying the User is
+required to constrain only environment actions, and the formulas
+specifying the Biscuit Machine Specification and Implementation are
+required to constrain only system actions.  (When stated in such
+general terms, this looks the same as the I/O-automata approach, but
+it is actually quite different because TLA's notion of constraining is
+semantic, while I/O automata's notion of input and output actions is
+syntactic.)
+
+Specification Wars
+------------------
+Disagreements between the Hs and the Ms seem to be of two types.
+Typical of the first type is:
+
+  Hs: The Ms' formalisms are inadequate because they have no
+      notion of joint actions.
+
+  Ms: The Hs' formalisms are inadequate because they can't express
+      liveness properties.
+
+Such criticisms are misguided.  Joint actions and liveness properties
+are parts of the formalism.  The problem is to specify and verify
+biscuit machines, not other people's formalisms.  This class of
+disagreements occur because people become so immersed in their own
+formalism that they mistake it for reality.  Biscuit machines are
+real--they're made of steel and glass; joint actions and liveness
+properties are not.
+
+The second type of disagreement is illustrated by:
+
+  Hs: The Ms' formalism is based on shared variables,  so it
+      can't deal with distributed systems in which there are
+      no shared Mvariables.
+
+  Ms: The Hs' formalism has no shared variables, so it can't
+      deal with traditional shared-memory multiprocessing. 
+
+Such criticisms are naive.  They are based on unwarranted assumptions
+about how real systems must be represented by other formalisms.  The
+Ms can represent distributed systems quite easily by representing the
+communication medium as a shared variable.  The Hs can represent
+shared memory quite easily as a separate process.
+
+Shedding Some Light
+-------------------
+I don't really know what the fundamental difference between the Hs and
+Ms is.  I think that the two approaches are good for abstracting
+different aspects of a real system, so they are useful for different
+purposes.  I believe that the way to understand the differences among
+methods is to apply them to the same problems.  To my knowledge, this
+has been tried on three occasions:
+
+* A 1983(?) workshop at Cambridge.  This was a failure because 
+(a) there were too many problems (10), so everyone didn't do the same
+ones, and (b) the problems were too vague.
+
+* In the mid 1980s, Howard Barringer compared several verification
+methods.  This was useful, but of a somewhat limited scope.
+
+* The 1987(?) Lake Arrowhead workshop.  This was a failure because the
+problem (specifying serializability and verifying an implementation)
+turned out to be too hard, so only two of the attendees really tried
+to solve it.
+
+Problems must be chosen carefully.  They must be small enough not to
+take too long to write or to read, yet they must capture some element
+of real problems.  Problems must be precise.  "Formally specify a
+biscuit machine that behaves like this..." is too vague.  Instead, one
+might have: "Formally specify that a biscuit machine never cheats the
+customer, and prove that the following implementation satisfies this
+specification..."  An example of an actual problem that I found to be
+ideal was posed by Fred Schneider at a recent Rex workshop: specify
+and prove correct a real-time mutual exclusion protocol devised by
+Mike Fischer.  The algorithm is simple (the program for each process
+contains just three operations), yet it addresses the fundamental
+problems of real-time programs (such as and lower time bounds on
+actions).  
+
+One criterion for a good problem is that it that it be posed by
+someone (such as Mike Fischer) who is interested in its solution and
+has no vested interest in any particular formalism.  Suggestions for
+such problems are most welcome.
+

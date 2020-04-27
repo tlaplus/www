@@ -1,0 +1,896 @@
+%%* The Reduction Theorem (dated 12 Apr 92, probably older)
+%%* Contains proof.
+
+\documentstyle[11pt,spec92,preview]{article}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                      SHORTEN TEXT                      %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ \topmargin -216pt \headheight 100pt \headsep 100pt \footskip 100pt 
+ \textheight = 680pt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                 MODIFICATION DATE                            %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                                                              %
+% Defines \moddate to expand to the modification date like     %
+%                                                              %
+%    Mon  5 Aug 1991  [10:34]                                  %
+%                                                              %
+% and \prdate to print it in a large box.  Assumes editor      %
+% updates modification date in standard SRC style.             %
+% (Should work for any user name).                             %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\ypmd{%                                                    %
+%                                                              %
+%                                                              %
+  Last modified on Sun Apr 12 14:36:45 1992 by lamport         %
+  endypmd}                                                     %
+%                                                              %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\moddate}{\expandafter\xpmd\ypmd}                  %
+\def\xpmd Last modified                                        %
+on #1 #2 #3 #4:#5:#6 #7 by #8 endypmd{#1 \ #3 #2 #7 \ [#4:#5]} %
+\newcommand{\prdate}{\noindent\fbox{\Large\moddate}}           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\mathdef}[1]{\relax\ifmmode #1\else $#1$\fi}
+
+\newcommand{\innerC}[1]{\intmbox{${\cal C}$}{\tt (#1)}}
+\speclet{\C}{\innerC}
+
+\newcommand{\innerO}[1]{\mathdef{\overline{\tt #1}}}
+\speclet{\xO}{\innerO}
+\let\O\xO
+
+\coloncommand{~}{\simeq}
+\coloncommand{#}{\natural}
+\coloncommand{;}{\cdot}
+\renewcommand{\o}{\circ}
+\coloncommand{-1}{^{-1}}
+\coloncommand{<}{\langle}
+\coloncommand{>}{\rangle}
+
+\begin{document}
+\prdate
+
+\begin{spec}
+1 ACTION DEFINITIONS
+
+For any n-tuple e of expressions, n-tuple v of variables, and
+action A:
+
+* A(e/v) denotes the formula obtained by substituting the e for 
+  unprimed occurrences of v in A.
+
+* A(e/v') denotes the formula obtained by substituting the e for 
+  primed occurrences of v in A.
+
+* A(e1/v,e2/v') denotes the obvious (simultaneous) substitution
+  for v and v'.
+
+For actions A and B, we define A:;:B to be the action such that
+
+  s[[A:;:B]]t  ==  :E: r : s[[A]]r /\ r[[B]]t
+
+If v is the n-tuple of all variables occurring (primed or unprimed)
+in A and B and w is an n-tuple of rigid variables that do not occur
+free in A or B, then
+
+   A:;:B = :E: w : A(w/v') /\ B(w/v)
+
+For an action A, integer i > 0
+
+  A^i == IF i = 1 THEN A
+\                 ELSE A:;:A^[i-1]
+
+  A^+ == :E: i > 0 : A^i
+
+We would like to define A^* to equal Id \/ A^+, where Id is the
+identity relation.  Unfortunately, Id isn't an action--it can't be
+expressed by any finite formula.  However, we can define Id
+semantically by 
+
+   s[[Id]]t == (s = t)
+
+From which we get
+
+   s[[A^*]]t == (s = t) \/ s[[A^+]]t
+
+Although A^* by itself isn't an action, certain expressions
+involving A^* are actions.  In particular, for any actions A and B,
+and any predicate P, we can define
+
+  A^*:;:B  ==  B \/ A^+:;:B
+  B:;:A^*  ==  B \/ B:;:A^+
+  A^* /\ P'  ==  P \/ (A^+ /\ P')
+
+(The semantic definition of A^* makes the left-hand sides of these
+definitions semantically equivalent to the right-hand sides.)
+
+For any action A, the action A:-1: is defined syntactically to be
+the action obtained by interchanging primed and unprimed variables.
+That is, if v is the tuple of all variables in A, then A:-1: equals
+A(v/v',v'/v).  For example, (x' = x+1):-1: = (x = x'+1).
+Semantically,
+
+  s[[A:-1:]]t == t[[A]]s
+
+The following relations hold 
+
+   (A:;:B):-1: = (B:-1:):;:(A:-1:)
+   (A^+):-1: = (A:-1:)^+
+   (A^*):-1: = (A:-1:)^*  (in any action expression involving A^*)
+
+
+2 THE REDUCTION THEOREM
+
+A reduction theorem allows one to prove properties of a program
+:Pi: by reasoning about a simpler "reduced" program :Pi:_r.  The
+conclusion of such a theorem should be something like 
+:Pi: => :Pi:_r , which implies that :Pi: satisfies any property
+satisfied by :Pi:_r.
+
+In the standard reduction theorems, starting from Lipton's classic
+1972 paper, the reduced program is obtained by replacing a
+composite statement R;X;L with the atomic action :<:R;X;L:>:,
+where X is atomic.  (Angle brackets :<:...:>: enclose an atomic
+action.)  To translate this into TLA, we first have to figure out
+how to express R;X;L and :<:R;X;L:>:.  
+
+In TLA, all forms of traditional statement composition are
+represented by disjunction.  If A_i is the TLA action corresponding
+to program statement S_i, then the TLA action corresponding to
+S_1;S_2 is A_1 \/ A_2.  The fact that the disjunction represents
+S_1;S_2 rather than S_2;S-1 or S_1||S_2 (parallel composition) is
+determined by how A_1 and A_2 modify the control state.
+
+The atomic action :<:R;X;L:>: means execute R, then X, then L all
+as a single action.  Since X is atomic, the TLA counterpart of
+executing X is just taking an X step.  Since R is nonatomic, the
+TLA counterpart of executing R is doing any number of R steps---and
+similarly for L.  Therefore, executing :<:R;X;L:>: corresponds to
+taking an R^*:;:X:;:L^* step.  But, an R^*:;:X:;:L^* step corresponds 
+to the execution of :<:R;X;L:>: only if it starts in an "initial"
+state of R and ends in a "final" state of L.  So, the TLA action
+corresponding to :<:R;X;L:>: is
+
+   (initial state of R) /\ R^*:;:X:;:L^* /\ (final state of L)'
+
+The first conjunct is unnecessary because the reduced program
+doesn't take any R steps--except as part of an atomic R^*:;:X:;:L^*
+step--so it can never reach an "internal" state of R.  One of the
+hypotheses of the reduction theorem is that, once control reaches
+statement L, that statement can always be executed until it
+finishes.  In other words, an "internal" state of L is one in
+which L is enabled.  Hence, a final state of L has been reached
+when L is not enabled, so the final conjunct can be written as
+~(Enabled L)'.
+
+Putting all this together, we get the following correspondence:
+
+   Pgming-Language Version       TLA Version
+   - - - - - - - - - - - -       - - - - - -
+   original program              next-state relation N
+   R;X;L                         R \/ X \/ L
+   :<:R;X;L:>:                       R^*:;:X:;:L^* /\ ~(Enabled L)'
+   reduced program =             reduced next-state relation =
+     original pgm                  \/ /\ N
+       - R;X;L                        /\ ~(R \/ X \/ L)
+       + :<:R;X;L:>:                   \/ R^*:;:X:;:L^* /\ ~(Enabled L)'
+
+
+The conclusion of the reduction theorem doesn't assert that 
+:Pi: => :Pi:_r; it's more complicated.  Let v be the tuple of
+all variables that actually occur in :Pi:, and let w be a tuple of
+"pretend" variables, that are different from the variables of v.
+The theorem asserts that there are some pretend variables w such
+that :Pi: implies :Pi:_r with the actual varaibles v replaced
+by the pretend variables w.  In other words, the conclusion
+asserts:
+
+   :Pi: => :E: w : :Pi:_r(w/v,w'/v')
+
+For this to be of any use, we need to know the relations between
+the actual variables v and the pretend variables w.  The assertion
+is that one of the following holds:
+
+*  v = w :  They're equal.
+
+* L^+(w/v') : Some sequence of L steps will convert the real
+\             variables to the pretend ones.
+
+* (R:-1:)^+(w/v') : Some sequence of backwards R steps will convert 
+\\\                 the real variables to the pretend ones.  
+\\\                 (Equivelently, some sequence of R steps will
+\\\                 convert the pretend variables to the real ones.)
+
+For this to hold, it's necessary that :Pi: imply that if control
+reaches L, then eventually L finishes.  Since L finishing means
+~(Enabled L), this means that :Pi: must imply []<>~(Enabled L).
+So, in the theorem, we include []<>~(Enabled L) as a conjunct
+of :Pi:.  
+
+Now, for the hypotheses.  Hypothesis 1 asserts that R \/ X \/ L
+represents R;X;L (instead of L;R;X or (L||X );R or ...) and that L
+remains enabled until it's finished.
+
+1(a) It's not possible to take an L step from an initial state
+     or a state in which an R or X step is possible.
+ (b) Only an X step can go from a state in which an L step is
+     impossible to one in which it's possible.
+ (c) Only an L step can disable L.
+ (d) R and X are disjoint.  (The disjointess of R and X from
+     L follows from hypothesis 1(a).)
+ (e) The statement R;X;L occurs in the original program.
+
+Hypothesis 2 is the more interesting hypothesis, asserting
+commutativity conditions on the actions.
+
+2(a) The actions of R right commute with all program actions except
+     those of R;X;L. Action A right commutes with action B means 
+     that if it's possible to take an A step followed by a B step, 
+     then the same effect can be obtained by taking a B step 
+     followed by an A step.
+ (b) The actions of L left commute with all program actions except
+     those of R;X;L.
+
+Unfortunately, I don't have time now to go into the significance of
+this theorem, and how it is used.  Here's the precise statement of
+the theorem.
+
+
+REDUCTION THEOREM: Assume that N, R, X, L are actions, Init a
+predicate, f a state function, and v an n-tuple of variables.
+
+LET S  == R \/ X \/ L
+    M  == N /\ ~S
+    N_r == M \/ (R^*:;:X:;:L^* /\ ~(Enabled L)')
+    w  == an n-tuple of variables distinct from v.
+
+IF
+ 0. v includes all variables occurring in N, R, X, L, Init, or f.
+
+ 1. (a) Init \/ Enabled R \/ Enabled X => ~(Enabled L)
+    (b) ~(Enabled L) /\ [N]_f /\ ~X => ~(Enabled L)'
+    (c) (Enabled L) /\ [N]_f /\ ~L => (Enabled L)'
+    (d) ~(R /\ X)
+    (e) S => N
+
+ 2. (a) R:;:[M]_f => [M]_f:;:R
+    (b) [M]_f:;:L => L:;:[M]_f
+
+THEN
+  Init /\ [][N]_f /\ []<>~(Enabled L) =>
+     :E: w : /\ Init(w/v) /\ [][N_r(w/v, w'/v')]_[f(w/v)] 
+\\           /\ []((v = w) \/ L^+(w/v') \/ (R:-1:)^+(w/v'))
+
+
+This theorem is of the form
+
+   :Pi: => :E: w : :Pi:_r
+
+To prove the theorem, one must construct a refinement mapping--a
+tuple of state functions \O(w) such that
+
+   :Pi: => \O(:Pi:_r)
+
+To define \O(w), we first construct a history variable h and
+prophesy variable p as follows:
+
+* h equals v unless control is in the middle of R, in which case it
+is a tuple of values such that it's possible to get from a state in
+which v = h to a state in which v has its current value by doing a
+sequence of R steps.  The variable h remembers what the value of v
+was before execution of R began, except it changes its memory so it
+can pretend that no actions of the rest of the program occurred.
+
+* p equals v unless control is at or inside L, in which case it is
+a sequence of values for v that can be produced from v's current
+value by finishing the execution of L.  The variable p predicts what
+L is going to do, changing its prediction to account for actions
+taken by the rest of the program.  
+
+We then define \O(w) to equal h if control is in R, the last
+element of the sequence p if control is in L, and v otherwise.
+
+
+PROOF OF REDUCTION THEOREM
+NOTATION:  
+Assume v an n-tuple of variables.
+
+For any n-tuple of values q and r and action A:
+  q.A.r == A(q/v,r/v').
+
+||f|| == Choose m : dom f = [0 .. m]
+
+For any action A:
+
+  f//A//v == /\ ||f|| :in: Nat
+             /\ dom f = [0 .. ||f||]
+             /\ :A: i :in: [0 .. ||f||] : f[i] an n-tuple of values
+             /\ :A: i :in: [1 .. ||f||] : f[i-1].A.f[i]
+
+LEMMA 1: Let A and B be actions whose free variables are among the
+variables of v, let q be an n-tuple of values, and assume f//A//v.
+
+ (a) If A:;:B => B:;:A and f[||f||].B.q, then there exists g
+     such that 
+        (i) ||g|| = ||f||
+       (ii) g//A//v
+      (iii) f[0].B.g[0] 
+       (iv) g[||g||] = q
+
+ (b) If B:;:A => A:;:B and q.B.f[0], then there exists g
+     such that 
+        (i) ||g|| = ||f||
+       (ii) g//A//v, 
+      (iii) g[||g||].B.f[||f||]
+       (iv) g[0] = q
+
+Proof of (a): By induction on ||f||.  
+1. Case ||f|| = 0.
+   Pf: Trivial.  Take ||g|| = 0 and g[0] = q.
+
+2. Induction step: 
+   Assume: Lemma true for ||f|| = m /\ ||f|| = m+1
+   2.1. f[m].A.f[m+1] and f[m+1].B.q.
+        Pf: By hypothesis and assumption m+1 = ||f||.
+   2.2. Choose n-tuple r such that f[m].B.r and r.A.q.
+        Pf: 2.1 and hypothesis that AB => BA.
+   2.3. Let d == [i :in: [0 .. m] |-> f[i] ].  Then
+        ||d|| = m, d//A//v and d[||d||].B.r.
+        Pf: Follows immediately from the definition of d, the 
+        assumption f//A//v, and the assumption 2.2.
+   2.4. Choose e such that e//A//v, d[0].B.e[0], and e[||e||] = r.
+        Pf: 2.3 and induction hypothesis.
+   2.5. QED
+        Pf: Let g == [i :in: [0 .. m+1] |-> IF i = m+1 THEN q
+\\\                                                    ELSE e[i] ]
+        Then g//A//v follows from e//A//v, e[m] = r (by 2.4)
+        and r.A.q (by 2.2).
+        f[0].B.g[0] follows from d[0].B.e[0], since d[0] = f[0]
+        and g[0] = e[0].
+        g[||g||] = q follows from the definition of g.
+
+Proof of (b): similar.
+
+LEMMA 2: Let v be a tuple containing all variables in A, u, and P.
+Then
+
+   |= [][A]_u /\ <>P => :E: f : /\ f//[A]_u//v
+\\                              /\ :A: i :in: [0 .. ||f||-1] : ~f[i].P
+\\                              /\ f[0] = v
+\\                              /\ f[||f||].P
+Assume: :sigma: |= |= [][A]_u /\ <>P 
+Prove:  :E: f : :sigma: |= /\ f//[A]_u//v
+\\\\\\\\                   /\ :E: i :in: [0 .. ||f||-1] : ~f[i].P
+\\\\\\\\                   /\ f[0] = v
+\\\\\\\\                   /\ f[||f||].P
+1. :A: i :in: Nat : :sigma:_i[[ [A]_u ]]:sigma:_[i+1]
+   Pf: Assumption :sigma: |= [][A]_u.
+2. :A: i :in: Nat : :sigma:_i[[v]].[A]_u.:sigma:_[i+1][[v]]
+   Pf: 1 and assumption v includes all variables free in A and u.
+3. Let n = minimum {i : :sigma:_i.P}. Then n :in: Nat.
+   Pf: Assumption that :sigma: |= <>P.
+4. QED
+   Pf: Choose f = [i :in: [0 .. n] |-> :sigma:_i[[v]] ].
+   Then f//[A]_u//v follows from 2 and 3.
+
+LEMMA 3: Let v include all free variables of A and B.
+If (a) f//A \/ B//v and (b) |= B:;:A => A:;:B
+Then there exists g and h such that 
+   (i) g//A//v
+  (ii) h//B//v
+ (iii) f[0] = g[0] /\ f[||f||] = h[||h||] /\ g[||g||] = h[0]
+Proof Sketch:  This is a straightforward induction argument,
+moving all the "A actions" in f to the left.
+
+  
+PROOF OF THEOREM
+
+1. Let h be a variable distinct from the variables in v, and let
+       F^h  ==  [i :in: [0 .. 0] |-> v]
+       G^h  ==  CASE
+                  R -> [i :in: [0 .. ||h||+1]
+                         |-> IF i = ||h||+1 THEN v' ELSE h[i] ]
+                  X -> [i :in: [0 .. 0] |-> v']
+                  ~(R \/ X) -> IF ||h|| = 0 
+                                THEN [i :in: [0 .. 0] |-> v']
+                                ELSE Choose q : /\ ||q|| = ||h||
+                                                /\ q//R//v 
+                                                /\ h[0].[M]_f.q[0]
+                                                /\ q[||q||] = v'
+
+       H  ==  h = F^h /\ [][h' = G^h]_[(v,h)]
+
+       I^h == 1./\ h//R//v
+\             2./\ h[||h||] = v
+\             3./\ ||h|| > 0 => ~(Enabled L)
+
+    Then H defines h to be a history variable for 
+     Init /\ [][N]_f /\ []<>(Enabled L), and
+     |= Init /\ [][N]_f /\ H => []I^h
+
+    Pf: It's obvious that H defines h to be a history variable.
+    We now prove |= Init /\ [][N]_f /\ H => []I^h.
+
+    <2>1. (h = F^h) => I^h
+          Pf: Immediate from def of F^h and I^h.
+
+    <2>2. [h' = G^h]_[(v,h)] /\ [N]_f /\ I^h => I^h'
+      <3>1. (h' = G^h) /\ [N]_f /\ I^h => I^h'
+        Assume: (h' = G^h) /\ [N]_f /\ I^h 
+        Prove:  I^h'
+        <4>1. Case R.
+           <5>1. I^h'.1
+                 Pf: Immediate from the definition of G^h, the 
+                 assumption I^h.1, and the definition of h'//R//v.
+           <5>2. I^h'.2
+                 Pf: Immediate.
+           <5>3. I^h'.3
+             <6>1. ~(Enabled L)
+                   Pf: Hypothesis 1(a) and R [Case <4>]
+             <6>2. ~X
+                   Pf: Hypotehsis 1(d) and R [Case <4>]
+             <6>3. QED
+                   Pf: <6>1, <6>2, R, and Hypothesis 1(e).
+        <4>2. Case X
+              Pf: Immediate from definition of G^h, since
+                  h'//R//v is vacuous when ||h'|| = 0.
+        <4>3. Case ~(R \/ X) /\ ||h|| = 0.
+              Pf: Immediate from definition of G^h, since
+                  h'//R//v is vacuous when ||h'|| = 0.
+        <4>4. Case ~(R \/ X) /\ ||h|| > 0.
+          <5>1. ~L
+                Pf: ||h|| > 0 (Case <4> assumption) and I^h.3.
+          <5>2. [M]_f
+                Pf: [N]_f /\ ~(R \/ X) [Case <4>] /\ ~L (<5>1)
+          <5>3. h[||h|||].[M]_f.v'
+                Pf: <5>2 and I^h.2.
+          <5>4. :E: q : /\ ||q|| = ||h||
+\\                      /\ q//R//v 
+\\                      /\ h[0].[M]_f.q[0]
+\\                      /\ q[||q||] = v'
+                Pf: By Part (a) of Lemma 1, using I^h.1, <5>3,
+                and Hypothesis 2(a).
+          <5>5. (a) ||h'|| = ||h||
+                (b) h'//R//v 
+                (c) h'[||h'||] = v'
+                Pf: <5>4 and def of G^h.
+          <5>6. ~(Enabled L) => ~(Enabled L)'
+                Pf: ~X [Case <4>], [N]_f [Assumption <3>], and
+                hypothesis 1(b).
+          <5>7. QED
+                Pf: I^h'.1 and I^h'.2 follow from <5>5 (b) and (c), 
+                and I^h'.3 follows from I^h.3, <5>5(c) and <5>6.
+
+      <3>2. (v,h)' = (v,h) /\ [N]_f /\ I^h => I^h'
+            Pf: Immediate, since hypothesis 0 implies that v and h
+            are only variables that occur in I^h.
+
+      <3>3. QED
+            Pf: <3>1 and <3>2.
+
+    <2>3. QED
+          Pf: <2>1, <2>2, and TLA rule INV
+
+
+2. Let p be a variable distinct from h and the variables in v, and 
+   let 
+
+     I^p  == 1./\ p//L//v
+\            2./\ p[0] = v
+\            3./\ ~p[||p||].(Enabled L)                
+
+     G^p  ==  CASE 
+                L -> [ i :in: [0 .. ||p||'+1] 
+                           |-> IF i = 0 THEN v ELSE p'[i-1] ]
+                ~(Enabled L) -> [i :in: [0 .. 0] |-> v]
+                ~L /\ (Enabled L) -> 
+                        Choose q : /\ ||q|| = ||p'||
+                                   /\ q//L//v
+                                   /\ q[||q||].[M]_f.p'[||p'||] 
+                                   /\ q[0] = v
+
+     P  ==  []I^p /\ [][p = G^p]_[(p,v)]
+
+   Then P defines p to be a prophecy variable for 
+      Init /\ [][N]_f /\ []<>~(Enabled L) /\ H.
+   <2>1. p does not occur unprimed in G^p.
+         Pf: trivial.
+
+   <2>2. p does not occur free in 
+              Init /\ [][N]_f /\ []<>~(Enabled L) /\ H.
+         Pf: trivial.
+
+   <2>3. [N]_f /\ I^p' /\ (p = G^p) => I^p
+     Assume: [N]_f /\ I^p' /\ (p = G^p) 
+     Prove:  I^p
+     <3>1. Case L
+       <4>1. p//L//v
+         <5>1. For i :in: [2 .. ||p||] : p[i-1].L.p[i]
+               Pf: By I^p'.1 and def of G^p.
+         <5>2. For i :in: p[0].L.p[1]
+               Pf: By I^p'.2, which implies p'[0] = v', 
+               def of G^p, which implies p[0] = v and p[1] = p'[0],
+               and L [Case <3>].
+         <5>3. QED
+               Pf: Immediate from <5>1, <5>2, def of G^p and,
+               I^p'.1.
+       <4>2. p[0] = v
+             Pf: Immediate from the definition of G^p.
+       <4>3. ~p[||p||].(Enabled L)
+             By I^p'.3, since the def of G^p implies
+             p[||p||] = p'[||p'||].
+       <4>4. QED
+             Pf: <4>1 - <4>3.
+
+     <3>2. Case ~(Enabled L)
+           Pf: Immediate from def of G^p and I^p.
+
+     <3>3. Case ~L /\ (Enabled L)
+       <4>1. ~(X \/ R)
+             Pf: Enabled L [Case <3>] and Hypothesis 1(a).
+       <4>2. [M]_f
+             Pf: /\ [N]_f [Assumption <2>]
+                 /\ ~L [Case <3>]
+                 /\ ~(X \/ R) [<4>1.]
+       <4>3. v.[M]_f.p'[0] 
+             Pf: <4>2 and I^p'.3
+       <4>4. :E: q : /\ ||q|| = ||p'||
+\\                   /\ q//L//v
+\\                   /\ q[||q||].[M]_f.p'[||p'||] 
+\\                   /\ q[0] = v
+              Pf: <4>3, Hypothesis 2(b), and part (b) of Lemma 1.
+       <4>5. (a) p//L//v
+             (b) p[||p||].[M]_f.p'[||p'||] 
+             (c) p[0] = v
+             Pf: <4>4 and def of G^p.
+       <4>6. ~(Enabled L)' /\ [M]_f => ~(Enabled L)
+             Pf: Hypothesis 1(c), since [M]_f => [N]_f /\ ~L.
+       <4>7. ~p[||p||].(Enabled L).
+             Pf: <4>5(b) and <4>6.
+       <4>8. QED
+             Pf: <4>5(a), <4>5(c), and <4>7.
+
+   <2>4. Init /\ [][N]_f /\ []<>~(Enabled L) => [](:E: p : I^p)
+     <3>1. |= [][N]_f /\ <>~(Enabled L) => :E: p : I^p
+       <4>1. |= [][N]_f /\ <>~(Enabled L) => 
+               :E: g : /\ g//[N]_f//v
+\\                     /\ :A: i :in: [0 .. ||g||-1] : g[i].(Enabled L)
+\\                     /\ g[0] = v
+\\                     /\ ~g[||g||].(Enabled L)
+             Pf: Lemma 2.
+       <4>2. |= [][N]_f /\ <>~(Enabled L) => 
+               :E: g : /\ g//[M]_f \/ L//v
+\\                     /\ :A: i :in: [0 .. ||g||-1] : g[i].(Enabled L)
+\\                     /\ g[0] = v
+\\                     /\ ~g[||g||].(Enabled L)
+             Pf: <4>1 and Hypothesis 1(a), since 
+                   [N]_f /\ ~R /\ ~X = [M]_f \/ L.
+       <4>3. |= [][N]_f /\ <>~(Enabled L) => 
+               :E: q, t : /\ q//L//v /\ t//[M]_f//v
+\\                        /\ q[0] = v /\ q[||q||]=t[0]
+\\                        /\ ~t[||t||].(Enabled L)
+             Pf: <4>2 and Lemma 3.
+       <4>4. |= [][N]_f /\ <>~(Enabled L) => 
+               :E: q, t : /\ q//L//v /\ t//[M]_f//v
+\\                        /\ q[0] = v /\ q[||q||]=t[0]
+\\                        /\ ~q[||q||].(Enabled L)
+             Pf: <4>3, since Hypothesis 1(c) implies
+                  t//[M]_f//v /\ ~t[||t||].(Enabled L)
+                       => ~t[0].(Enabled L).
+       <4>5. QED
+             Pf: Immediate, from <4>4.
+
+     <3>2. QED
+           Pf: <3>1 and simple temporal logic reasoning.
+   <2>5. Init /\ [][N]_f /\ []<>~(Enabled L) 
+           => []<>({p : I^p} is finite)
+      <3>1. ~(Enabled L) => (I^p = (p = [i :in: [0 .. 0] |-> v]))
+            Pf: Def of p//L//v and I^p.
+      <3>2. QED
+            Pf: By <3>1, ~(Enabled L) => Cardinality({p : I^p}) = 1.
+
+   <2>6. QED
+         Pf: <2>1-<2>5.
+
+LET \O(w) ==  IF Enabled L THEN p[||p||]
+\\\\                       ELSE h[0]
+    \O(F) ==  F(\O(w)/v), for any formula F.
+
+3. |= Init /\ [][N]_f /\ H /\ P => \O(Init) /\ \O([N_r]_f)
+   <2>1. Init /\ h = F^h => \O(Init)
+         Pf: Hypothesis 1(a) and definitions of \O(w) and F^h.
+   <2>2. /\ I^h /\ I^h' /\ I^p /\ I^p' 
+         /\ [N]_f /\ [h' = G^h]_[(v,h)] /\ [p = G^p]_[(v,p)]
+         => \O([N_r]_f)
+     Assume: 1. I^h /\ I^h' /\ I^p /\ I^p' 
+             2. [N]_f 
+             3. [h' = G^h]_[(v,h)] 
+             4. [p = G^p]_[(v,p)]
+     Prove:  \O([N_r]_f)
+     <3>1. Case R
+       <4>1. ~(Enabled L)
+             Pf: Hypothesis 1(a).
+       <4>2. ~(Enabled L)'
+             Pf: <4>1, Hypothesis 1(d) and Hypothesis 1(b).
+       <4>3. \O(w)' = \O(w)
+             Pf: Assumption <2>.3, def of G^h, def of \O(w), and
+                 <4>1 and <4>2.
+       <4>4. QED
+             Pf: <4>3 and hypothesis 0 imply \O(f)' = \O(f).
+
+     <3>2. Case X
+       <4>1. \O(w) = h[0]
+             Pf: Hypothesis 1(a) and def of \O(w).
+       <4>2. \O(w).R^*.v
+              Pf: I^h [Assumption <2>.1] and <6>1.
+       <4>3. v'.L^*.\O(w)' /\ ~(Enabled L)'.\O(w)'
+         <5>1. Case (Enabled L)'         
+           <6>1. \O(w)' = p'[||p'||]
+                 Pf: (Enabled L)' [Case <5>] and def of \O(w).
+           <6>2. QED
+                 Pf: I^p' [Assumption <2>.1 and <2>.3] and <6>1.
+         <5>2. Case ~(Enabled L)'         
+           <6>1. \O(w)' = v'
+                 Pf: Case <5> and def of \O(w).
+           <6>2. QED
+                 Pf: <6>1, since q.L^*.q holds for any q.
+         <5>3. QED
+               Pf: <5>1 and <5>2.
+       <4>4. v.X.v'
+             Pf: Case <3>.
+       <4>5. \O(w).(R^*:;:X:;:L^* /\ ~(Enabled L)'.\O(w)'
+             Pf: <4>2 - <4>4.
+       <4>6. QED
+             Pf: By <4>5, since R^*:;:X:;:L^* => N_r.
+     <3>3. Case L
+       <4>1. \O(w) = p[||p||]
+             Pf: Def of \O(w), Case <3>.
+       <4>2. p[||p||] = p'[||p'||]
+             Pf: p = G^p and def of G^p.
+       <4>3. \O(w)' = \O(w)
+         <5>1. Case (Enabled L)'
+           <6>1. \O(w)' = p'[||p'||]
+                 Pf: Case <5> and def of \O(w).
+           <6>2. QED
+                 Pf: <6>1, <4>2, and <4>1.
+         <5>2. Case ~(Enabled L)'
+           <6>1. ||h|| = 0
+                 Pf: I^h.3 and Case <3>.
+           <6>2. h'[0] = v'
+                 Pf: <6>1, L [Case <3>], hypothesis 1(a),
+                 h' = G^h, and def of G^h.
+           <6>3. \O(w)' = v'
+                 Pf: <6>2, Case <5>, and def of \O(w).
+           <6>4. ||p'|| = 0
+                 Pf: I^p'.1, I^p'.2, and ~(Enabled L)' [case <5>].
+           <6>5. p'[||p'||] = v'
+                 Pf: I^p'.2 and <6>4.
+           <6>6. QED
+                 Pf: <6>3, <6>5, <4>2, and <4>1. 
+         <5>3. QED
+               Pf: <5>1 - <5>2.
+       <4>4. QED
+             Pf: <4>3, since \O(w)' = \O(w) => \O(f' = f)
+                 by hypothesis 0.
+
+     <3>4. Case [N]_f /\ ~S
+       <4>1. Case ~(Enabled L)
+         <5>1. ~(Enabled L)'
+               Pf: Hypothesis 1(b) and Case <4>
+         <5>2. \O(w) = h[0] /\ \O(w)' = h'[0].
+               Pf: <5>1, Case <4>, and def of \O(w).
+         <5>3. QED 
+           <6>1. Case ||h|| = 0
+             <7>1. ||h'|| = 0 /\ h'[0] = v'
+                   Pf: Case <6>, ~S [Case <3>], h' = G^h,
+                   and def of G^h.
+             <7>2. v = h[0]
+                   Pf: Case <6> and I^h.2.
+             <7>3. \O(w) = v /\ \O(w)' = v'
+                   Pf: <5>2, <7>1, and <7>2.
+             <7>4. \O(w).[N /\ ~S]_f.\O(w)'
+                   Pf: <7>3 and Case <3>.
+             <7>5. QED
+                   Pf: <7>4, since [N /\ ~S]_f => [N_r]_f.
+           <6>2. Case ||h|| > 0
+             <7>1. h[0].[M]_f.h'[0]
+                   Pf: h' = G^h, def of G^h, ~S [Case <3>] 
+                   and Case <6>.
+             <7>2. \O(w).[M]_f.\O(w)'
+                   Pf: <7>1 and <5>2.
+             <7>3. QED
+                   Pf: <7>2, since [M]_f => [N_r]_f.
+           <6>3. QED
+                 Pf: <6>1 and <6>2.
+
+       <4>2. Case (Enabled L)
+         <5>1. (Enabled L)'
+               Pf: Hypothesis 1(c) and Case <4>.
+         <5>2. \O(w) = p[||p||] /\ \O(w)' = p'[||p'||] 
+               Pf: <5>1, Case <4>, and def of \O(w)
+         <5>3. p[||p||].[M]_f.p'[||p'||]
+               Pf: p = G^p, def of G^p, ~S [Case <3>] and
+               Enabled L [Case <4>].
+         <5>5. \O(w).[M]_f.\O(w)'
+               Pf: <5>2 and <5>3.
+         <5>6. QED
+               Pf: <5>5, since [M]_f => [N_r]_f.
+
+       <4>3. QED
+             Pf: <4>1 and <4>2.
+
+     <3>5. QED
+           Pf: <3>1 - <3>-4
+
+   <2>3. QED
+         Pf: <2>1, <2>2, 1, 2, and simple TLA reasoning.
+
+4. |= Init /\ [][N]_f /\ H /\ P => []\/ \O(w) = v
+\                                    \/ \O(w).R^+.v 
+\                                    \/ v.L^+.\O(w))
+
+   <2>1. I^p /\ (Enabled L) => v.L^+.\O(w)
+     Assume: I^p /\ (Enabled L) 
+     Prove:  v.L^+.\O(w)
+     <3>1. \O(w) = p[||p||]
+           Pf: Def of \O(w) and Assumption <2>.
+     <3>2. v = p[0]
+           Pf: I^p.2.
+     <3>3. p[0].L^+.p[||p||]
+           Pf: I^p.1.
+     <3>4. QED
+           Pf: <3>1 - <3>3.
+   <2>2. I^h /\ ~(Enabled L) /\ ||h|| > 0  =>  \O(w).R^+.v 
+      Assume: I^h /\ ~(Enabled L) /\ ||h|| > 0 
+      Prove: \O(w).R^+.v 
+     <3>1. \O(w) = h[0]
+           Pf: Def of \O(w) and Assumption <2>.
+     <3>2. v = h[||h||]
+           Pf: I^h.2.
+     <3>3. h[0].R^+.h[||h||]
+           Pf: I^h.1 and assumption ||h|| > 0
+     <3>4. QED
+           Pf: <3>1 - <3>3.
+
+   <2>3. I^h /\ ~(Enabled L) /\ ||h|| = 0  =>  \O(w) = v 
+      Assume: I^h /\ ~(Enabled L) /\ ||h|| = 0 
+      Prove: \O(w) = v 
+     <3>1. \O(w) = h[0]
+           Pf: Def of \O(w) and Assumption <2>.
+     <3>2. v = h[||h||]
+           Pf: I^h.2.
+     <3>3. QED
+           Pf: <3>1, <3>2, and assumption ||h|| = 0.
+
+   <2>4. QED
+         Pf: <2>1 - <2>3, since I^h => ||h|| :in: Nat.
+
+5. |= Init /\ [][N]_f /\ H /\ P => 
+         :E: w : /\ Init(w/v) /\ [][N_r(w/v,w'/v')]_[f(w/v)]
+\\               /\ [](v = w \/ w.R^+.v \/ v.L^+.w)
+   Pf: 4 and simple logic.
+
+6. |= :E: p : :E: h : Init /\ [][N]_f /\ H /\ P => 
+         :E: w : /\ Init(w/v) /\ [][N_r(w/v,w'/v')]_[f(w/v)]
+\\               /\ [](v = w \/ w.R^+.v \/ v.L^+.w)
+   Pf: 5 and simple logic.
+
+7. |= Init /\ [][N]_f /\ []<>~(Enabled L) =>
+         :E: w : /\ Init(w/v) /\ [][N_r(w/v,w'/v')]_[f(w/v)]
+\\               /\ [](v = w \/ w.R^+.v \/ v.L^+.w)
+   Pf: 7, 1, 2, and Theorems about history and prophecy variables.
+
+8. QED
+   Pf: Immediate from 7, since
+          w.R^+.v = v.(R:-1:)^+.w =  (R:-1:)^+(w/v')
+          v.L^+.w = L^+(w/v')
+
+
+The following corollary asserts that the conjunct []<>~(Enabled L)
+isn't needed for proving safety properties, if L satisfies
+the extra hypothesis
+
+3. From any state in which L is enabled, it's possible to 
+   perform a terminating execution of L--i.e., to reach a final
+   state of L by taking L steps.
+
+The precise statement is:
+
+
+COROLLARY: With the hypotheses of the Reduction Theorem, assume that
+
+ 3. Init /\ [][N]_f => [](Enabled (L^* /\ ~(Enabled L)')
+
+and let :Pi: be any safety property.  If
+
+   |= :E: w : /\ Init(w/v) /\ [][N_r(w/v,w'/v')]_[f(w/v)] 
+\\            /\ []((v = w) \/ L^+(w/v') \/ (R:-1:)^+(w/v'))
+      => :Pi:
+then
+
+   |= Init /\ [][N]_f => :Pi:
+
+Proof of Corollary:  The corollary follows easily from:
+
+LEMMA. If Init /\ [][N]_f => [](Enabled (N^* /\ P')), then
+(Init /\ [][N]_f, []<>P) is machine closed.
+
+
+3 WIN AND SIN
+
+The relation between the actual and pretend variables in the
+Reduction Theorem can be stated in terms of the predicate
+transformers win (weakest invariant) and sin (strongest invariant).
+These predicate transformers can be defined in the following
+equivalent ways, where A is an action, f a state function, and P a
+predicate, and a predicate I is an invariant of an action N iff 
+N /\ I => I' holds.
+
+win:
+  * win(A, P) is the weakest invariant of A that implies P.
+    (That is, win(A, P) is an invariant of A, and for
+    any invariant I of A, if I => P then I => win(A, P).)
+  
+  * s[[win(A, P)]] = :A: t : s[[A^*]]t => t[[P]]
+  
+  *  win(A, P)  =  ~Enabled (A^* /\ ~P')
+  
+sin:
+  * sin(A, P) is the strongest invariant of A implied by P.
+    (That is, sin(A, P) is an invariant of A and for
+    any invariant I of A, if P => I then sin(A, P) => I.)
+
+  * s[[sin(A, P)]] = :E: t : t[[P]] /\ t[[A^*]]s
+  
+  * sin(A, P) = Enabled ((A:-1:)^* /\ P')
+  
+  * sin(A, P) = ~win(A:-1:, ~P)
+
+
+PROPOSITION: If the A is an action, v an n-tuple of variables that
+includes all free variables of A, and w an n-tuple of variables
+distinct from the ones in v, then
+  (a) sin(A /\ (w' = w), v = w)  =  (w = v) \/ (A:-1:)^+(w/v')
+  (b) win(A /\ (w' = w), v = w)  =  (w = v) \/ A^+(w/v')
+Proof:  Let
+          r.[[B]].t  ==  B(r/v,t/v')
+          (r,s).[[B]].(t,u)  ==  B(r/v,s/w,t/v',u/w')
+Proof of (a):
+(v,w).sin(A /\ w'=w, v=w) 
+  = (v,w).Enabled((A /\ w'=w):-1:^* /\ v'=w)
+  = (v,w).(:E: (u,r) : [[(A /\ w'=w):-1:^* /\ v'=w]].(u,r)
+  = :E: (u,r) : (v,w).[[(A /\ w'=w):-1:^* /\ v'=w]].(u,r)
+  = :E: (u,r) : /\ (v,w).[[(A /\ w'=w):-1:^*]].(u,r)  
+\\              /\ (v,w).[[v'=w]].(u,r)
+  = :E: (u,r) : (v,w).[[(A /\ w'=w):-1:^*]].(u,r)  /\ u = w
+  = :E: r : (v,w).[[(A /\ w'=w):-1:^*]].(w,r)
+  = :E: r : (w,r).[[(A /\ w'=w)^*]].(v,w)  
+  = :E: r : \/ (w,r).[[(v,w)'=(v,w)]].(v,w)
+\\          \/ (w,r).[[(A /\ w'=w)^+]].(v,w)  
+        [def of A^*]
+  = :E: r : (w = v /\ r = w) \/ (w,r).[[A^+ /\ (w'=w)^+]].(v,w)  
+        [w not free in A => (A /\ (w'=w))^+ = A^+ /\ (w'=w)^+]
+  = :E: r : \/ w = v /\ r = w
+\\          \/ (w,r).[[A^+]](v,w) /\ (w,r).[[(w'=w)^+]].(v,w)  
+  = :E: r : \/ w = v /\ r = w
+\\          \/ w.[[A^+]].v /\ r = w
+  = (w = v) \/ w.[[A^+]].v 
+  = (w = v) \/ v.[[(A:-1:)^+]].w
+  = (w = v) \/ (A:-1:)^+(w/v')
+Proof of (b) is analogous.
+
+
+It follows from the proposition that the conclusion of the
+Reduction Theorem can be written as:
+
+  |= Init /\ [][N]_f /\ []<>~(Enabled L) =>
+      :E: w : /\ Init(w/v) /\ [][N_r(w/v,w'/v')]_[f(w/v)] 
+\\            /\ [] \/ sin(R /\ (w' = w), v = w)
+\\                  \/ win(L /\ (w' = w), v = w) 
+
+\end{spec}
+\end{document}

@@ -1,0 +1,400 @@
+% CONTENTS
+%   1. SOME THOUGHTS ON SPECIFICATION
+%      A short, not-too-hot flame.
+% 
+%   2. THINKING ABOUT ACTIONS INSTEAD OF STATES 
+%      Of interest to people who want to write TLA specs.
+% 
+%   3. ENCODING TLA IN ORDINARY MATH
+%      Required reading for anyone involved in mechanizing TLA.
+% 
+%   4. A NEW TLA+ CONSTRUCT
+%      For aficionados of TLA+.
+
+\documentstyle[11pt,spec92]{article}
+\begin{document}
+\begin{spec}
+1. SOME THOUGHTS ON SPECIFICATION
+
+I have come to realize that people focus on the least important
+aspect of TLA and ignore what makes it really work.  When someone
+looks at a toy example, his attention is naturally drawn to the
+parts of the spec that differ from what he's used to--namely, the
+temporal operators ([], WF, and SF) and the UNCHANGED statements.
+The typical initial reaction to TLA is to try to "simplify" specs by
+introducing some way of eliminating the UNCHANGED's.  Indeed, in
+tiny examples, the temporal operators and UNCHANGED statements
+constitute a significant fraction of the spec.
+
+However, what makes TLA work in practice is that most of the spec is
+ordinary mathematics, with no temporal operators.  I recently helped
+engineers at SRC write a TLA+ specification of a LAN switch being
+built here.  Here are some interesting statistics.
+
+   Length of spec: about 1400 lines
+   Number of UNCHANGED statements: 20 
+   Number of []'s: 1
+   Number of WF's and SF's: 11
+
+There are two lessons to be derived.  First, there is no payoff in
+eliminating UNCHANGED's.  Second, almost all the work goes into
+specifying data types, predicates, and actions; the [] just provides
+the glue to put the complete spec together, and the WF's and SF's,
+which express fairness properties, are not complicated.
+
+Furthermore, what makes verification in TLA practical is that most
+of the work lies in the action reasoning--which is ordinary
+math--rather than in temporal reasoning.  This is especially
+important for formal verification, because temporal reasoning is a
+lot harder to do formally than ordinary mathematical reasoning.
+
+95% of the work in specification and verification involves ordinary
+mathematics--reasoning about data--rather than temporal reasoning.
+Yet, most discussions of specification formalisms (for example, the
+book by Manna and Pnueli) deal only with the other 5%, ignoring the
+rest.  It's not trivial to graft a language for specifying and
+reasoning about ordinary math onto an arbitrary specification method
+like Manna-Pnueli temporal logic.
+
+Since 95% of a spec is ordinary math, it should look the same in any
+specification method.  So, why prefer one method over another?  The
+answer is that how the other 5% is handled determines what can and
+can't be specified, and the kind of large-scale structuring that can
+used.
+
+2. THINKING ABOUT ACTIONS INSTEAD OF STATES 
+
+TLA, like Pnueli's temporal logic from which it grew, is
+state-based.  I've found state-based methods to be great for formal
+reasoning.  However, most people find it more natural to think in
+terms of actions.  They prefer to think about the action of sending
+a message, not the particular state-change that effects this action.
+I've realized that, in writing TLA+ specs, you can have your cake
+and eat it too.  You can think about the actions in writing your
+spec, but you still have the states to reason about.  Moreover, this
+being TLA, there are wonderful tricks one can play with the
+resulting specification--such as refining a send action to be
+nonatomic without rewriting the spec.  This is all explained here.
+
+Suppose one wants to write specs in which values are transmitted and
+acknowledged along a wire with Send and Ack actions.  In TLA+, one
+can write a SendAck module that begins something like
+
+  -------------------------| MODULE SendAck |---------------------------
+  EXPORT 
+    Send(v, w)   (* Action of sending value `v' over wire `w'. *)
+    Ack(w)       (* Action of acking over wire `w'.            *)
+    WireInit(w)  (* Initial predicate for wire `w'.            *)
+    ValRdy(v, w) (* Predicate true if an unacked value `v' is \+
+                 / sitting on wire `w'.                        *)
+
+(The ValRdy predicate isn't necessary, but it's convenient.)
+
+One can write a spec using Send and Ack actions without reading any
+further in the SendAck module.  In particular, we don't need to know
+how values are encoded on wires.  A spec of an unbounded FIFO queue
+of bytes might look approximately as follows, where module Sequences
+defines operations on sequences, and module Bytes defines the set
+Byte of bytes (natural numbers in the set {0, ... , 255}).
+
+  ---------------------| MODULE UnboundedByteQueue  |---------------------
+  PARAMETERS
+    in, out : VARIABLES  (* The input and output wires *)
+
+  IMPORT SendAck, Sequences, Bytes
+
+    --------------------------| MODULE Inner |----------------------------
+    PARAMETER
+      q : VARIABLE  (* The queue, an internal variable. *)
+    ---------------------------------------------------------------------   
+    PREDICATE
+      Init == /\ WireInit(in) /\ WireInit(out) 
+              /\ q = < >
+  
+    ACTIONS
+      Put(v) == /\ Send(v, in)          (* Send `v' on input wire.            *)
+                /\ UNCHANGED <out, q>
+      Get(v) == /\ ValRdy(v, out)       (* Ack receipt of `v' on output wire. *)
+                /\ Ack(out)
+                /\ UNCHANGED <in, q>
+      EnvironmentAct == :E: v :in: Byte : Get(v) \/ Put(v)
+  
+      Enqueue(v) ==  /\ ValRdy(v, in)   (* Enqueue `v' and Ack its receipt.  *)
+                     /\ Ack(in)
+                     /\ q' = q :circ: <v>
+                     /\ UNCHANGED <out>
+      Dequeue == /\ q # < >             (* Send head of queue on output wire. *)
+                 /\ Send(Head(q), out) 
+                 /\ q' = Tail(q)
+                 /\ UNCHANGED <in>
+      SystemAct == Dequeue \/ :E: v :in: Byte : Enqueue(v)
+  
+    TEMPORAL    
+      Spec == /\ Init                   (* The spec with `q' visible. *)
+\\            /\ [][SystemAct \/ EnvironmentAct]_[<in, out, q>]
+\\            /\ WF_[<in, out, q>](SystemAct)
+    -----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*
+  TEMPORAL
+    Spec  == :E: q : Inner.Spec  (* The spec with `q' hidden. *)
+  -----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*-----*--
+
+We can think of this as specifying a sequence of Send and Ack
+actions.  To understand what's really going on, though, we have to
+read the SendAck spec.  For example, I've implied that the wire can
+buffer only a single value, but you'll have to look inside the
+SendAck module to be sure that this is what really happens.  The
+rest of the SendAck module might look as follows, where sending a
+value v on wire w sets w to {v}, and acking the value sets w to the
+empty set {}.  (There are infinitely many other ways to encode
+this.)
+
+  PREDICATES
+    WireInit(w)  ==  w = {}
+    ValRdy(v, w) ==  w = {v}
+
+  ACTIONS       
+    Send(v, w)  ==  (w = {}) /\ (w' = {v})
+    Ack(w)      ==  (w # {}) /\ (w' = {})
+
+
+Now for the magic! Suppose we want to implement a byte wire with 10
+one-bit wires--eight holding the value and two control wires called
+sig and ack.  To send a byte, one sets the value wires one at a
+time, in any order, then complements the sig bit.  The Ack action is
+done (atomically) by complementing the ack bit.  What we'll do is
+define a formula ByteWire(bw, w) which asserts that w is an abstract
+wire corresponding to a 10-wire byte wire bw.  The specification of
+an unbounded queue using low-level byte wires bin and bout is simply
+
+    :E: in, out : /\ UnboundedByteQueue.Spec
+\\                /\ ByteWire(bin, in) /\ ByteWire(bout, out)
+
+It just asserts that there exist some high-level wires, related to
+the low-level wires by the formula ByteWire, for which the
+high-level queue spec holds.
+
+Defining ByteWire is easy.  We let bw.val[0], ...  , bw.val[7] be
+the one-bit value wires, and bw.sig and bw.ack be the signal wires.
+We then write a temporal formula that sets w to be the appropriate
+"function" of bw.  The basic idea is that we first define Val(bw) to
+be the value of w implied by the value of bw, which is { } if bw.sig
+= bw.ack, and {BinArrayToNat(bw.val)[7]} if bw.sig # bw.ack, where
+BinArrayToNat converts an array of bits to a number.  We then define
+w so it initially equals Val(bw), and it then changes to Val(bw')
+only when bw.sig or bw.ack changes.
+
+There is actually one more subtle point.  To insure that a legal
+value of w implies a legal value of bw, we must actually define
+Val(bw) to equal some weird value if bw has a weird value.  We let
+the weird value of Val(bw) be {99999}.  The complete definition is
+below.
+
+   PREDICATE
+     Legal(bw) == /\ bw.sig :in: {0, 1}, 
+                  /\ bw.ack :in: {0, 1}, 
+                  /\ :A: i :in: {0 .. 7} : bw.val[i] :in: {0, 1}
+
+   CONSTANT
+     BinArrayToNat(a)[n : Nat] == 
+       IF n = 0 THEN a[0]
+                ELSE (2^n * a[n]) + BinArrayToNat(a)[n-1]
+
+   STATE FUNCTION
+     Val(bw)  ==  IF Legal(bw)
+                    THEN IF bw.sig = bw.ack
+                           THEN { }
+                           ELSE { BinArrayToNat(bw.val)[7] }
+                    ELSE { 99999 }
+
+   TEMPORAL
+     ByteWire(bw, w) ==
+         /\ w = Val(bw)
+         /\ [][w' = IF UNCHANGED <bw.sig, bw.ack> THEN w
+                                                  ELSE Val(bw')               
+              ]_[<bw, w>]
+
+
+3. ENCODING TLA IN ORDINARY MATH
+
+I am so used to people asking why TLA doesn't look more like an
+ordinary programming language, that I was temporarily floored when
+Bob Boyer asked why TLA doesn't look more like ordinary math.  More
+precisely, he asked why one needs a new logic; why can't we do
+everything in conventional first-order logic.
+
+I thought about it, and decided that one could encode TLA in
+ordinary math by letting a flexible variable be a function from
+natural numbers (denoting "times") to values, and defining TLA
+operators like ' (prime) [] and WF to be ordinary operators on
+functions.  This would be somewhat inconvenient because, in an
+expression like x' = x + 1, the + is addition on functions (not the
+usually operator on numbers) and 1 is a constant function (not the
+number 1).  However, that might not be too high a price for avoiding
+the introduction of a new logic.
+
+While pondering this, I realized that the encoding described above
+is unsound.  Moreover, since this seems like a natural encoding for
+reasoning about TLA with systems like HOL, I wonder if other people
+have fallen into the same trap.  To see the problem, consider the
+TLA formula Pgm defined by
+
+    Next == (x' = x+1) /\ (y' = y+2)
+
+    Pgm  ==  (x = y = 0)  /\  [][Next]_[<x,y>]  /\  WF_[<x,y>](Next)
+
+It is easy to prove the theorem
+
+(1) Pgm => <>(y > 0)
+
+Now, let PgmZ be the formula obtained by substituting z for both x
+and y.  We then have
+
+    NextZ == (z' = z+1) /\ (z' = z+2)
+
+    PgmZ  == (z = 0)  /\  [][NextZ]_z  /\  WF_z(NextZ)
+
+and it's not too hard to show that PgmZ is equivalent to
+
+    (z = 0)  /\  [][False]_z  /\  WF_z(False)
+
+which in turn is equivalent to [](z = 0).  Now, substituting for
+variables in a valid theorem should produce a valid theorem.
+Substituting z for x and y in (1) gives  PgmZ => <>(z > 0),  which 
+is equivalent to  [](z = 0) => <>(z > 0), which is obviously false.
+
+A little thought reveals that the problem is that WF is defined in
+terms of Enabled, and naive substitution in an Enabled formula
+doesn't work because it effectively leads to capture of bound
+variables.  In our example, Enabled(Next) is really
+
+   :E: x', y' : (x' = x+1) /\ (y'=y+2)
+
+and substituting z for both x and y in this formula gives 
+
+   :E: x', y' : (x' = z+1) /\ (y'=z+2)
+
+which is not Enabled(NextZ).  When you work it all out, you discover
+that substituting z for x and y in Pgm actually yields the formula
+False, not PgmZ.
+
+To get a valid encoding of TLA, the variables x and y have to be
+replaced by some formulas of the form V("x") and V("y"), where V is
+a fixed mapping from strings to functions.  Having to work with such
+an encoding is too horrible to contemplate.
+
+Incidentally, I now think I know how to answer Boyer's question.
+What is a "calculus"?  The dictionary defines it to be "a particular
+method of calculating or reasoning".  The differential calculus and
+elementary arithmetic are examples of calculi.  A "method of
+calculating" is a way of pushing symbols around to get the right
+answer.  When we calculate that 1476 + 395 = 1871, we are pushing
+symbols around; we aren't doing a proof in first-order logic.  We
+can derive a theorem in first-order logic from our calculations by
+applying the meta-theorem that the equalities we get by applying the
+calculational rules of arithmetic are valid first-order formulas.
+For example, calculating that 1476 + 395 = 1871 allows us to deduce
+the theorem that would be written in Boyer-Moore syntax as
+
+  (EQUAL (PLUS 6
+               (TIMES 10 
+                      (PLUS (7
+                            (TIMES 10
+                                   (PLUS 4
+                                         (TIMES 10 1)))))))
+         (PLUS 5
+               (TIMES 10 
+                      (PLUS (9
+                            (TIMES 10 3))))))
+
+The fundamental reason one cannot use an ordinary theorem prover as
+a desk calculator (unless it has the rules of arithmetic especially
+built in) is that this meta-theorem cannot be expressed in ordinary
+logic.  Hence, one must use tedious first-order reasoning instead of
+the more efficient algorithms of arithmetic.
+
+A logic like TLA is just a calculus in which one manipulates
+formulas instead of terms.  A semantics for TLA provides a
+translation into first-order logic (analogous to the translation
+from 1476 to (PLUS 6 (TIMES ...  ))).  Soundness of the TLA proof
+rules is the meta-theorem that guarantees that the translation of a
+theorem proved in TLA yields a valid formula of first-order logic.
+One could prove this theorem in first-order logic, but it is more
+efficient to prove the corresponding TLA theorem--just as it is more
+efficient to use arithmetic rather than first-order logic to
+calculate 1476 + 395.  
+
+
+4. A NEW TLA+ CONSTRUCT  
+
+TLA+ has a function-building construct of the form
+
+    [ s :in: S |-> exp(x) ]
+
+which denotes the function f with domain S such that f[y] = exp(y)
+for all y :in: S.  Consider the TLA version of the Pascal statement
+x[i] := 17.  It asserts that x' equals the same function as x,
+except that x'[i] equals 17.  It can be written in TLA+ as
+
+   x' = [ s :in: DOMAIN x |-> IF s = i THEN 17 ELSE x[i] ]
+
+To simplify this, I introduced the notation [x ; i |-> 17] to denote
+the right-hand side.  This works fine for x[i] := 17.  But, consider
+the TLA version of x[i][j][k] := 17.  It becomes
+
+  x' = [ x ; i |-> [ x[i] ; j |-> [x[i][j] ; k |-> 17] ] ]
+
+This is pretty hard to decipher.  In real specs, this kind of
+construct can occur quite often.  So, I have decided to introduce
+notation to allow this to be written as
+
+  x' = [ x EXCEPT ![i][j][k] = 17 ]
+
+(I use the special symbol ! because it seems like bad form to have
+to write an x there when it's illegal to write anything but x.)
+Next, I add the obvious syntactic sugar of letting
+
+  [ x EXCEPT ![i][j][k] = 17, ![i][j+1] = 18, ...  ]
+
+denote
+
+  [ ... [ [ x EXCEPT ![i][j][k] = 17 ] EXCEPT ![i][j+1] = 18 ] ... ]
+
+One often wants the new value of x[i][j][k] to be some function of
+its old value.  I therefore let
+
+  [ x EXCEPT ![i][j][k] = 1 - @ ]
+
+denote
+
+  [ x EXCEPT ![i][j][k] = 1 - x[i][j][k] ]
+
+The @ serves the same function as operators like =+ in C, except
+it's more general.
+
+To express nondeterministic choice, we need to express sets of
+functions.  Thus, I let
+
+  { x EXCEPT ![i][j][k] :in: S }
+
+denote the set of functions of the form
+
+  [ x EXCEPT ![i][j][k] = s ] 
+
+for all s in S.  There's the obvious extension to expressions
+such as
+
+  { x EXCEPT ![i][j][k] :in: S, ![i][j+1][k] = @+1, ![0] :in: Nat }
+
+In such an expression, "= exp" means ":in: {exp}".
+
+In TLA+, records are functions whose domains are sets of integers,
+and x.foo stands for x["foo"].  This leads to the obvious extension
+of the notation to include records--for example,
+
+  [ x  EXCEPT !.r[17].foo = @ + 1 ]
+
+and so on.  
+
+Comments and suggestions appreciated.
+\end{spec}
+\end{document}

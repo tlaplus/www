@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/intel-excerpt.html?back-link=industrial-use.html?unhideBut@EQhide-intel@AMPunhideDiv@EQintel by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:33:48 GMT -->
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+<!-- STYLE DECLARATIONS FOR THIS FILE -->
+<STYLE type="text/css">
+   UL {margin-top:10px}
+</STYLE>
+
+<script src="tlaweb.js"> </script>
+
+
+
+<title>TLA+ Use at Intel</title>
+</HEAD>
+
+<BODY onload="initialize()" >
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol" > </div> 
+
+<H1>TLA+ Use at Intel</H1>
+
+<p style="margin-top:-18px; margin-bottom:-15px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified 7 August 2018</I></font>
+</table>
+<HR style="margin-bottom:-5px;margin-top:-11px"> 
+
+<P style="margin-top:0px"> </P>
+
+This page contains Section 4.2 of the following article:
+
+<p>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<b>High-Level Specifications: Lessons from
+Industry</b><br> 
+
+&nbsp;&nbsp;&nbsp;&nbsp;Brannon Batson and Leslie Lamport<br> 
+
+&nbsp;&nbsp;&nbsp;&nbsp;<em>Proceedings of the
+First International Symposium on Formal Methods<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for Components 
+and Objects.</em><br> 
+
+&nbsp;&nbsp;&nbsp;&nbsp;Lecture Notes in Computer Science 2852,
+Springer 2003, pages 242-261.<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<a
+href="http://lamport.azurewebsites.net/pubs/high-level.pdf">available on-line</a>
+
+<p>
+
+This section was written by Brannon Batson, who was then an Intel
+engineer.&nbsp; It was preceded by a section describing the use of
+TLA+ and TLC at Compaq.&nbsp; Batson and some other Compaq engineers
+moved from Compaq to Intel.
+
+<p>
+
+<h2>4.2 &nbsp; Intel </h2>
+
+We now describe the use of TLA+ and TLC by B[rannon] B[atson] and his
+colleagues at Intel.&nbsp;  
+
+The actual specifications are proprietary and
+have not been viewed by anyone outside Intel. 
+
+<p>
+
+<h3>4.2.1 &nbsp; Overview of the Problem</h3>
+
+Designing a complex system starts with a problem statement and an
+appropriate set of boundary conditions.&nbsp;  A component of a computer
+system is initially represented abstractly as a black box, with
+assertions about its functionality and with some guidelines on
+performance, cost, and complexity.&nbsp;  The engineering process involves
+iteratively refining this abstract model into lower-level models.&nbsp;
+Each lower-level model is a representation of the design at a certain
+level of abstraction, and it has a specific purpose.&nbsp;  Some models are
+meant to evaluate tradeoffs between scope, performance, cost, and
+complexity.&nbsp;  Others carry the design down to the low level of detail
+needed to manufacture the component.
+
+<p>
+
+The engineering process therefore creates multiple representations of
+a design.&nbsp;  Validation entails checking these multiple representations
+against one another.&nbsp;  Designers of digital systems have good tools and
+methods for validating mid-level functional models, written in a
+hardware description language (HDL)<!-- like VHDL or RTL -->, against
+lower-level models such as circuit net-lists.&nbsp;  However, they have not
+had as much success checking the higher-level functional
+representations of the design against one another, and against the
+initial problem statement and functional assertions.&nbsp;
+
+<p>
+
+For some components, there is an intuitive correlation between the
+high-level notions of correctness and the HDL model; such components
+tend not to be difficult to validate.&nbsp;  Other components, like
+multiprocessor cache-coherence protocols, are sufficiently complex
+that checking the HDL model against the problem statement is quite
+challenging.&nbsp;  We need formal techniques from the world of mathematics
+to perform this high-level validation.
+
+<p>
+
+Although formal methods are based on mathematics, engineers view them
+differently from the way mathematicians do.&nbsp;  To engineers, formal
+verification is simply another imperfect validation tool (albeit a
+powerful one).&nbsp;  A TLA+ specification is only an abstraction of the
+actual system, and model checking can usually validate the
+specification only for a highly restricted set of system parameters.&nbsp;
+Validating the specification therefore cannot guarantee that there are
+no errors in the system.&nbsp;  For engineers, formal verification is a way
+of finding bugs, not of proving correctness.
+
+<p>
+
+The main benefit of applying TLA+ to engineering problems comes from
+the efficiency of the TLC model checker in reaching high levels of
+coverage and finding bugs.&nbsp;  A secondary benefit 
+we have encountered is
+the ability of TLA+ and TLC to provide good metrics for the
+complexity of a design.&nbsp;  Complexity is a major consideration in
+evaluating design tradeoffs.&nbsp;  However, unlike performance or cost,
+engineers have not historically had a good way to quantify algorithmic
+complexity before attempting to validate a design.&nbsp;  TLA+ encourages
+designers to specify the design abstractly, suppressing lower-level
+details, so the length of the specification provides a measure of a
+design's complexity.&nbsp;  TLC reports the size of the reachable state
+space, providing another measure of complexity.&nbsp;  Experience and
+intuition will always have a place in evaluating complexity, but TLA+
+and TLC provide robust and impartial input to the evaluation.&nbsp;  Having
+this input early in the design process is of considerable value.
+
+<p>
+
+<h3>4.2.2 &nbsp; Designing with TLA+</h3>
+
+The core group at Intel started using TLA+ at Compaq while working on
+the Alpha EV7 and EV8 multiprocessor projects described above.&nbsp;  From
+that experience, the Alpha 
+engineers learned that multiprocessor cache-coherence protocols are an
+ideal candidate for formal methods because most of the protocol bugs
+can be found at a high level of abstraction.&nbsp; They also learned
+that the true value of TLA+ and TLC would be realized when (a)&nbsp;they
+were applied early enough in the design to provide implementation
+feedback, and (b)&nbsp;the implementation was based directly on the
+specification that had been verified.&nbsp; On the EV8 project, the
+TLA+ specification was completed before the design was stable, and it
+provided important feedback to the designers.
+
+<p>
+
+When the engineers from the Alpha group joined Intel, they began
+applying their experience in writing TLA+ specifications when
+collaborating with other Intel engineers on cache-coherence protocols
+for future Intel products.&nbsp;  Intel engineers are now using TLA+ as an
+integral part of the design process for the protocols that are under
+study.
+
+<p>
+
+<h4 style="margin-bottom:5px">Whiteboard Phase</h4>
+
+Designing one cache-coherence protocol from scratch provided the
+engineers with the opportunity to evaluate TLA+ as a prototyping
+platform for complex algorithms.&nbsp;  Work on this protocol started by
+exploring the design space on a whiteboard for about two
+months.&nbsp;  In this phase, basic message sequencing was determined, as
+were some coarse notions of what state had to be recorded at the
+protocol endpoints.&nbsp;  A basic direction was set, based on the
+guidelines for functionality, performance, and cost.
+
+<p>
+
+Because of their background, engineers tend to visualize an algorithm
+in terms of a particular implementation.&nbsp;  They are better at
+gauging implementation complexity than at measuring algorithmic
+complexity.&nbsp;  One benefit of having engineers write formal
+specifications is that it helps them learn how to think about a
+protocol abstractly, independent of implementation details.&nbsp;  We found
+that, even in the whiteboard phase of the protocol design, the Intel
+engineers were able to make some judgments on complexity by asking
+themselves, <q>How would I code this in TLA+?</q>.
+
+<p>
+
+The whiteboard phase produced a general understanding of the protocol
+philosophy, an understanding of the constraints placed on the
+communication medium, the basic message flows, and coarse ideas on what 
+state needed to be maintained.&nbsp;  The next step was to introduce the
+rigor of a formal specification.
+
+<p>
+
+<h4 style="margin-bottom:5px">TLA+ Scratchpad Phase</h4>
+
+The TLA+ scratchpad phase of the project involved formally describing
+the abstract system, with appropriate state variables representing
+high-level components.&nbsp;  This phase took about two months, starting
+with the initial design of the protocol.&nbsp;  The difficulty lay not in
+the use of TLA+&thinsp;&mdash; engineers frequently learn new programming
+languages&mdash;but rather in (a)&nbsp;determining the layer of abstraction and
+(b)&nbsp;exploring the protocol's corner cases.&nbsp;  Task (a) is where TLA+
+forces engineers to think about the protocol abstractly, which they
+often find unnatural.&nbsp;  Their ability to think abstractly improves with
+experience writing TLA+ specifications.&nbsp;  Task (b) is inevitable when
+documenting a protocol formally, as it forces the designers to explore
+the corner cases.&nbsp;  During the scratchpad phase, the designers had to
+return to the whiteboard a few times when they encountered new race
+cases while writing the specification.
+
+<p>
+
+
+The actions that formed the major blocks of the specification were
+chosen early; very few changes were made later.&nbsp;  The Intel engineers
+adopted a methodology used in the earlier Alpha specifications, in
+which the decomposition of high-level named actions is based on
+classifying the protocol messages that they process.&nbsp;  This methodology
+has led to fairly readable specifications, since it means that each
+action changes only a few local state variables.&nbsp;  It encouraged the
+protocol specifications to be designed in a modular way, which also
+enabled the inter-module interfaces in the specification to be similar
+to their low-level counterparts in the implementation.
+
+<p>
+
+<h4 style="margin-bottom:5px">Running TLC</h4>
+
+The initial week or so of running TLC was spent finding and fixing
+typographical errors and type mismatch problems.&nbsp;  This time could
+probably have been shortened by doing more syntax checking when
+writing the specification, which is what one often does when
+programming.
+
+<p>
+
+The next four weeks saw a continuous process of running TLC, finding
+bugs, fixing them, and re-running TLC.&nbsp;  During this phase of the
+project, many assumptions and assertions about the protocol were
+brought into question.&nbsp;  This had the effect of educating the engineers
+about the protocol they had designed.&nbsp;  We have found that TLC can be a
+useful learning tool if we use in-line assertions and global
+invariants to check everything we think is true.&nbsp;  The Intel engineers
+were able to develop an intuitive understanding of the correctness of
+the protocol by developing meaningful global invariants and having TLC
+check them.&nbsp;  If an assertion or invariant fails, TLC generates a
+counterexample that is useful for visualizing a difficult race case.&nbsp;
+These counterexamples are such a powerful teaching aid that the Intel
+engineers have developed tools to translate the TLC output into nicely
+formatted protocol flow diagrams that are easier to read.
+
+<p>
+
+Another useful feature of the TLC model checker is its coverage
+checking.&nbsp;  TLC can print the number of times each action was
+<q>executed</q>.&nbsp;  This provides a simple way to identify holes in
+coverage.&nbsp;  Much of the effort expended by the engineers in debugging
+the specification was spent eliminating each of these holes, or
+convincing themselves that it represented an action that could never
+happen.&nbsp;
+
+<p>
+
+The performance of the model checker was sufficient to debug a large
+protocol specification.&nbsp;  The engineers determined a base configuration
+that would <q>execute</q> all the actions and that displayed all
+interesting known cases.&nbsp;  This configuration could be run on a
+four-processor machine in about a day, enabling fast turn-around on
+bug fixes.&nbsp;  Larger configurations were periodically run as sanity
+checks on the smaller ones.&nbsp;  The engineers would also run TLC in
+simulation mode, which randomly and non-exhaustively explores the
+state space, allowing them to check much larger configurations.&nbsp;  Such
+random simulations are similar to the ones engineers typically perform
+on lower-level models, but it has the advantage of being several
+orders of magnitude faster because it is based on the abstract TLA+
+model, and it provides a robust metric for coverage.
+
+<p>
+
+
+<h3>4.2.3 &nbsp; Optimizing with TLC</h3>
+
+Once the initial protocol specification was successfully checked by
+TLC, the Intel engineers were able to use it as a test bed for
+exploring optimizations.&nbsp;  TLA+ is an ideal language to explore
+changes because its expressiveness usually allows the new version to
+be written quickly.&nbsp;  Model checking the modified specification with
+TLC not only checks functional correctness, but it also measures any
+increase in the state space.&nbsp;  Such an increase implies additional
+algorithmic complexity.&nbsp;  The engineers spent several months exploring
+additions to the protocol, testing them with TLC.&nbsp;  As a general
+rule, they would consider adopting only those optimizations that did
+not appreciably expand the state space.&nbsp;  The insight that TLA+ and
+TLC gave into the complexity of modifications to the protocol was
+invaluable in iterating towards an optimal solution that adequately
+weighed algorithmic complexity along with factors like cost and
+performance.
+
+<p>
+
+A significant optimization was later made to the protocol.&nbsp;  This
+optimization followed the normal design cycle described above, though
+on a compressed schedule.&nbsp;  With the original design yielding a good
+starting point, the entire cycle (whiteboard phase, TLA+ coding, and
+verification with TLC) was done within six weeks.&nbsp;  This modification
+was accomplished by a recent college graduate with an undergraduate
+degree in engineering.&nbsp;  He was able to learn TLA+ well enough within
+a matter of weeks to do this work.
+
+<p>
+
+
+<h3>4.2.4 &nbsp; Feedback on TLA+ syntax</h3>
+
+The feedback we have received from engineers about the TLA+ language
+has been mostly positive.&nbsp;  Engineers are usually able to pick up and
+understand a specification within a couple of days.&nbsp;  One mistake we
+made was to present TLA+ to hardware designers as similar to a
+programming language.&nbsp;  This led to some frustration.&nbsp;  A better
+approach seems to be to describe TLA+ as being like a hardware
+description language.&nbsp;  Engineers who design digital systems are well
+acquainted with methods for specifying finite-state machines, with the
+associated restrictions of allowing a primed variable to be assigned a
+value only once within a conjunction, not allowing a primed variable
+to appear in a conjunction before the assignment of its value, etc.&nbsp;
+To an engineer, TLA+ looks like a language for specifying
+finite-state machines.
+
+<p>
+
+While writing the protocol specification at Intel, BB was impressed by
+the ease of specifying complex data structures in TLA+ as sets and
+tuples.&nbsp;  The part of the specification that described and manipulated
+data structures was a small part of the complete protocol
+specification.&nbsp;  This compact specification of <q>bookkeeping tasks</q>,
+along with the overall expressiveness of TLA+, won over the engineers
+who were accustomed to using more clumsy functional languages for specifying
+complex algorithms.
+
+<p>
+
+For the algorithmic specification, TLA+ naturally encourages nested
+disjunctions of conjunctions (known to engineers as sums of products of
+expressions).&nbsp;  This method for specifying Boolean formulas has both
+advantages and disadvantages.&nbsp;  One advantage is that it allows
+expressive comment blocks and assertions to be inserted in-line with a
+nested conjunct.&nbsp;  A disadvantage is that this tends to lead to large
+specifications.&nbsp;  The engineers are experimenting with the use of TLA+
+operators to encode large blocks of regular Boolean disjunctions as
+truth tables, which engineers find more natural to work with.
+
+<p>
+
+
+</td>
+</tr>
+
+<!-- Bottom Back button -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-50px"><b>Back</b>
+</p>
+</a>
+
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-1100px"><b>Back</b>
+</p>
+</a>
+
+
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-1100px"><b>Back</b>
+</p>
+</a>
+
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-1100px"><b>Back</b>
+</p>
+</a>
+
+</td>
+</tr>
+
+
+</table>
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/intel-excerpt.html?back-link=industrial-use.html?unhideBut@EQhide-intel@AMPunhideDiv@EQintel by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:33:48 GMT -->
+</HTML>

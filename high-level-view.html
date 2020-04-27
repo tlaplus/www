@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/high-level-view.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:31:19 GMT -->
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) 
+              [Netscape]">
+<!--
+%&b&<b>#</b>&
+%&c&&thinsp;<b>#</b>&thinsp;&
+-->
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+<!-- style>
+  UL {margin-top:5px} 
+  .smallpar {margin-top:7px}
+  DT {margin-top:10px}
+</style -->
+
+<script src="tlaweb.js"> </script>
+
+
+<!-- The following causes the name of this page in the left-hand column 
+     not to have a link -->
+<SCRIPT>
+noLinkName = "High-Level View" ;
+</SCRIPT>
+
+</HEAD>
+
+<BODY onload="initialize()">
+
+
+<title>A High-Level View of TLA+</title> 
+
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+
+</td>
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol" > </div> 
+
+<H1>A High-Level View of TLA+</H1>
+
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 4 September 2018</I></font>
+</td>
+<td style="vertical-alight:top;width:auto">
+</td>
+</tr>
+
+</table>
+<HR style="margin-bottom:-5px;margin-top:-11px"> 
+
+<P style="margin-top:0px"> </P>
+
+<DIV class="hidden-div" style="color:red;margin-bottom:-22px"><b>
+   You'll miss a lot on this web site unless you enable Javascript
+   in your browser. </b></DIV>
+
+<H2 id ="h2intro" 
+ class="show-hide" onclick="showHide('hide-intro','intro')">Introduction 
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-intro" >
+      [show]</font>
+</H2>
+
+<DIV id="intro" class="hidden-div">  <!-- style="display:none"-->
+
+TLA+ is a language for modeling software above the code level and
+hardware above the circuit level.&nbsp; It has an IDE (Integrated
+Development Environment) for writing models and running tools to check
+them.&nbsp; The tool most commonly used by engineers is the TLC model
+checker, but there is also a proof checker.&nbsp; TLA+ is based on
+mathematics and does not resemble any programming language.&nbsp;
+Most engineers will find PlusCal, described below, to be the easiest way to
+start using TLA+.
+
+<p>
+
+TLA+ models are usually called <em>specifications</em>.&nbsp;  They are called
+<font id      = "model-popup" 
+      class   = "popup-blue"
+      color = "blue"
+      onclick = "popup('model-popup.html',175)">
+  <b>models</b></font>
+in this introduction.
+</DIV>
+
+<H2 id="h2pluscal"  class="show-hide" onclick="showHide('hide-pluscal','pluscal')"><a name="pluscal">PlusCal</a>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font 
+        id="hide-pluscal">        [show]</font>   
+</H2>
+
+<DIV class = "hidden-div" id="pluscal"> <!-- style="display:block"-->   
+<!-- style="display:none"-->
+
+PlusCal is a language for writing algorithms&mdash;especially
+concurrent and distributed ones.&nbsp; It is meant to replace
+pseudocode with precise, testable code.&nbsp; PlusCal looks like a
+simple toy programming language, but with constructs for describing
+concurrency and nondeterminacy.&nbsp; It is infinitely more expressive
+than any programming language because any mathematical formula can be
+used as a PlusCal expression.&nbsp; 
+A PlusCal algorithm is translated into a
+TLA+ model that can be checked with the TLA+ tools.&nbsp;
+Because it looks like a programming language, most engineers find PlusCal
+easier to learn than TLA+.&nbsp; But because it looks like a
+programming language, PlusCal cannot structure complex models as well as
+TLA+ can.
+
+<p>
+
+<a href="petersona83c.html?back-link=high-level-view.html#pluscal?unhideBut@EQhide-pluscal@AMPunhideDiv@EQpluscal">Click here</a> for an example of 
+an algorithm written in PlusCal.
+
+
+
+</DIV>
+
+
+<H2 id="h2models"  class="show-hide" onclick="showHide('hide-models','models')">Models
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-models" >
+      [show]</font>
+</H2>
+
+<DIV id="models" class="hidden-div"> <!-- style="display:none"-->  
+
+Computers and computer networks are physical objects whose behaviors
+are described by continuous physical laws.&nbsp;  They differ from most
+other kinds of physical objects in that their behaviors are naturally 
+modeled as sets of discrete events.&nbsp;  Programming, software
+engineering, and most of computer science is concerned with models in
+which a behavior of a system is described as a set of discrete events.
+No model is a completely accurate description of a real system.&nbsp;
+A model is a description of some aspect of the system, written for
+some purpose.&nbsp;  
+
+<!--
+   We all use one or more ways of modeling the behavior of a computer
+   systems as a set of discrete events.&nbsp; Often, people think their
+   model is the actual system, not just a model of it.&nbsp; When
+   presented with a different model, they may think it's wrong or perhaps
+   just incomplete because it doesn't describe things that are in their
+   model.&nbsp; No model is a completely accurate description of a real
+   system.&nbsp; A model should be judged not by how accurate it is, but
+   by how useful it is; and that depends on what you're using it for.
+-->
+
+
+<p> 
+
+
+TLA+ is state-based, meaning that it models an execution of a system
+as a sequence of states, where an event is represented by a pair of
+consecutive states.&nbsp; We call a sequence of states a
+<em>behavior</em>; and we call a pair of consecutive states a
+<em>step</em> rather than an event.&nbsp;
+A system is modeled as the set of behaviors describing all of its
+possible executions.
+</DIV>
+
+<h2 id="h2above" class="show-hide" onclick="showHide('hide-above-code','above-code')">
+    Modeling Above the Code Level
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-above-code" >
+      [show]</font>
+</H2>
+
+<DIV id="above-code" class="hidden-div"> <!-- style="display:bloxk"-->
+
+
+TLA+ is used to model systems above the code level.&nbsp;
+
+To see what this, means consider Euclid's algorithm for computing
+<nobr>&thinsp;<code>GCD(M,N)</code>&thinsp;,</nobr> the greatest
+common divisor of two positive integers &thinsp;<code>M</code>&thinsp;
+and &thinsp;<code>N</code>&nbsp;.  Here is the algorithm:
+
+<UL>
+<LI> 
+   Let &thinsp;<code>x</code>&thinsp; equal
+   &thinsp;<code>M</code>&thinsp; and &thinsp;<code>y</code>&thinsp;
+   equal &thinsp;<code>N</code>&thinsp;.
+</LI>
+
+<LI  style="margin-top:7px"> 
+   Repeated subtract the smaller of &thinsp;<code>x</code>&thinsp; and
+   &thinsp;<code>y</code>&thinsp; from the larger.
+</LI>
+
+<LI  style="margin-top:7px"> 
+   Stop when &thinsp;<code>x</code>&thinsp; and
+   &thinsp;<code>y</code>&thinsp; have the same value.  That value is the
+   GCD of &thinsp;<code>M</code>&thinsp; and
+   &thinsp;<code>N</code>&thinsp;.
+</LI>
+</UL>
+
+This description is above the code level.&nbsp;
+
+Code to compute <nobr>&thinsp;<code>GCD(M,N)</code>&thinsp;</nobr>
+would have to specify additional details such as the type of
+&thinsp;<code>M</code>&thinsp; and &thinsp;<code>N</code>&thinsp; (is
+it &thinsp;<code>int</code>?
+&thinsp;<code>long</code>?
+&thinsp;<code>BigInteger</code>?)  and what to do if
+&thinsp;<code>M</code>&thinsp; or &thinsp;<code>N</code>&thinsp; is
+not positive (throw an exception?  return an error value?).  <p>
+
+A programmer who didn't know Euclid's algorithm might decide to compute 
+ <nobr>&thinsp;<code>GCD(M,N)</code>&thinsp;</nobr> 
+by a naive algorithm that sets &thinsp;<code>x</code>&thinsp; to the
+minimum of &thinsp;<code>M</code>&thinsp; and
+&thinsp;<code>N</code>&thinsp; and keeps decreasing
+&thinsp;<code>x</code>&thinsp; until it divides both
+&thinsp;<code>M</code>&thinsp; and
+&thinsp;<code>N</code>&thinsp;.&nbsp; The best coder in the world will
+not produce a good GCD program by coding the naive algorithm.&nbsp;
+Moreover, thinking in terms of code makes it harder for a programmer
+to find a better algorithm.&nbsp; Finding a good algorithm requires
+thinking above the code level.
+
+ <p>
+
+
+No one writes a piece of code without first having a high-level model
+of what the code should do and how it should do it.&nbsp; A programmer
+never starts by deciding to declare some variables, adding a
+&thinsp;<b>while</b>&thinsp; statement, then adding an
+&thinsp;<b>if</b>&thinsp; statement, and so on&mdash;only discovering
+when finished that she's written a sorting program.&nbsp; But
+programmers rarely start with a <em>precise</em> model of the code.
+Having only a vague, incomplete model leads to basic design errors
+that the best coding won't correct.  <p>
+
+<p> 
+TLA+ is a language for writing precise high-level models of what
+code does and how it does it.&nbsp;  
+
+ <!-- 
+   It looks nothing like a programming language because programming
+   languages are designed for writing code, not for thinking above the
+   code level.&nbsp; Instead, TLA+ is based on mathematics, the universal
+   language of science and engineering.
+ -->
+
+
+Most programmers believe that precise models are good only for
+tiny well-defined problems like computing the GCD, but are useless for
+implementing complex systems.&nbsp;  They're wrong.&nbsp;  The more
+complex a system is, the more important it is to make it as simple as
+possible.&nbsp;  In complex systems, simplicity isn't achieved by coding
+tricks.&nbsp;  It's achieved by rigorous thinking above the code level.
+
+<p>
+
+In 
+  <a href="industrial-use2903.html?unhideBut=hide-rtos&amp;unhideDiv=rtos&amp;back-link=high-level-view.html#language?unhideBut@EQhide-above-code@AMPunhideDiv@EQabove-code">
+     one industrial project</a>,
+starting with a TLA+ model reduced the size of a real-time
+operating system's code by a factor of ten.&nbsp;
+Such a reduction in
+code size isn't obtained by better coding; it comes from thinking
+rigorously above the code level. 
+
+ <p>
+
+Writing a model above the code level doesn't prevent coding
+errors.&nbsp; Many methods and tools have been developed for finding
+coding errors, and they should be used.&nbsp; But they are not good
+for finding errors in the high-level model from which the code is
+derived.&nbsp; And it's impossible to test that a high-level model is
+implemented correctly if the model is just a vague idea in the
+programmer's mind, with no precise description.
+
+<p>
+
+Testing the code is not an effective way to find fundamental design
+errors&mdash;especially in concurrent and distributed systems.&nbsp;
+Moreover, a design error found after the code has been written is
+usually fixed with an <em>ad hoc</em> patch that is unlikely to
+eliminate all instances of the problem and is likely to introduce new
+errors.&nbsp; Design errors should be caught by writing a precise
+high-level model, before the code is written.
+
+</DIV>
+
+<h2 id="h2concurrent" class="show-hide" 
+    onclick="showHide('hide-concurrent','concurrent')">
+  Modeling Concurrent Systems 
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-concurrent" >
+      [show]</font>
+</h2>
+
+<DIV id="concurrent" class="hidden-div"> 
+
+A concurrent system is one that we think of as composed of multiple
+concurrently operating components called 
+   <font id      = "process-popup" 
+         class   = "popup-blue"
+         class="show-hide" onclick = "popup('process-popup.html',220)">
+      <b><font color="blue">processes</font></b>
+   </font>.&nbsp;
+
+<!--
+ (Contrary to popular belief, being composed of multiple processes is
+   not an inherent property of a system, but rather a result of how we
+   view it.)&nbsp;  
+-->
+
+A distributed system is a concurrent system in which we
+think of the processes as being spatially separated, usually communicating
+with one other by sending messages.
+
+
+<p>
+
+
+In a state-based model, a state represents the entire physical state
+of a system.&nbsp; Some people find it hard to believe that one can or
+should model a distributed system in terms of a single global
+state.&nbsp; Over 40 years of experience has taught me that this is
+the most generally useful way to model distributed algorithms and
+systems.
+
+</DIV>
+
+<h2  id="h2machines" class="show-hide" 
+   onclick="showHide('hide-state-machines','state-machines')">State Machines
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-state-machines" >
+      [show]</font>
+</H2>
+
+<DIV id="state-machines" class="hidden-div"> <!-- style="display:none"-->
+
+Like many state-based methods, TLA+ describes a set of
+behaviors with two things:
+
+<ol > <li> An <em>initial condition</em> that specifies the 
+        possible starting states.</li> 
+
+     <li style="margin-top:7px">A <em>next-state relation</em> that
+        specifies the possible steps (pairs of successive states). </li>
+</ol>
+
+They specify the set of behaviors whose first state satisfies the
+initial condition and whose every step 
+satisfies the next-state relation.&nbsp;
+
+<p>
+
+This kind of model is often called a <em>state machine</em>.&nbsp; (A
+finite-state machine is a state machine with a finite set of possible
+states.&nbsp; Finite-state machines are not nearly as useful as
+general state machines.)&nbsp; A Turing machine is an example of a
+state machine.&nbsp; In a deterministic Turing machine, the next-state
+relation allows at most one next state for any state, and it allows no
+next state for a terminating state.&nbsp;
+
+<p>
+
+The simplest and most practical method of precisely describing the
+semantics of a programming language, called operational semantics,
+essentially consists of showing how to <q>compile</q> a program in the
+language to a state machine.&nbsp; Given an operational semantics, any
+program in the language can be viewed as a state machine.&nbsp; I
+suspect that most programmers intuitively think of a program in that
+way.
+
+<p> The next-state action specifies what steps <em>may</em> happen; it
+doesn't specify what steps, if any, <em>must</em> happen.&nbsp; That
+requires an additional condition, called a <em>fairness</em>
+property.&nbsp; A state machine that models a sequential program
+usually includes the fairness property that some step must be taken
+(the behavior must not stop) if the next-state relation allows a step
+to be taken.&nbsp; Models of concurrent and distributed programs often
+have more complicated fairness properties.
+
+
+
+<!--
+Most people find it natural to consider an initial condition and
+next-state relation to describe only behaviors that cannot end in a
+state in which there exists a possible next state.&nbsp; This is fine
+for modeling sequential systems, but not concurrent ones.&nbsp; For
+example, it's not a natural way of modeling a client-server system in
+which clients can stop sending requests.&nbsp; TLA+ considers the
+next-state relation to describe what steps are allowed to happen, but
+to say nothing about what steps must happen.&nbsp; For example, it
+never rules out a behavior that stops in its initial state.&nbsp; What
+steps must happen are described by an additional
+condition&mdash;usually what is called a <em>fairness</em>
+condition.&nbsp; That a behavior doesn't stop in a state from which
+the next-state relation allows a step is a fairness condition.
+-->
+
+<p>
+
+A state-machine model without a fairness condition can be used to
+catch errors of <q>commision</q>, in which the system does something
+wrong.&nbsp; It can't be used to catch errors of <q>omission</q>, in
+which the system fails to do something.&nbsp; In practice, errors of
+commission are more numerous and harder to find than errors of
+omission.&nbsp; Often, engineers don't bother adding fairness
+conditions.&nbsp; Therefore, you should first learn to write the
+initial condition and next-state relation in your TLA+ models.&nbsp;
+Later, you can learn to write fairness conditions.
+
+</DIV>
+
+<h2 id="h2checking"
+    class="show-hide" 
+    onclick="showHide('hide-checking','checking')"><a 
+       name="checking">Checking Properties</a>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-checking" >
+      [show]</font>
+</H2>
+
+<DIV id="checking" class="hidden-div"> <!-- style="display:none"-->
+
+One reason for modeling a system is to check if it does what we want
+it to.&nbsp; We do that by checking if the model satisfies properties
+that we believe assert that the system does what it should.&nbsp; TLA+
+can assert, and its tools can check, only that some property of an
+individual behavior is true of every possible behavior of the
+model.&nbsp; Thus, TLA+ cannot assert that 99% of all possible
+behaviors terminate in a correct state.&nbsp; However, it can assert
+(and its tools can check) that every possible behavior terminates in a
+correct state if its initial state belongs to a particular set
+containing 99% of all possible initial states.
+
+
+<p> 
+
+The most useful type of property to check is an invariance property,
+which asserts that something is true of every state of every possible
+behavior.&nbsp; Often, an engineer will check only invariance
+properties of a model.
+
+<p>
+
+For a model containing a fairness condition, you should also check
+simple properties asserting that something eventually happens&mdash;for
+example, that every execution eventually halts.&nbsp;  Those properties,
+called <em>liveness properties</em>, are easily expressed in TLA+.
+
+<p>
+
+
+The rich variety of properties that we want to check for concurrent
+systems can't all be expressed as invariance and simple liveness
+properties.&nbsp;  They can be expressed as state machines (possibly with
+fairness conditions).&nbsp;  
+
+A state machine can be viewed as the property that is satisfied by the
+possible behaviors of the state machine.&nbsp; We can check whether
+another state machine satisfies this property.&nbsp; If it does, we
+say that the other state machine <em>implements</em> the state
+machine.
+
+
+<p>
+
+In TLA+ there is no formal distinction between a state machine and a
+property.&nbsp;  Both are described by mathematical formulas.&nbsp;  
+
+A state machine is a formula having a particular <q>shape</q>, 
+different from the shape of an invariance or liveness property.&nbsp;
+
+
+Both <em>satisfying a property</em> and <em>implementing a state
+machine</em> mean that one formula implies another.
+
+
+<p>
+
+
+Today, most engineers check only invariance properties and simple
+liveness properties.&nbsp;
+
+However, even if you never do it, knowing how it is done explains
+what it means for a program to implement a model, which can help you
+avoid making errors in your code.&nbsp; 
+
+</DIV>
+
+
+
+<H2 id="h2language"  class="show-hide" 
+   onclick="showHide('hide-language','language')">
+   <a name="language">The TLA+ Language</a>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <font  
+        id="hide-language" >
+      [show]</font>
+</H2>
+
+<DIV id="language" class="hidden-div"> <!-- style="display:none"-->
+
+TLA+ is based on mathematics and does not resemble a programming
+language.&nbsp; Most engineers are familiar with programming
+languages, but not with precise mathematical notation.&nbsp; We
+naturally find what we're familiar with to be simpler than anything
+else.&nbsp; It's hard for me to believe that English is not inherently
+simpler than German.&nbsp; Upon first seeing a TLA+ model, some
+engineers find TLA+ intimidating.&nbsp;  Read the
+  <a href="industrial-usea83c.html?back-link=high-level-view.html#language?unhideBut@EQhide-language@AMPunhideDiv@EQlanguage">
+      Industrial Use of TLA+</a> 
+page to see that TLA+ is not very hard to learn.
+
+<p>
+
+Using TLA+ teaches you that math is inherently more expressive than
+programming languages because it can describe a value without having
+to describe how the value is computed.&nbsp; For example, it can
+describe the greatest common divisor (GCD) of two numbers as the
+largest positive integer that divides both numbers.&nbsp; This makes
+it possible to write a model for a specific purpose, abstracting away
+irrelevant details such as how to calculate the GCD.&nbsp; (Putting
+code in a procedure doesn't abstract it away;&nbsp; it just makes you
+go elsewhere to read the code, requiring that you understand the
+semantics of procedure call as well as the code.)&nbsp;
+
+<p>
+
+Starting with PlusCal provides a gentle entry to TLA+.  Even if you
+know TLA+, it's easier to write some models in PlusCal rather
+than directly in TLA+.  But to get the full benefit of thinking
+mathematically above the code level, you should learn TLA+.
+
+
+
+</DIV>
+</td>
+</tr>
+
+<!-- Bottom Back button -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-50px"><b>Back</b>
+</p>
+</a>
+</td>
+</tr>
+
+</table>
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/high-level-view.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:31:22 GMT -->
+</HTML>
+
+<!-- 
+<p>
+
+Since the work of Floyd and Hoare in the late 1960s, it has been
+generally agreed that the behavior of a sequential programs is best
+thought of as a sequence of states, and we should think of a step of a
+program as a state-changing event.&nbsp;  I have found this to be true of
+concurrent and distributed systems as well.&nbsp;  States are important
+because what a system does in the future is controlled by its current
+state, not by what happened in the past.
+
+<p>
+
+
+
+<hr>
+
+
+Some methods, including TLA+, have a way of hiding part of the state.
+They can describe a system as behaving <em>as if</em> that hidden
+state exists, but it needn't actually exist.&nbsp;  There is little
+practical benefit in doing this.&nbsp;  Understanding the system requires
+understanding the complete state, including its hidden part.&nbsp;  In
+practice, it suffices to simply say in a comment that a certain part
+of the state need not actually be implemented.
+-->
+
+
+  <!-- 
+   Some other methods model a behavior as a sequence of actions.&nbsp;
+   The ones that are comparable to TLA+ in terms of their utility employ
+   a sequence of states to control the order in which actions can occur,
+   the current state determining which actions are possible and the
+   action determining the next state.&nbsp; Adding named actions to the
+   state changes would add nothing to the usefulness of TLA+.  <p>
+  -->
+
+ <!--
+   Rarely can we say that one model is better than
+   another.&nbsp; We can at most say that one is more useful than another
+   for a certain purpose.&nbsp;
+ -->
+
+ <!--
+   I've found that for most engineering uses, the behavior of a system
+   can be modeled as a sequence of events.&nbsp;  If two events represent
+   concurrent operations in different processes, the model will allow
+   behaviors in which the events occur in either order.&nbsp;  
+ -->

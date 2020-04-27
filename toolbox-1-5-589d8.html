@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<HTML lang="en"> 
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/toolbox-1-5-5.html?back-link=toolbox.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+<HEAD>
+<meta charset="utf-8"/>
+<title>Corrected TLC Bug
+</title>
+
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+<script src="tlaweb.js"> </script>
+  <STYLE type="text/css">
+   p {max-width:700px; font-size:12pt}
+   pre {font-size:12pt}
+   H2 {line-height:45px; margin-bottom:0px; text-align: left; font-size:26px;
+       color:#000000}
+   H3 {line-height:10px; margin-bottom:8px; text-align: left}
+   UL {margin-top:-5px}
+   .smallpar {margin-top: 7px} 
+ </STYLE>
+
+<!-- line-height -->
+</HEAD>
+
+<BODY onload="initialize()">
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol" > </div> 
+
+
+<!-- table width=650px -->
+<!-- font style="font-family:Calibri,Trebuchet MS,Verdana" -->
+<H1>Corrected TLC Bug</H1>
+
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 30 January 2018</I></font>
+</td>
+<!-- td style="vertical-alight:top;width:auto" -->
+<!-- img src="tla-logo.png" style="width:170px;margin-top:14px"> </img -->
+<!-- /td -->
+</tr>
+
+</table>
+<hr style="margin-bottom:-5px;margin-top:-11px"> 
+
+
+
+<!-- p style="margin-top:-30px"&nbsp;</p--> 
+
+<p> 
+
+<h2>The Problem</h2>
+
+An uncommon but serious bug in TLC has been corrected in Toolbox
+release 1.5.6..&nbsp;
+The bug was in
+the initial implementation of TLC.&nbsp; It could
+have caused TLC to generate an incorrect set of initial states, or an
+incorrect set of possible next states when examining a state.&nbsp;
+Either could have caused TLC not to examine all reachable states.  The error
+could have occurred in the following two cases: <ol> <li> The possible initial
+values of some variable &nbsp;<code>var</code>&nbsp; are specified by a
+subformula
+
+<pre>   F(..., var, ...)</pre> 
+
+in the initial predicate,
+for some operator &nbsp;<code>F</code>&nbsp; such that expanding the
+definition of &nbsp;<code>F</code>&nbsp; results in a formula
+containing more than one occurrence of &nbsp;<code>var</code>&nbsp;,
+not all occurring in separate disjuncts of that formula.
+</li>
+<br>
+<li> 
+The possible next values of some variable
+&nbsp;<code>var</code>&nbsp; are specified by a subformula 
+
+<pre>   F(..., var', ...)</pre> 
+
+in the next-state relation,
+for some operator &nbsp;<code>F</code>&nbsp; such that expanding the
+definition of &nbsp;<code>F</code>&nbsp; results in a formula
+containing more than one occurrence of &nbsp;<code>var'</code>&nbsp;,
+not all occurring in separate disjuncts of that formula.
+</li>
+<p>
+</ol>
+<p>
+
+
+<p> An example of the first case is an initial predicate
+&nbsp;<code>Init</code>&nbsp; defined as
+follows:
+
+<pre>
+   VARIABLES x, ...
+   
+   F(var) == \/ var \in 0..99 /\ var % 2 = 0
+             \/ var = -1
+   
+   Init == /\ F(x)
+           /\ ...
+</pre>
+
+The error would <em>not</em> appear if &nbsp;<code>F</code>&nbsp; were defined by:
+
+<pre>
+   F(var) == \/ var \in {i \in 0..99 : i % 2 = 0}
+             \/ var = -1
+</pre>
+
+or if the definition of &nbsp;<code>F(x)</code>&nbsp; were expanded in 
+&nbsp;<code>Init</code>&nbsp;:
+
+<pre>
+   Init == /\ \/ x \in 0..99 /\ x % 2 = 0
+              \/ x = -1
+           /\ ...
+</pre>
+
+
+A similar example holds for case 2 with the same operator  
+&nbsp;<code>F</code>&nbsp;  and the next-state formula
+
+<pre>
+   Next == /\ F(x')
+           /\ ...
+</pre>
+
+<h2>The Solution and a Possible Performance Problem</h2>
+
+TLC sometimes caches values it has computed in case those values
+are later re-used.&nbsp;  The bug was caused by TLC using cached values
+when it should not have.&nbsp;  The solution involved disabling the
+incorrect use of cached values.&nbsp;  However, it also disabled some
+correct uses of cached values.&nbsp;  We believe that this will have
+no noticable affect on TLC's performance.&nbsp;  Please let us know if
+you have reason to believe that the fix has significantly slowed TLC
+down on one of your specs.
+
+<!-- **************** BEGINNING OF ENDING BOILERPLATE *************** -->
+
+</td>
+</tr>
+<!-- Bottom Back button may need to adjust margin-top parameter -->
+<tr>
+<td> 
+<a class="back-link" style="display:none" href="#">
+<p style="margin-top:-27px"><b>Back</b>
+</p>
+</a>
+
+<!-- For a long page, add more back buttons higher on the page
+   by add one or more items like this, adjusting the margin-top 
+   parameter as desired.-->
+
+   <a class="back-link" style="display:none" href="#">
+   <p style="margin-top:-500px"><b>Back</b> </p> </a>
+
+
+</td>
+</tr>
+
+</table>
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/toolbox-1-5-5.html?back-link=toolbox.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:38:05 GMT -->
+</HTML>
+

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<HTML>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/paxos-algorithm.html?back-link=news.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:33:35 GMT -->
+<HEAD>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; I; OSF1 V4.0 alpha) 
+              [Netscape]">
+<!--
+%&b&<b>#</b>&
+%&c&&thinsp;<b>#</b>&thinsp;&
+-->
+
+<!-- The following loads the style sheet for the html files of 
+     the tla web site -->
+<link rel="stylesheet" type="text/css" href="tlaweb.css">
+
+
+<script src="tlaweb.js"> </script>
+
+<!-- USE THE FOLLOWING FOR MULTI-LINE PAGE TITLE -->
+   <style>
+   h1 {line-height:38px;
+       margin-top:16px
+       }
+   </style>
+
+
+<!-- The following causes the name of this page in the left-hand column 
+     not to have a link.  It's not used here because this isn't for
+     a top-level page
+-->
+
+<!-- SCRIPT>
+   noLinkName = "Industrial Use" ;
+   </SCRIPT -->
+
+<title>Paxos Algorithm</title> 
+
+</HEAD>
+
+<BODY onload="initialize()">
+
+<table id="main">
+<tr>
+<td id="main_leftcolumn" >
+</td>
+
+<td id="main_contentcolumn">
+
+<table>
+<tr >
+<td style="vertical-alight:top">
+<div id = "showleftcol" > </div> 
+
+<H1>The Paxos Algorithm <br>
+ <font style="font-size:32px"> or How to Win a Turing Award</font></H1>
+
+<p style="margin-top:-8px; margin-bottom:-18px">
+Leslie Lamport<p>
+<font size=-1><I> Last modified on 23 August 2019</I></font>
+</td>
+<!-- td style="vertical-alight:top;width:auto" -->
+<!-- img src="tla-logo.png" style="width:170px;margin-top:14px"> </img -->
+<!-- /td -->
+</tr>
+
+</table>
+<hr style="margin-bottom:-5px;margin-top:-11px"> 
+
+<P style="margin-top:0px"> </P>
+
+In July 2019 I gave a pair of 1-1/2 hour lectures at a summer
+school on distributed computing in Saint Petersburg, Russia.&nbsp;
+The lectures covered three topics:
+<ul>
+<li> The Paxos consensus algorithm.</li>
+ 
+<li> TLA+ </li>
+
+<li> How to win a Turing award.</li> 
+
+</ul> 
+
+If you are interested in any of those topics, you might want to watch
+the videos of the lectures.&nbsp; In them, I present a rigorous
+development of the Paxos consensus algorithm that formalizes the
+thinking I believe led me to discover it.&nbsp; I explain the
+algorithm with three specifications: a trivial one stating what the
+algorithm is supposed to accomplish, a high-level algorithm in which
+each process directly views the state of every other process, and the
+actual algorithm in which processes communicate by sending messages.
+
+<p>
+
+The lectures assume no prior knowledge of the Paxos consensus
+algorithm or of TLA+, the language in which the specifications are
+written.&nbsp;
+
+In fact, the lectures constitute a crash course on TLA+.&nbsp;
+
+If you're interested just in the algorithm, you will probably find the
+specs annoying and will try to read only the plentiful comments,
+ignoring the TLA+.&nbsp;
+
+To understand the algorithm, you will have to stop the
+video at certain points and read the specs&mdash;either the ASCII
+sources in the <code>.tla</code> files or the pretty-printed versions
+in the <code>.pdf</code> files.&nbsp; I hope that you will eventually
+appreciate the elegance and precision of the TLA+
+specs.
+
+<p>
+
+Here are links to the two videos and to accompanying material,
+which is contained in a <code>zip</code> file that you should download:
+<pre>
+    <a href="https://youtu.be/tw3gsBms-f8">Lecture 1</a>       <a href="https://youtu.be/8-Bc5Lqgx_c">Lecture 2</a>       <a href="st-pete-lecture-exercises.zip">Accompanying Material</a> 
+</pre> 
+
+The accompanying material consists of the specs described in the
+lectures and follow-up exercises you can do after watching the videos.
+The file <code>README.txt</code> contains instructions for the
+exercises.
+
+
+
+
+</table>
+
+
+</BODY>
+
+<!-- Mirrored from lamport.azurewebsites.net/tla/paxos-algorithm.html?back-link=news.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 26 Mar 2020 22:33:48 GMT -->
+</HTML>
+
